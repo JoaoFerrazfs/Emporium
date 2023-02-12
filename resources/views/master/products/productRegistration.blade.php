@@ -15,28 +15,13 @@
         </div>
 
         <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Código</span>
-            <input type="text" name="cod" class="form-control" id="cod" required="required" >
-        </div>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Fornecedor</span>
-            <input type="text" class="form-control " name="supplier" id="supplier" required="required">
-        </div>
-
-        <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Preço</span>
             <input type="number" step='0.01' class="form-control" name="price" id="price" required="required" >
         </div>
 
         <div class="form-check form-switch">
-            <input class="form-check-input" value="Indísponivel" type="checkbox" role="switch" name="availability" id="availability">
-            <label class="form-check-label" for="availability">Disponivel</label>
-        </div>
-
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" value="Pronta Entrega" role="switch" name="order" id="order">
-            <label class="form-check-label" for="order">Somente Encomenda</label>
+            <input class="form-check-input" value="disponivel" type="checkbox" role="switch" name="status" id="status">
+            <label class="form-check-label" for="status">Disponivel</label>
         </div>
 
         <div class="mb-3">
@@ -46,13 +31,13 @@
 
         <div class="input-group mb-3 ">
             <span class="input-group-text" id="basic-addon1">Estoque</span>
-            <input type="number" class="form-control col-md-6 d-flex " name="inventory" id="inventory" required="required" >
-        </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Classe de Item</span>
-            <input type="text" class="form-control" name="type" id="type" required="required">
+            <input type="number" class="form-control col-md-6 d-flex " name="stock" id="stock" required="required" >
         </div>
 
+        <div class="input-group mb-3 ">
+            <span class="input-group-text" id="basic-addon1">Validate</span>
+            <input type="date" class="form-control col-md-6 d-flex " name="validate" id="validate" required="required" >
+        </div>
 
         <div class="mb-3">
             <label for="image" class="form-label">Adicione uma foto</label>

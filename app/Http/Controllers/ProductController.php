@@ -23,23 +23,20 @@ class ProductController extends Controller
     {
         $formData = $request->all();
         $formData['image'] = $this->image->saveLocalImage($request);
-        $product = $this->product->fill($formData);
 
-        $product->save();
+        Product::create($formData);
 
         return redirect('/dashboard')->with('msg', 'Produto cadastrado com Sucesso');
     }
 
-    public function myProducts(string $userId): View
+    public function myProducts(): View
     {
-        $products = Product::where('supplier', '=', $userId)->get();
-
-        return view('master.products.viewMyProducts', ['products' => $products]);
+        return view('master.products.viewMyProducts', ['products' =>  Product::all()]);
     }
 
     public function editProducts(string $productId): View
     {
-        $products = Product::where('_id', '=', $productId)->get();
+        $products = Product::where('id', '=', $productId)->get();
 
         return view('master.products.viewProduct', ['products' => $products]);
     }
@@ -77,14 +74,14 @@ class ProductController extends Controller
 
     public function destroy($id): RedirectResponse
     {
-        Product::where('_id', $id)->delete();
+        Product::where('id', $id)->delete();
         $user = auth()->user()->_id;
         return redirect('/meusProdutos/' . $user);
     }
 
     public function index(): View
     {
-        $products = Product::where('availability', 'Disponível')->get();
+        $products = Product::where('status', 'disponivel')->get();
         return view('client.products.products', ['products' => $products]);
     }
 
@@ -103,7 +100,7 @@ class ProductController extends Controller
     public function changedStore(string $id, int $quantity): void
     {
         $newInventory = 0;
-        $product = Product::where('_id', $id)->get();
+        $product = Product::where('id', $id)->get();
 
         foreach ($product as $value) {
             $newInventory = $value->inventory - $quantity;
