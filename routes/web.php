@@ -32,7 +32,7 @@ require __DIR__ . '/auth.php';
 
 
 Route::get('/cadastroProduto', function () {
-    return view('master.products.productRegistration');
+    return view('admin.products.productRegistration');
 });
 
 Route::post('/validaCadastro',[ProductController::class,'store'])->middleware('auth');
@@ -59,10 +59,10 @@ Route::post('/novoBanner',[BannerController::class,'create']);
 
 
 
-Route::get('/', function () {return view('welcome') ;});
-Route::get('/formBanner', function () {return view('client.formBanner') ;});
+Route::get('/', function () {return view('ecommerce.home.welcome') ;});
+Route::get('/formBanner', function () {return view('ecommerce.formBanner') ;});
 
-Route::get('/confirmarPagamento', function () {return view('client.paymentProcess');});
+Route::get('/confirmarPagamento', function () {return view('ecommerce.paymentProcess');});
 
 Route::get('/pagamento',[PaymentController::class,'payments']);
 
@@ -73,7 +73,7 @@ Route::post('/frete',[DeliveryRouteController::class,'portage']);
 
 
 
-Route::get('/prestador/registrar', function () {return view('master.services.servicesRegistration');
+Route::get('/prestador/registrar', function () {return view('admin.services.servicesRegistration');
 });
 
 Route::post('/validaCadastroPrestador',[ServicesController::class,'create']);

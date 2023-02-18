@@ -1,7 +1,6 @@
 @extends('layouts.main')
 @section('title', 'Emporium')
 @section('content')
-
     <div class="container">
 
         <div class="container">
@@ -9,7 +8,6 @@
                 <p class=" alert alert-info border border-white mt-5 ">{{ session('success') }}</p>
             @endif
         </div>
-
 
         <nav class="container-fluid" style="background-color: black; margin-top: 50px;">
 

@@ -34,12 +34,12 @@ class ServicesController extends Controller
     {
         $result = Services::where('user', 'admin')->get();
 
-        return view('master.services.viewServices', ['results'=>$result]);
+        return view('admin.services.viewServices', ['results'=>$result]);
     }
 
     public function viewAllServices(): View
     {
-        return view('client.services.services', ['results'=> Services::all()]);
+        return view('ecommerce.services.services', ['results'=> Services::all()]);
     }
 
 

@@ -15,7 +15,7 @@ class OrderManagerController extends Controller
         $delivery = [];
         $updated_at = "";
         $orders = Budget::all();
-        
+
         foreach ($orders as $key => $firtValue) {
 
             $delivery = $firtValue['delivery'];
@@ -52,17 +52,17 @@ class OrderManagerController extends Controller
 
         $supplierOrder = array_filter($supplierOrder);
 
-        
+
 
         switch ($supplierOrder):
         case "null";
             return redirect()->back()->with('msg', 'Não há nenhum novo pedido');
-          break;            
+          break;
         default:
-            return view('master.orders.viewOrders', ['supplierOrder' => $supplierOrder]);
+            return view('admin.orders.viewOrders', ['supplierOrder' => $supplierOrder]);
         endswitch;
 
-        
+
     }
 
     public function showOrder(Request $request)
@@ -83,7 +83,7 @@ class OrderManagerController extends Controller
             }
         }
 
-        return view('master.orders.viewOrderDetail', ['productOrder' => $productOrder, 'deliveryOrder' => $deliveryOrder, 'idOrder' => $products['idOrder']]);
+        return view('admin.orders.viewOrderDetail', ['productOrder' => $productOrder, 'deliveryOrder' => $deliveryOrder, 'idOrder' => $products['idOrder']]);
     }
 
     public function updateStatusOrder(Request $request)
@@ -115,7 +115,7 @@ class OrderManagerController extends Controller
         $budget = new Budget();
         $result = Budget::where('delivery.cpf', '=', $request->cpf)->get();
 
-        return view('client.payments.payment', ['result' => $result]);
+        return view('ecommerce.payments.payment', ['result' => $result]);
 
     }
 }
