@@ -38,8 +38,8 @@ class BudgetController extends Controller
           */
     private $paymentController;
 
-  
-    
+
+
 
     public function __construct(
         ClientController $clientController,
@@ -51,9 +51,9 @@ class BudgetController extends Controller
         $this->productController = $productController;
         $this->budget = $budget;
         $this->paymentController = $paymentController;
-        
+
     }
-    
+
 
     public function makeShoppingList(Request $request)
     {
@@ -86,7 +86,7 @@ class BudgetController extends Controller
                 $quantity = $value["quantity"];
                 $amount =  $amount + ($quantity * $value["price"]);
             }
-            return view('client.shoppingList', ['cart' => $cart, 'amount' => $amount]);
+            return view('ecommerce.shoppingList', ['cart' => $cart, 'amount' => $amount]);
         }
     }
 
@@ -101,7 +101,7 @@ class BudgetController extends Controller
         if(session()->put('cart', $cart) == null) {
             return redirect('/produtos');
         }
-        
+
         return redirect()->back();
     }
 
@@ -139,18 +139,18 @@ class BudgetController extends Controller
         ];
         $request->session()->put('cartAmout', $amount);
         return view(
-            'client.viewBudget', [
+            'ecommerce.viewBudget', [
             'amount' => $amount,
             'cart' => $cart,
-     
+
             ]
         );
     }
 
     public function saveBudget(Request $request)
     {
-           
-        $budgetNumber = Budget::all()->count() + 1;        
+
+        $budgetNumber = Budget::all()->count() + 1;
         $cart = $request->session()->get('cart');
 
         $delivery = [
@@ -164,10 +164,10 @@ class BudgetController extends Controller
             "number" => $request->number
         ];
 
-      
-        
+
+
         $this->clientController->store($delivery);
-       
+
         $this->budget->number = $budgetNumber;
         $this->budget->statusPayment = 'Em espera';
         $this->budget->delivery = $delivery;
@@ -182,7 +182,7 @@ class BudgetController extends Controller
             $this->productController->changedStore($id, $inventory);
         }
         $request->session()->put('budget',  $this->budget);
-        $this->budget->save();        
+        $this->budget->save();
         $paymentLink =  $this->paymentController->payments($cart);
         return redirect($paymentLink);
     }

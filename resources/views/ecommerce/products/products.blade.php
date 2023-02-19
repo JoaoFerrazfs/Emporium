@@ -2,9 +2,6 @@
 @section('title', 'Emporium')
 @section('content')
 
-
-
-
     <div class="container" role="alert">
 
 
@@ -18,8 +15,6 @@
                     Bem vindo ao nosso Cardápio
                 </div>
             @endif
-
-
 
             <nav class="card-container" style="margin:50px 280px ; display : flex;">
 
@@ -36,7 +31,8 @@
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $product->_id }}">
 
-                                <button type="submit" class="btn btn-primary">Visualizar Produto</button><br></br>
+                                <button type="submit" class="btn btn-primary">Visualizar Produto</button>
+                                <br></br>
                             </form>
 
                         </div>
@@ -46,4 +42,4 @@
             </nav>
         </div>
 
-    @stop
+@stop

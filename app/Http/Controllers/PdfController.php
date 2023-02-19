@@ -28,7 +28,7 @@ class PdfController extends Controller
         }
 
         $this->domPdf->set('isRemoteEnabled', true);
-        $dompdf = $this->pdf->loadView('client.budgetPdf', compact('budget', 'amount'));
+        $dompdf = $this->pdf->loadView('ecommerce.budgetPdf', compact('budget', 'amount'));
         $dompdf->setPaper('a4', 'portrait');
         $dompdf->render();
 

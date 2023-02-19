@@ -24,21 +24,32 @@ class ProductController extends Controller
         $formData = $request->all();
         $formData['image'] = $this->image->saveLocalImage($request);
 
-        Product::create($formData);
+        $input = [
+            'name' => $formData['name'],
+            'price' => $formData['price'],
+            'status' => $formData['status'] ?? 'indisponível',
+            'description' => $formData['description'],
+            'stock' => $formData['stock'],
+            'validate' => $formData['validate'],
+            'image' => $formData['image'],
+        ];
+
+
+        Product::create($input);
 
         return redirect('/dashboard')->with('msg', 'Produto cadastrado com Sucesso');
     }
 
     public function myProducts(): View
     {
-        return view('master.products.viewMyProducts', ['products' =>  Product::all()]);
+        return view('admin.products.viewMyProducts', ['products' =>  Product::all()]);
     }
 
     public function editProducts(string $productId): View
     {
         $products = Product::where('id', '=', $productId)->get();
 
-        return view('master.products.viewProduct', ['products' => $products]);
+        return view('admin.products.viewProduct', ['products' => $products]);
     }
 
     public function update(Request $request): RedirectResponse
@@ -82,7 +93,7 @@ class ProductController extends Controller
     public function index(): View
     {
         $products = Product::where('status', 'disponivel')->get();
-        return view('client.products.products', ['products' => $products]);
+        return view('ecommerce.products.products', ['products' => $products]);
     }
 
     public function viewProduct(Request $request): View
@@ -94,7 +105,7 @@ class ProductController extends Controller
             return view('welcome');
         }
 
-        return view('client.viewProductClient', ['products' => $products]);
+        return view('ecommerce.viewProductClient', ['products' => $products]);
     }
 
     public function changedStore(string $id, int $quantity): void

@@ -1,10 +1,6 @@
 @extends('layouts.main')
 @section('title', 'Emporium')
 @section('content')
-
-
-
-
     <div class="container" role="alert">
 
 
@@ -19,7 +15,7 @@
                     <img src="/img/services/{{ $result->image }}" class="card-img-top" alt="...">
                     <div class="card-body">
 
-                        <h5 class="card-title">{{ $result->type }}</h5>                       
+                        <h5 class="card-title">{{ $result->type }}</h5>
                         <p class="card-text">Preço: {{ $result->name }}</p>
                         <p class="card-text">Avaliação: 5 Estrelas</p>
                         <p class="card-text">Preço: {{ $result->price }}</p>
