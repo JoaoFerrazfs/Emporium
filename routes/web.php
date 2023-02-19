@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\OrderManagerController;
@@ -44,8 +45,8 @@ Route::post('/meusProdutos/availability',[ProductController::class,'changeAvaila
 Route::delete('/meusProdutos/delete/{id}',[ProductController::class,'destroy'])->middleware('auth');
 Route::get('/produtos',[ProductController::class,'index']);
 Route::post('/visualizarProduto',[ProductController::class,'viewProduct']);
-Route::post('/carrinho',[BudgetController::class,'makeShoppingList']);
-Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList']);
+Route::post('/carrinho',[BudgetController::class,'makeShoppingList'])->name('createCart');
+Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('myCart');
 Route::post('/carrinho/excluir/item',[BudgetController::class,'deleteItemShoppingList']);
 Route::post('/carrinho/excluir/carrinho',[BudgetController::class,'deleteCart']);
 Route::get('/pedido',[BudgetController::class,'newBudget']);
@@ -58,8 +59,7 @@ Route::post('/pesquisaCPF',[ClientController::class,'findClient']);
 Route::post('/novoBanner',[BannerController::class,'create']);
 
 
-
-Route::get('/', function () {return view('ecommerce.home.welcome') ;});
+Route::get('/',[HomeController::class,'showHome']) ->name('home');
 Route::get('/formBanner', function () {return view('ecommerce.formBanner') ;});
 
 Route::get('/confirmarPagamento', function () {return view('ecommerce.paymentProcess');});

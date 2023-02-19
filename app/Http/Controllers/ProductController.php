@@ -24,7 +24,18 @@ class ProductController extends Controller
         $formData = $request->all();
         $formData['image'] = $this->image->saveLocalImage($request);
 
-        Product::create($formData);
+        $input = [
+            'name' => $formData['name'],
+            'price' => $formData['price'],
+            'status' => $formData['status'] ?? 'indisponível',
+            'description' => $formData['description'],
+            'stock' => $formData['stock'],
+            'validate' => $formData['validate'],
+            'image' => $formData['image'],
+        ];
+
+
+        Product::create($input);
 
         return redirect('/dashboard')->with('msg', 'Produto cadastrado com Sucesso');
     }

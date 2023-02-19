@@ -9,6 +9,14 @@ body {
   padding: 90px 0;
 }
 
+.div-imagem {
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 .layout_padding2 {
   padding: 75px 0;
 }

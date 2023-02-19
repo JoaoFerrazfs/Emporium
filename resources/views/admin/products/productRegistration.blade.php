@@ -20,7 +20,7 @@
         </div>
 
         <div class="form-check form-switch">
-            <input class="form-check-input" value="disponivel" type="checkbox" role="switch" name="status" id="status">
+            <input class="form-check-input" value="disponivel" type="checkbox" role="switch" name="status" id="status" checked>
             <label class="form-check-label" for="status">Disponivel</label>
         </div>
 

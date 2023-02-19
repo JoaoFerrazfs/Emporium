@@ -3,20 +3,20 @@
             <div class="container-fluid">
                 <div class="top_nav_container">
 
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" href="{{ route('home')}}">
               <span>
                 Emporium
               </span>
                     </a>
 
                     <div class="user_option_box">
-                        <a href="" class="account-link">
+                        <a href="{{ route('register') }}" class="account-link">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <span>
                   Login
                 </span>
                         </a>
-                        <a href="" class="cart-link">
+                        <a href="{{ route('myCart') }}" class="cart-link">
                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                             <span>
                   Carrinho
