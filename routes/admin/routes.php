@@ -8,9 +8,20 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesController;
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/', function () {
+        return redirect('/admin/orders');
+    })->middleware(['auth'])->name('admin');
+
+    Route::get('/orders', function () {
+        return view('/admin/products/home');
+    })->middleware(['auth'])->name('orders');
+
+});
+
+
+
 
 
 
