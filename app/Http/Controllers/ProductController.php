@@ -93,7 +93,7 @@ class ProductController extends Controller
     public function index(): View
     {
         $products = Product::where('status', 'disponivel')->get();
-        return view('ecommerce.products.products', ['products' => $products]);
+        return view('ecommerce.products.productsList', ['products' => $products]);
     }
 
     public function viewProduct(Request $request): View

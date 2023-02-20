@@ -11,7 +11,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PdfController;
 
 
-Route::get('/produtos',[ProductController::class,'index']);
+Route::get('/',[HomeController::class,'showHome']) ->name('home');
+Route::get('/produtos',[ProductController::class,'index'])->name('products.list');
 Route::post('/visualizarProduto',[ProductController::class,'viewProduct']);
 Route::post('/carrinho',[BudgetController::class,'makeShoppingList'])->name('createCart');
 Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('myCart');
@@ -20,7 +21,6 @@ Route::get('/pedido',[BudgetController::class,'newBudget']);
 Route::post('/carrinho/excluir/carrinho',[BudgetController::class,'deleteCart']);
 Route::post('/carrinho/modifica/quantidade',[BudgetController::class,'updateQuantity']);
 Route::post('/pesquisaCPF',[ClientController::class,'findClient']);
-Route::get('/',[HomeController::class,'showHome']) ->name('home');
 Route::get('/formBanner', function () {return view('ecommerce.formBanner') ;});
 Route::get('/confirmarPagamento', function () {return view('ecommerce.paymentProcess');});
 Route::get('/pagamento',[PaymentController::class,'payments']);

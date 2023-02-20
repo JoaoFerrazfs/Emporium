@@ -124,19 +124,13 @@ class BudgetController extends Controller
     public function newBudget(Request $request)
     {
         $cart = $request->session()->get('cart');
-        $quantity = 0;
         $amount = 0;
+
         foreach ($cart as $value) {
             $quantity = $value["quantity"];
             $amount =  $amount + ($quantity * $value["price"]);
         }
 
-
-
-        $cartData = [
-                        "cart" => $cart,
-            "amount" => $amount
-        ];
         $request->session()->put('cartAmout', $amount);
         return view(
             'ecommerce.viewBudget', [
