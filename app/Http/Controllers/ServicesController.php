@@ -27,7 +27,7 @@ class ServicesController extends Controller
         $data['image'] = $this->image->saveLocalImage($request);
         $this->services->fill($data)->save();
 
-        return redirect('/dashboard')->with('msg', 'O Prestador ' . $request['name'] . ' foi cadastrado com sucesso!');
+        return redirect('/admin')->with('msg', 'O Prestador ' . $request['name'] . ' foi cadastrado com sucesso!');
     }
 
     public function view(): View

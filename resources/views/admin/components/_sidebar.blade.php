@@ -2,7 +2,7 @@
     <div id="sidebar" class='active'>
         <div class="sidebar-wrapper active">
             <div class="sidebar-header">
-                <img src="assets/images/logo.svg" alt="" srcset="">
+                <img src="/img/commons/emporium-logo.png" alt="">
             </div>
             <div class="sidebar-menu">
                 <ul class="menu">
@@ -13,7 +13,7 @@
 
                     <li class="sidebar-item active ">
 
-                        <a href="{{route('orders')}}" class='sidebar-link'>
+                        <a href="{{route('admin.orders')}}" class='sidebar-link'>
                             <i data-feather="home" width="20"></i>
                             <span>Pedidos</span>
                         </a>

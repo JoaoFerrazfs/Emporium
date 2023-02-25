@@ -1,0 +1,40 @@
+.title-menus {
+    display: flex;
+    justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+    align-items: center;
+    margin-top: 80px;
+    margin-left: 50px; /* Define a margem esquerda */
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centraliza verticalmente os botões */
+    height:80vh; /* Define a altura da container para a altura da tela */
+}
+
+.button {
+    width: 360px;
+    height: 271px;
+    background-color: #37ADF6;
+    color: white;
+    border: none;
+    font-size: 24px;
+    margin: 10px 50px;
+    border-radius: 20px; /* Adiciona bordas arredondadas */
+    display: flex; /* Permite alinhar verticalmente o texto e o ícone */
+    flex-direction: column; /* Alinha o texto e o ícone verticalmente */
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    align-items: center; /* Centraliza o conteúdo horizontalmente */
+}
+
+.button img {
+    width: 100px; /* Define o tamanho do ícone */
+    height: 100px;
+    margin-bottom: 10px; /* Adiciona espaço entre o ícone e o texto */
+}
+
+.button label {
+    margin-bottom: 50px; /* Define o tamanho do ícone */
+
+}

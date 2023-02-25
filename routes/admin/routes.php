@@ -10,27 +10,25 @@ use App\Http\Controllers\ServicesController;
 
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+
     Route::get('/', function () {
-        return redirect('/admin/orders');
-    })->middleware(['auth'])->name('admin');
+        return redirect('/admin/produtos');
+    })->name('admin');
 
-    Route::get('/orders', function () {
-        return view('/admin/products/home');
-    })->middleware(['auth'])->name('orders');
+    Route::get('/pedidos', function () {
+        return view('/admin/pedidos/home');
+    })->name('admin.orders');
+
+    Route::get('/produtos', fn() => view('/admin/products/home'))->name('admin.products');
+    Route::get('/produtos/lista',[ProductController::class,'myProducts'])->name('admin.products.list');
+    Route::get('/produtos/cadastrar', fn() => view('/admin/products/productRegistration'))->name('admin.products.create');
+    Route::post('/produtos/cadastrar',[ProductController::class,'store'])->name('admin.products.create');
+
 
 });
 
 
 
-
-
-
-Route::get('/cadastroProduto', function () {
-    return view('admin.products.productRegistration');
-});
-
-Route::post('/validaCadastro',[ProductController::class,'store'])->middleware('auth');
-Route::get('/meusProdutos',[ProductController::class,'myProducts'])->middleware('auth');
 Route::get('/meusProdutos/editarProdutos/{id}',[ProductController::class,'editProducts'])->middleware('auth');
 Route::post('/meusProdutos/salvaEdicao',[ProductController::class,'update'])->middleware('auth');
 Route::post('/meusProdutos/order',[ProductController::class,'changeOrder'])->middleware('auth');

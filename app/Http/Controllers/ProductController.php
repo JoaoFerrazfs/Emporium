@@ -37,7 +37,7 @@ class ProductController extends Controller
 
         Product::create($input);
 
-        return redirect('/dashboard')->with('msg', 'Produto cadastrado com Sucesso');
+        return redirect('/admin')->with('msg', 'Produto cadastrado com Sucesso');
     }
 
     public function myProducts(): View
