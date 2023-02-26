@@ -21,8 +21,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/produtos', fn() => view('/admin/products/home'))->name('admin.products');
     Route::get('/produtos/lista',[ProductController::class,'myProducts'])->name('admin.products.list');
-    Route::get('/produtos/cadastrar', fn() => view('/admin/products/productRegistration'))->name('admin.products.create');
-    Route::post('/produtos/cadastrar',[ProductController::class,'store'])->name('admin.products.create');
+    Route::post('/produtos/cadastrar',[ProductController::class,'store'])->name('admin.products.creates');
+    Route::get('/produtos/cadastrar', fn() => view('/admin/products/create_product'))->name('admin.products.create');
 
 
 });

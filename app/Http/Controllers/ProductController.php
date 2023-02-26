@@ -10,12 +10,10 @@ use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
-    private Product $product;
     private Image $image;
 
-    public function __construct(Product $product, Image $image)
+    public function __construct(Image $image)
     {
-        $this->product = $product;
         $this->image = $image;
     }
 
@@ -26,11 +24,12 @@ class ProductController extends Controller
 
         $input = [
             'name' => $formData['name'],
-            'price' => $formData['price'],
-            'status' => $formData['status'] ?? 'indisponível',
             'description' => $formData['description'],
+            'ingredients' => $formData['ingredients'],
             'stock' => $formData['stock'],
             'validate' => $formData['validate'],
+            'price' => $formData['price'],
+            'status' => $formData['status'] ?? 'indisponível',
             'image' => $formData['image'],
         ];
 
