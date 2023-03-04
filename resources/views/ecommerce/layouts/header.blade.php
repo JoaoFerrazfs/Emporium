@@ -10,10 +10,10 @@
                     </a>
 
                     <div class="user_option_box">
-                        <a href="{{ route('register') }}" class="account-link">
+                        <a href="{{ route('login') }}" class="account-link">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <span>
-                  Login
+                  Fazer login
                 </span>
                         </a>
                         <a href="{{ route('myCart') }}" class="cart-link">

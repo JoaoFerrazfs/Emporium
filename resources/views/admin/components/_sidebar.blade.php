@@ -13,7 +13,7 @@
 
                     <li class="sidebar-item active ">
 
-                        <a href="{{route('admin.orders')}}" class='sidebar-link'>
+                        <a href="/" class='sidebar-link'>
                             <i data-feather="home" width="20"></i>
                             <span>Pedidos</span>
                         </a>
@@ -22,7 +22,7 @@
                     </li>
                     <li class="sidebar-item active ">
 
-                        <a href="index.html" class='sidebar-link'>
+                        <a href="{{route('admin.products')}}" class='sidebar-link'>
                             <i data-feather="home" width="20"></i>
                             <span>Produtos</span>
                         </a>
@@ -31,18 +31,19 @@
                     </li>
                     <li class="sidebar-item active ">
 
-                        <a href="index.html" class='sidebar-link'>
+                        <a href="/" class='sidebar-link'>
                             <i data-feather="home" width="20"></i>
                             <span>Relatórios</span>
                         </a>
 
 
                     </li>
+
                     <li class="sidebar-item active ">
 
-                        <a href="index.html" class='sidebar-link'>
+                        <a href="/" class='sidebar-link'>
                             <i data-feather="home" width="20"></i>
-                            <span>Gerenciar Estoque</span>
+                            <span>Gerenciar Usuarios</span>
                         </a>
 
 

@@ -9,6 +9,6 @@ class HomeController extends Controller
 {
     public function showHome() : View
     {
-        return view('ecommerce.home.welcome', ['products' =>  Product::all()]);
+        return view('ecommerce.home.welcome', ['products' =>  Product::where("status","disponivel")->get()]);
     }
 }

@@ -1,8 +1,31 @@
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centraliza verticalmente os botões */
+    height: 130vh; /* Define a altura da container para a altura da tela */
+    margin-left: 150px; /* Define a margem esquerda */
+}
+
+.table-container a {
+    width: 148px;
+    height: 45px;
+    background-color: #0577BD;
+    color: white;
+    border: none;
+    font-size: 24px;
+    margin: 10px 50px;
+    border-radius: 5px; /* Adiciona bordas arredondadas */
+    display: flex; /* Permite alinhar verticalmente o texto e o ícone */
+    flex-direction: column; /* Alinha o texto e o ícone verticalmente */
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    align-items: center; /* Centraliza o conteúdo horizontalmente */
+}
+
 .form-container {
     display: flex;
     justify-content: center;
     align-items: center; /* Centraliza verticalmente os botões */
-    height:80vh; /* Define a altura da container para a altura da tela */
+    height: 120vh; /* Define a altura da container para a altura da tela */
 }
 
 .title-menus {
@@ -13,11 +36,12 @@
     margin-left: 50px; /* Define a margem esquerda */
 }
 
+
 .button-container {
     display: flex;
     justify-content: center;
     align-items: center; /* Centraliza verticalmente os botões */
-    height:80vh; /* Define a altura da container para a altura da tela */
+    height: 80vh; /* Define a altura da container para a altura da tela */
 }
 
 .button {
@@ -44,4 +68,34 @@
 .button label {
     margin-bottom: 50px; /* Define o tamanho do ícone */
 
+}
+
+.button-filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centraliza verticalmente os botões */
+    height: 20vh; /* Define a altura da container para a altura da tela */
+    margin-left: 150px; /* Define a margem esquerda */
+
+}
+
+.button-filter {
+
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    width: 148px;
+    height: 45px;
+    background-color: #0577BD;
+}
+
+.button-filter + .button-filter {
+    margin-left: 200px;
+}
+
+.image-product-edit {
+    margin: 5% 0;
+    width: 40%;
 }

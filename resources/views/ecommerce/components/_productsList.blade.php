@@ -10,8 +10,7 @@
                         <div class="img-box">
                             <img src="{{'img/products/' . $product->image }}" alt="{{ $product->name }}">
                             <a href="" class="add_cart_btn">
-
-                                <span> Adicionar ao carrinho </span>
+                                <span> Visualizar </span>
                             </a>
                         </div>
                         <div class="detail-box">

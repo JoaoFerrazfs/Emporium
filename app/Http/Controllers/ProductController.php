@@ -20,7 +20,6 @@ class ProductController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $formData = $request->all();
-        $formData['image'] = $this->image->saveLocalImage($request);
 
         $input = [
             'name' => $formData['name'],
@@ -29,37 +28,50 @@ class ProductController extends Controller
             'stock' => $formData['stock'],
             'validate' => $formData['validate'],
             'price' => $formData['price'],
-            'status' => $formData['status'] ?? 'indisponível',
-            'image' => $formData['image'],
+            'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
+            'image' => $this->image->saveLocalImage($request) ?? "default.jpg" ,
         ];
-
 
         Product::create($input);
 
-        return redirect('/admin')->with('msg', 'Produto cadastrado com Sucesso');
+        return redirect('/admin');
     }
 
     public function myProducts(): View
     {
-        return view('admin.products.viewMyProducts', ['products' =>  Product::all()]);
+        return view('admin.products.productsList', ['products' =>  Product::all()]);
     }
 
     public function editProducts(string $productId): View
     {
-        $products = Product::where('id', '=', $productId)->get();
-
-        return view('admin.products.viewProduct', ['products' => $products]);
+        return view('admin.products.productEdit',
+            [
+                'product' => Product::find((int)$productId)
+            ]
+        );
     }
 
     public function update(Request $request): RedirectResponse
     {
         $product = Product::find($request['id']);
-        $formData = $request->all();
-        $formData['image'] = $this->image->saveLocalImage($request);
-        $user = auth()->user()->supplier;
-        $product->update($formData);
 
-        return redirect('/meusProdutos/' . $user);
+        $formData = $request->all();
+
+
+        $input = [
+            'name' => $formData['name'],
+            'description' => $formData['description'],
+            'ingredients' => $formData['ingredients'],
+            'stock' => $formData['stock'],
+            'validate' => $formData['validate'],
+            'price' => $formData['price'],
+            'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
+            'image' => $this->image->saveLocalImage($request) ?? $product->image ,
+        ];
+
+        $product->update($input);
+
+        return redirect(route('admin.products.list'));
     }
 
     public function changeOrder(Request $request): RedirectResponse

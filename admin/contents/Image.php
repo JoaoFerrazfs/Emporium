@@ -9,7 +9,6 @@ class Image
     public function saveLocalImage(Request $request): ?string
     {
         if(!$request->hasFile('image') || !$request->file('image')->isValid()){
-
             return  null;
         }
 

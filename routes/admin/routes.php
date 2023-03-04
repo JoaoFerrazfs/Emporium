@@ -7,8 +7,6 @@ use App\Http\Controllers\OrderManagerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesController;
 
-
-
 Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::get('/', function () {
@@ -22,15 +20,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/produtos', fn() => view('/admin/products/home'))->name('admin.products');
     Route::get('/produtos/lista',[ProductController::class,'myProducts'])->name('admin.products.list');
     Route::post('/produtos/cadastrar',[ProductController::class,'store'])->name('admin.products.creates');
-    Route::get('/produtos/cadastrar', fn() => view('/admin/products/create_product'))->name('admin.products.create');
-
+    Route::get('/produtos/cadastrar', fn() => view('/admin/products/productCreate'))->name('admin.products.create');
+    Route::get('/produtos/editarProdutos/{id}',[ProductController::class,'editProducts'])->name('admin.products.edit');
+    Route::post('/produtos/salvarEdicao',[ProductController::class,'update'])->name('admin.products.update');
 
 });
 
-
-
-Route::get('/meusProdutos/editarProdutos/{id}',[ProductController::class,'editProducts'])->middleware('auth');
-Route::post('/meusProdutos/salvaEdicao',[ProductController::class,'update'])->middleware('auth');
 Route::post('/meusProdutos/order',[ProductController::class,'changeOrder'])->middleware('auth');
 Route::post('/meusProdutos/availability',[ProductController::class,'changeAvailability'])->middleware('auth');
 Route::delete('/meusProdutos/delete/{id}',[ProductController::class,'destroy'])->middleware('auth');
