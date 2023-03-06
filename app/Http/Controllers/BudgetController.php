@@ -61,13 +61,8 @@ class BudgetController extends Controller
         $cart = $request->session()->get('cart');
         $cartAdd = [];
         $cartAdd['id'] = $request->id;
-        $cartAdd['cod'] = $request->cod;
         $cartAdd['name'] = $request->name;
         $cartAdd['price'] = $request->price;
-        $cartAdd['supplier'] = $request->supplier;
-        $cartAdd['userSupplier'] = $request->userSupplier;
-        $cartAdd['image']  = $request->image;
-        $cartAdd['inventory'] = $request->inventory;
         $cartAdd['quantity'] = 1;
         $cartAdd['status'] = "Novo";
         $request->session()->push('cart', $cartAdd);

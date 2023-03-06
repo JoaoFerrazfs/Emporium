@@ -11,9 +11,12 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PdfController;
 
 
+
 Route::get('/',[HomeController::class,'showHome']) ->name('home');
 Route::get('/produtos',[ProductController::class,'index'])->name('products.list');
-Route::post('/visualizarProduto',[ProductController::class,'viewProduct']);
+
+Route::get('/produto/{id}',[ProductController::class,'viewProduct'])->name('product.page');
+
 Route::post('/carrinho',[BudgetController::class,'makeShoppingList'])->name('createCart');
 Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('myCart');
 Route::post('/carrinho/excluir/item',[BudgetController::class,'deleteItemShoppingList']);

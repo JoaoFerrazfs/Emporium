@@ -2,6 +2,5 @@
 <body>
 @include("ecommerce.layouts.header")
 @yield('content')
-@include ("ecommerce.layouts.footer")
 </body>
-
+@include("ecommerce.components._productPageScript")

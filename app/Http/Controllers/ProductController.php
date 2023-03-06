@@ -107,16 +107,12 @@ class ProductController extends Controller
         return view('ecommerce.products.productsList', ['products' => $products]);
     }
 
-    public function viewProduct(Request $request): View
+    public function viewProduct($id): View
     {
-        $request = $request->all();
-        $products = Product::find($request['id']);
 
-        if($products->availability != 'Disponível') {
-            return view('welcome');
-        }
+        $product = Product::find($id);
 
-        return view('ecommerce.viewProductClient', ['products' => $products]);
+        return view('ecommerce.products.productPage', ['product' => $product]);
     }
 
     public function changedStore(string $id, int $quantity): void
