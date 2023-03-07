@@ -54,35 +54,17 @@ class BudgetController extends Controller
 
     }
 
-
-    public function makeShoppingList(Request $request)
-    {
-
-        $cart = $request->session()->get('cart');
-        $cartAdd = [];
-        $cartAdd['id'] = $request->id;
-        $cartAdd['name'] = $request->name;
-        $cartAdd['price'] = $request->price;
-        $cartAdd['quantity'] = 1;
-        $cartAdd['status'] = "Novo";
-        $request->session()->push('cart', $cartAdd);
-        return redirect('/carrinho/visualizar');
-    }
-
     public function showShoppingList(Request $request)
     {
-        $cart = $request->session()->get('cart');
-        if ($cart == null) {
-            return redirect()->back()->with('success', 'Você ainda não tem um carrinho!');
-        } else {
-            $quantity = 0;
-            $amount = 0;
-            foreach ($cart as $value) {
-                $quantity = $value["quantity"];
-                $amount =  $amount + ($quantity * $value["price"]);
-            }
-            return view('ecommerce.shoppingList', ['cart' => $cart, 'amount' => $amount]);
+        $cart = json_decode($request->cookie('cart'));
+
+        if(!empty($cart)) {
+            return view('ecommerce.checkout.cart', ['cart' => $cart]);
+
         }
+
+        return view('ecommerce.checkout.emptyCart');
+
     }
 
     public function deleteItemShoppingList(Request $request)

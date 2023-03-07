@@ -3,4 +3,4 @@
 @include("ecommerce.layouts.header")
 @yield('content')
 </body>
-@include("ecommerce.components._productPageScript")
+@yield('script')

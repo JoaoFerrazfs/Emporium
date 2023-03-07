@@ -16,7 +16,7 @@
                   Fazer login
                 </span>
                         </a>
-                        <a href="{{ route('myCart') }}" class="cart-link">
+                        <a href="{{ route('cart') }}" class="cart-link">
                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                             <span>
                   Carrinho

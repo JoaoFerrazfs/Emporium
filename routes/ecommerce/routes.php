@@ -17,9 +17,9 @@ Route::get('/produtos',[ProductController::class,'index'])->name('products.list'
 
 Route::get('/produto/{id}',[ProductController::class,'viewProduct'])->name('product.page');
 
-Route::post('/carrinho',[BudgetController::class,'makeShoppingList'])->name('createCart');
-Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('myCart');
-Route::post('/carrinho/excluir/item',[BudgetController::class,'deleteItemShoppingList']);
+Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('cart');
+
+Route::delete('/carrinho/item/excluir/{id}',[BudgetController::class,'deleteItemShoppingList']);
 Route::get('/pedido',[BudgetController::class,'newBudget']);
 Route::post('/carrinho/excluir/carrinho',[BudgetController::class,'deleteCart']);
 Route::post('/carrinho/modifica/quantidade',[BudgetController::class,'updateQuantity']);

@@ -3,19 +3,34 @@
 var product = {!!json_encode($product)!!};
 
 document.getElementById("addToCart").addEventListener("click", function () {
-    console.log("Clicou no botão!");
 
     // verificar se o cookie já existe
-    var carrinho = getCookie("carrinho");
+    var cart = getCookie("cart");
 
-    if (carrinho) {
+    if (cart) {
         // se já existir, adicione o novo produto
-        carrinho = JSON.parse(carrinho);
-        carrinho.push(product);
-        setCookie("carrinho", JSON.stringify(carrinho), 7);
+        cart = JSON.parse(cart);
+        cart.push(product);
+        setCookie("cart", JSON.stringify(cart), 7);
     } else {
         // se não existir, crie um novo cookie com o produto
-        setCookie("carrinho", JSON.stringify([product]), 7);
+        setCookie("cart", JSON.stringify([product]), 7);
+    }
+});
+
+document.getElementById("buy").addEventListener("click", function () {
+
+    // verificar se o cookie já existe
+    var cart = getCookie("cart");
+
+    if (cart) {
+        // se já existir, adicione o novo produto
+        cart = JSON.parse(cart);
+        cart.push(product);
+        setCookie("cart", JSON.stringify(cart), 7);
+    } else {
+        // se não existir, crie um novo cookie com o produto
+        setCookie("cart", JSON.stringify([product]), 7);
     }
 });
 

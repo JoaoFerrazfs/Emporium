@@ -34,9 +34,9 @@
             <div class="card-content">
                 <div class="card-body">
                     <div class="buttons">
-                        <a id="addToCart" class="btn btn-secondary btn-add-to-cart">Adicionar ao carrinho</a>
+                        <a id="addToCart" href="{{route('cart')}}" class="btn btn-secondary btn-add-to-cart">Adicionar ao carrinho</a>
 
-                        <a href="#" class="btn btn-secondary btn-buy">Comprar</a>
+                        <a id="buy" href="#" class="btn btn-secondary btn-buy">Comprar</a>
                     </div>
                 </div>
             </div>
