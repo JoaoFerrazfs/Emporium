@@ -1,3 +1,7 @@
+@php
+    $total = 0;
+@endphp
+
 <div class="cart-page-container" id="basic-table">
     <div class="card">
 
@@ -10,13 +14,25 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
-                        @foreach($cart as $item)
+                        @foreach($cart as $key => $item)
                             <tr>
-                                <td class="text-bold-500"><img style="width: 100px" src="{{ "/img/products/" . $item->image }}"></td>
+                                <td class="text-bold-500"><img style="width: 100px"
+                                                               src="{{ "/img/products/" . $item->image }}"></td>
                                 <td class="text-bold-500">{{ $item->name }}</td>
                                 <td> R$ {{ $item->price }}</td>
-                                <td class="text-bold-500"><button id="delete-button-{{$item->id}}" href="#" class="btn btn-danger" data-product-id={{$item->id}}>Retirar</button></td>
+                                <td class="text-bold-500">
+                                    <button id="delete-button-{{$item->id}}" href="#" class="btn btn-danger"
+                                            data-product-id={{$item->id}}>Retirar
+                                    </button>
+                                </td>
                             </tr>
+                            @php
+                                $total = $item->price + $total ;
+
+                            if($loop->last) {
+                               setcookie('totalCart', $total, ['path'=>'/'] );
+                            }
+                            @endphp
                         @endforeach
 
                         </tbody>
@@ -24,6 +40,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="container-total-value">
+        <p class="label-total-value">Valor total:</p>
+        <p class="total-value">{{$total}}</p>
+        <a href="{{ route('freight')}}" class="btn btn btn-secondary">Continuar compra</a>
     </div>
 
     <a href="{{ route('home')}}" class="btn btn btn-secondary">Voltar</a>

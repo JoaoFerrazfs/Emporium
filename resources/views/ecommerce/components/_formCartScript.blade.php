@@ -22,7 +22,7 @@
         deleteButtons.forEach(function(button) {
             button.addEventListener('click', function(event) {
                 event.preventDefault();
-                const productIdToDelete = parseInt(button.dataset.productId); // Substitua por um ID de produto real que você queira excluir
+                const productIdToDelete = parseInt(button.dataset.productId);
                 const cookieJSON = document.cookie.match(/(^|;) ?cart=([^;]*)(;|$)/)[2];
                 const products = JSON.parse(cookieJSON);
                 const productIndexToDelete = products.findIndex(product => product.id === productIdToDelete);

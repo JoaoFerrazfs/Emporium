@@ -19,10 +19,14 @@ Route::get('/produto/{id}',[ProductController::class,'viewProduct'])->name('prod
 
 Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('cart');
 
-Route::delete('/carrinho/item/excluir/{id}',[BudgetController::class,'deleteItemShoppingList']);
+Route::middleware(['auth'])->group(function () {
+    Route::get('/frete', function () {return view('ecommerce.checkout.freight') ;})->name('freight');
+    Route::post('/cadastrarPedido', [BudgetController::class,'save'])->name('order.with.freight');
+    Route::get('/cadastrarPedido', [BudgetController::class,'save'])->name('order.with.freight');
+
+});
+
 Route::get('/pedido',[BudgetController::class,'newBudget']);
-Route::post('/carrinho/excluir/carrinho',[BudgetController::class,'deleteCart']);
-Route::post('/carrinho/modifica/quantidade',[BudgetController::class,'updateQuantity']);
 Route::post('/pesquisaCPF',[ClientController::class,'findClient']);
 Route::get('/formBanner', function () {return view('ecommerce.formBanner') ;});
 Route::get('/confirmarPagamento', function () {return view('ecommerce.paymentProcess');});

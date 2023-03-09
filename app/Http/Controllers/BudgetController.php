@@ -2,63 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Budget;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\PdfController;
+use App\Models\Cart;
+use App\Models\Product;
+use Illuminate\Support\Facades\Cookie;
+
 use PDF;
-use App\Http\Controllers\PaymentController;
-use App\Models\Client;
-
-
 
 
 use Illuminate\Http\Request;
 
 class BudgetController extends Controller
 {
-    /**
-     * @var ClientController
-     */
-    private $clientController;
-
-     /**
-      * @var ProductController
-      */
-    private $productController;
-
-     /**
-      * @var Budget
-      */
-    private $budget;
-
-         /**
-          * @var PaymentController
-          */
-    private $paymentController;
-
-
-
-
-    public function __construct(
-        ClientController $clientController,
-        ProductController $productController,
-        Budget $budget,
-        PaymentController $paymentController
-    ) {
-        $this->clientController = $clientController;
-        $this->productController = $productController;
-        $this->budget = $budget;
-        $this->paymentController = $paymentController;
-
-    }
-
     public function showShoppingList(Request $request)
     {
         $cart = json_decode($request->cookie('cart'));
 
-        if(!empty($cart)) {
+        if (!empty($cart)) {
             return view('ecommerce.checkout.cart', ['cart' => $cart]);
 
         }
@@ -67,94 +27,80 @@ class BudgetController extends Controller
 
     }
 
-    public function deleteItemShoppingList(Request $request)
+    public function save(Request $request)
     {
 
-        $key = $request->key;
-        $cart = $request->session()->get('cart');
-        unset($cart[$key]);
-        session()->forget('cart');
-        session()->put('cart', $cart);
-        if(session()->put('cart', $cart) == null) {
-            return redirect('/produtos');
+        $completeCart = $this->getCartInformation();
+
+        if (!empty($this->validateStock($completeCart))) {
+            echo "O pedido não pode ser integrado por falta de estoque";
         }
 
-        return redirect()->back();
+        Cart::create([
+            'user_id' => auth()->id(),
+            'products_id' => json_encode(array_keys($completeCart)) ,
+            'total' => $this->getTotalPrice($completeCart),
+        ]);
+
+
+
+        if ($request->method() == 'GET') {
+
+
+        }
     }
 
-    public function deleteCart(Request $request)
+    private function getCartInformation(): array
     {
-        session()->forget('cart');
-        return redirect('/produtos');
-    }
+        $items = json_decode(Cookie::get('cart'), true);
 
-    public function updateQuantity(Request $request)
-    {
-        $key = $request->key;
-        $cart = $request->session()->get('cart');
-        $cart[$key]["quantity"] =  $request->amount;
-        session()->forget('cart');
-        session()->put('cart', $cart);
-        return redirect()->back();
-    }
+        $treatedItems = [];
+        foreach ($items as $item) {
 
-    public function newBudget(Request $request)
-    {
-        $cart = $request->session()->get('cart');
-        $amount = 0;
+            if (array_key_exists($item['id'], $treatedItems)) {
+                $treatedItems[$item['id']]['quantity']++;
+                continue;
+            }
+            $treatedItems[$item['id']]['quantity'] = 1;
+            $treatedItems[$item['id']]['name'] = $item['name'];
+            $treatedItems[$item['id']]['price'] = $item['price'];
+            $treatedItems[$item['id']]['stock'] = $item['stock'];
 
-        foreach ($cart as $value) {
-            $quantity = $value["quantity"];
-            $amount =  $amount + ($quantity * $value["price"]);
+
         }
 
-        $request->session()->put('cartAmout', $amount);
-        return view(
-            'ecommerce.viewBudget', [
-            'amount' => $amount,
-            'cart' => $cart,
-
-            ]
-        );
+        return $treatedItems;
     }
 
-    public function saveBudget(Request $request)
+    private function getTotalPrice($items): float
+    {
+        $total = 0;
+        foreach ($items as $item) {
+            $total += ($item['price'] * $item['quantity']) ;
+        }
+
+        return $total;
+    }
+
+    private function validateStock(array $items): array
     {
 
-        $budgetNumber = Budget::all()->count() + 1;
-        $cart = $request->session()->get('cart');
+        $result = [];
+        foreach ($items as $key => $item) {
 
-        $delivery = [
-            "name" => $request->name,
-            "phoneNumber" => $request->phoneNumber,
-            "cpf" => $request->cpf,
-            "cep" => $request->cep,
-            "street" => $request->street,
-            "state" => $request->state,
-            "city" => $request->city,
-            "number" => $request->number
-        ];
+            $product = Product::find($key);
+            if (!$product->hasEnoughStock($item['quantity'])) {
+                $result[] = [
+                    'id' => $product->id,
+                    'avaiableStock' => $product->stock,
+                    'necessaryAmount' => $item['quantity'],
+                ];
+            };
 
-
-
-        $this->clientController->store($delivery);
-
-        $this->budget->number = $budgetNumber;
-        $this->budget->statusPayment = 'Em espera';
-        $this->budget->delivery = $delivery;
-        $this->budget->products = $cart;
-        $this->budget->note =  $request->note;
-        $this->budget->portage =  $request->session()->get('portage');
-        $this->budget->amount =  $request->session()->get('cartAmout') + $request->session()->get('portage');
-        foreach ($cart as $key => $value) {
-            $id = $value['id'];
-            $inventory = $value['quantity'];
-
-            $this->productController->changedStore($id, $inventory);
         }
-        $request->session()->put('budget',  $this->budget);
-        $this->budget->save();
-        $paymentLink =  $this->paymentController->payments($cart);
-        return redirect($paymentLink);
+
+        return $result;
+
     }
+
 }

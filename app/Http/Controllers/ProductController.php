@@ -20,7 +20,6 @@ class ProductController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $formData = $request->all();
-
         $input = [
             'name' => $formData['name'],
             'description' => $formData['description'],

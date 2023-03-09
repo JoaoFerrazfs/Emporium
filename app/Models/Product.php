@@ -17,15 +17,12 @@ class Product extends Model
         'status',
         'stock',
         'validate',
+        'ingredients',
     ];
 
-    public function isOrder(): bool
-    {
-        return $this->order == "Encomenda" ;
-    }
 
-    public function isAvailable(): bool
-    {
-        return $this->availability == "Disponível" ;
+    public function hasEnoughStock(float $quantity): bool {
+
+        return $this->stock > $quantity;
     }
 }
