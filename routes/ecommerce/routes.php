@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderManagerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ClientController;
@@ -17,16 +17,19 @@ Route::get('/produtos',[ProductController::class,'index'])->name('products.list'
 
 Route::get('/produto/{id}',[ProductController::class,'viewProduct'])->name('product.page');
 
-Route::get('/carrinho/visualizar',[BudgetController::class,'showShoppingList'])->name('cart');
+Route::get('/carrinho/visualizar',[OrderController::class,'showShoppingList'])->name('cart');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/frete', function () {return view('ecommerce.checkout.freight') ;})->name('freight');
-    Route::post('/cadastrarPedido', [BudgetController::class,'save'])->name('order.with.freight');
-    Route::get('/cadastrarPedido', [BudgetController::class,'save'])->name('order.with.freight');
+    Route::post('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
+    Route::get('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
+    Route::get('/processarPedido', [OrderController::class,'save'])->name('process.order');
 
 });
 
-Route::get('/pedido',[BudgetController::class,'newBudget']);
+Route::get('/emContrucao', fn() =>  view('commons.buildingFunction'))->name('building.page');
+
+Route::get('/pedido',[OrderController::class,'newBudget']);
 Route::post('/pesquisaCPF',[ClientController::class,'findClient']);
 Route::get('/formBanner', function () {return view('ecommerce.formBanner') ;});
 Route::get('/confirmarPagamento', function () {return view('ecommerce.paymentProcess');});

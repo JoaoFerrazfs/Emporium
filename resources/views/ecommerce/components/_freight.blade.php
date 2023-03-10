@@ -27,6 +27,12 @@
         <form method="post" action="{{route('order.with.freight')}}" class="form form-vertical">
             @csrf
             <div class="row">
+
+                <div class="form-group">
+                    <label for="first-name-vertical">CEP</label>
+                    <input type="text" id="zipCode" class="form-control" name="zipCode" placeholder="CEP">
+                </div>
+
                 <div class="form-group">
                     <label for="first-name-vertical">Cidade</label>
                     <input type="text" id="city" class="form-control" name="city" placeholder="Cidade">
@@ -45,7 +51,7 @@
 
                 <div class="form-group">
                     <label for="password-vertical">Numero</label>
-                    <input type="text" id="addressNumber" class="form-control" name="addressNumber"
+                    <input type="text" id="number" class="form-control" name="number"
                            placeholder="Numero">
                 </div>
 

@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\BannerController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderManagerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesController;
@@ -23,13 +23,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/produtos/cadastrar', fn() => view('/admin/products/productCreate'))->name('admin.products.create');
     Route::get('/produtos/editarProdutos/{id}',[ProductController::class,'editProducts'])->name('admin.products.edit');
     Route::post('/produtos/salvarEdicao',[ProductController::class,'update'])->name('admin.products.update');
-
 });
 
 Route::post('/meusProdutos/order',[ProductController::class,'changeOrder'])->middleware('auth');
 Route::post('/meusProdutos/availability',[ProductController::class,'changeAvailability'])->middleware('auth');
 Route::delete('/meusProdutos/delete/{id}',[ProductController::class,'destroy'])->middleware('auth');
-Route::post('/pedido/confirmado',[BudgetController::class,'saveBudget']);
+Route::post('/pedido/confirmado',[OrderController::class,'saveBudget']);
 Route::get('/pedidos/{id}',[OrderManagerController::class,'manager'])->middleware('auth');
 Route::post('/pedidos/visualizar',[OrderManagerController::class,'showOrder']);
 Route::post('/pedidos/atualizar',[OrderManagerController::class,'updateStatusOrder']);
