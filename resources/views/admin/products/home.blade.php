@@ -8,6 +8,8 @@
 @section('second_botton', 'Cadastrar')
 @section('second_botton_link',  route('admin.products.create') )
 
+@section('products',  'active' )
+
 @section('content')
 
     @include('admin.components._title')

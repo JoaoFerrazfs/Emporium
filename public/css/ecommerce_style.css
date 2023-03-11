@@ -1018,3 +1018,18 @@ a:focus {
     margin: 30px auto; /* centraliza horizontalmente */
 }
 
+.container-login {
+    display: flex;
+    width: 1710px; /* 850px (largura da div) x 2 + 10px (espaçamento) */
+    margin: 30px auto; /* centraliza horizontalmente */
+    justify-content: center;
+    height: 70vh;
+    align-items: center;
+}
+
+.container-login button {
+    background-color: #475f7b;
+    color: white;
+
+}
+

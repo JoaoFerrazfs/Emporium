@@ -1,36 +1,31 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('ecommerce.layouts.main')
+@section('title', 'Emporium')
+@section('content')
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="container-login">
+        <div class="col-md-5 col-sm-12 mx-auto">
+            <div class="card-body">
+                <div class="text-center mb-5">
+                    <img src="/images/favicon.png" height="48" class="mb-4">
+                    <h3>Esqueceu a senha</h3>
+                    <p> Para seguir com o processo de reset de senha ensira seu email abaixo.</p>
+                </div>
+                <form action="{{ route('password.email') }}" >
+                    <div class="form-group mb-4">
+                        <label for="first-name-column">Email</label>
+                        <input type="email" id="email" class="form-control" name="email">
+                    </div>
+
+                    <div class="clearfix">
+                        <button class="btn btn-primary float-end">Enviar</button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+@endsection
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
 
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
