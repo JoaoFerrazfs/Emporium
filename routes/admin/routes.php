@@ -7,7 +7,7 @@ use App\Http\Controllers\OrderManagerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServicesController;
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth','adminUser'])->prefix('admin')->group(function () {
 
     Route::get('/', function () {
         return redirect('/admin/produtos');
