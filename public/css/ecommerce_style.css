@@ -1033,3 +1033,12 @@ a:focus {
 
 }
 
+.btn-group-header {
+    display: flex;
+    align-items: center;
+    margin: 0 10px 10px 0 ;
+    color: white;
+}
+
+
+
