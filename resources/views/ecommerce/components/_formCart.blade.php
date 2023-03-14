@@ -26,13 +26,6 @@
                                     </button>
                                 </td>
                             </tr>
-                            @php
-                                $total = $item->price + $total ;
-
-                            if($loop->last) {
-                               setcookie('totalCart', $total, ['path'=>'/'] );
-                            }
-                            @endphp
                         @endforeach
 
                         </tbody>
@@ -44,7 +37,7 @@
 
     <div class="container-total-value">
         <p class="label-total-value">Valor total:</p>
-        <p class="total-value">{{$total}}</p>
+        <p class="total-value">@php echo array_sum(array_column($cart, 'price')); @endphp</p>
         <a href="{{ route('freight')}}" class="btn btn btn-secondary">Continuar compra</a>
     </div>
 

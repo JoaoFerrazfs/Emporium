@@ -73,12 +73,11 @@
                             </div>
                         </div>
                     </form>
+                    <div class="ml-50 mt-5 ">
+                        <a href="{{route('admin.products')}}" type="submit" class="btn btn-primary  me-1 mb-1">Voltar</a>
+                    </div>
                 </div>
             </div>
-
-        </div>
-        <div class="col-12 d-flex justify-content-start">
-            <button type="submit" class="btn btn-primary me-1 mb-1">Voltar</button>
         </div>
     </div>
 

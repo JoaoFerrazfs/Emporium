@@ -2,17 +2,16 @@
     display: flex;
     justify-content: center;
     align-items: center; /* Centraliza verticalmente os botões */
-    height: 130vh; /* Define a altura da container para a altura da tela */
     margin-left: 150px; /* Define a margem esquerda */
 }
 
-.table-container a {
-    width: 148px;
+.card-content-btn {
+    width: 120px;
     height: 45px;
     background-color: #0577BD;
     color: white;
     border: none;
-    font-size: 24px;
+    font-size: 20px;
     margin: 10px 50px;
     border-radius: 5px; /* Adiciona bordas arredondadas */
     display: flex; /* Permite alinhar verticalmente o texto e o ícone */
@@ -25,7 +24,7 @@
     display: flex;
     justify-content: center;
     align-items: center; /* Centraliza verticalmente os botões */
-    height: 120vh; /* Define a altura da container para a altura da tela */
+    height: 80vh; /* Define a altura da container para a altura da tela */
 }
 
 .title-menus {

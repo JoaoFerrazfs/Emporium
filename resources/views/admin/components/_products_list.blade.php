@@ -23,7 +23,7 @@
                                 <td>{{$product->status}}</td>
                                 <td>
                                     <a href="editarProdutos/{{$product->id}}"
-                                       class="btn btn-outline-light">Visualizar
+                                       class="btn card-content-btn ">Visualizar
                                     </a>
                                 </td>
                             </tr>
@@ -31,5 +31,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="ml-50 mt-5 ">
+                    <a href="{{route('admin.products')}}" type="submit" class="btn btn-primary  me-1 mb-1">Voltar</a>
+                </div>
             </div>
+
         </div>
+
+    </div>
