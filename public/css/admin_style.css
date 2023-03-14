@@ -6,17 +6,14 @@
 }
 
 .card-content-btn {
-    width: 120px;
-    height: 45px;
+    float: left;
     background-color: #0577BD;
     color: white;
     border: none;
-    font-size: 20px;
-    margin: 10px 50px;
+    margin-right:10px;
     border-radius: 5px; /* Adiciona bordas arredondadas */
     display: flex; /* Permite alinhar verticalmente o texto e o ícone */
     flex-direction: column; /* Alinha o texto e o ícone verticalmente */
-    justify-content: center; /* Centraliza o conteúdo verticalmente */
     align-items: center; /* Centraliza o conteúdo horizontalmente */
 }
 

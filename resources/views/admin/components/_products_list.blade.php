@@ -23,8 +23,13 @@
                                 <td>{{$product->status}}</td>
                                 <td>
                                     <a href="editarProdutos/{{$product->id}}"
-                                       class="btn card-content-btn ">Visualizar
+                                       class="btn btn-info card-content-btn ">Visualizar
                                     </a>
+
+                                    <a href="deletarProdutos/{{$product->id}}"
+                                       class="btn btn-danger ">Deletar
+                                    </a>
+
                                 </td>
                             </tr>
                         @endforeach

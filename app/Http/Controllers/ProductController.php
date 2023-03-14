@@ -7,6 +7,7 @@ use App\Models\Product;
 use Admin\contents\Image;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 
 class ProductController extends Controller
 {
@@ -48,6 +49,12 @@ class ProductController extends Controller
                 'product' => Product::find((int)$productId)
             ]
         );
+    }
+
+    public function deleteProducts(string $productId): RedirectResponse
+    {
+        Product::find((int)$productId)->delete();
+        return redirect()->back();
     }
 
     public function update(Request $request): RedirectResponse
