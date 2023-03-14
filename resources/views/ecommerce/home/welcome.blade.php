@@ -3,4 +3,5 @@
 @section('content')
     @include('ecommerce.components._imageBanner')
     @include('ecommerce.components._productsList')
+    <div class="info_section "/>
 @endsection

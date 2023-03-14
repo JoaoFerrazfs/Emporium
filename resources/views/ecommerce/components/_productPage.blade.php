@@ -36,7 +36,7 @@
                     <div class="buttons">
                         <a id="addToCart" href="{{route('cart')}}" class="btn btn-secondary btn-add-to-cart">Adicionar ao carrinho</a>
 
-                        <a id="buy" href="#" class="btn btn-secondary btn-buy">Comprar</a>
+                        <a id="buy" href="{{route('freight')}}" class="btn btn-secondary btn-buy">Comprar</a>
                     </div>
                 </div>
             </div>
