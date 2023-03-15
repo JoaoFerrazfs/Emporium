@@ -146,9 +146,13 @@ class OrderController extends Controller
     {
 
         $result = [];
+
         foreach ($items as $key => $item) {
 
-            $product = Product::find($key);
+            if (!$product = Product::find($key)) {
+
+                continue;
+            }
             if (!$product->hasEnoughStock($item['quantity'])) {
                 $result[] = [
                     'id' => $product->id,

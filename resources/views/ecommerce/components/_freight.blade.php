@@ -8,6 +8,7 @@
     </div>
 
     <div class="container-total-value">
+
         <p class="label-total-value">Retirar na loja</p>
         <p class="total-value">Valor : R$ @php echo array_sum(array_column(json_decode($_COOKIE['cart']), 'price')); @endphp</p>
         <a href="{{route('order.with.freight')}}" class="btn btn btn-secondary">Retirar em loja</a>
