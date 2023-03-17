@@ -41,7 +41,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Preço</label>
-                                        <input type="text" id="price" class="form-control" name="price" value="{{$product->price ?? null}}" required>
+                                        <input type="text" name="price" class="form-control" id="price" onKeyUp="coinMask(this, event)"  value="{{$product->price ?? null}}" required >
                                     </div>
                                 </div>
 
@@ -80,5 +80,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        String.prototype.reverse = function(){
+            return this.split('').reverse().join('');
+        };
+
+        function coinMask(campo,evento){
+            var tecla = (!evento) ? window.event.keyCode : evento.which;
+            var valor  =  campo.value.replace(/[^\d]+/gi,'').reverse();
+            var resultado  = "";
+            var mascara = "################.##".reverse();
+            for (var x=0, y=0; x<mascara.length && y<valor.length;) {
+                if (mascara.charAt(x) != '#') {
+                    resultado += mascara.charAt(x);
+                    x++;
+                } else {
+                    resultado += valor.charAt(y);
+                    y++;
+                    x++;
+                }
+            }
+            campo.value = resultado.reverse();
+        }
+    </script>
 
 </div>
