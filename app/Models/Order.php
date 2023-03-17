@@ -16,6 +16,7 @@ class Order extends Model
         'number',
         'status',
         'cart_id',
+        'observation',
     ];
 }
 

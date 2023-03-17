@@ -92,9 +92,10 @@ class OrderController extends Controller
            'city' => $order['city'] ,
            'street' => $order['street'],
            'number' => $order['number'],
-           'observation' => $order['observation'] ?? '',
+           'observation' => $order['observation'] ?? 'Não há',
            'status' => 'aguardando confirmacao de pagamento',
        ]);
+
 
        $this->unsetCookies();
 
