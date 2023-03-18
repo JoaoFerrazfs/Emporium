@@ -3,6 +3,10 @@
         <div class="card">
             <div class="card-content">
                 <div class="card-body">
+
+                    @if($product->id ?? false)
+                    <p>Código: {{$product->id}} </p>
+                    @endif
                     <form method="POST" action=@yield("action_route") class="form"  enctype="multipart/form-data">
                         @csrf
                         <div class="form-body">

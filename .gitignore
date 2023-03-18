@@ -3,6 +3,8 @@
 /public/storage
 /public/img/*
 /public/images/*
+/public/img/commons/*
+ public/img/commons/
 /storage/*.key
 /vendor
 .env

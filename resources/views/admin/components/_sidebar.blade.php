@@ -46,7 +46,13 @@
                                 <a href="{{route('logout')}}">Logout</a>
                             </li>
                         </ul>
-
+                    </li>
+                    <li class="sidebar-item @yield('userManager')">
+                        <a href="{{route('home')}}" class='sidebar-link'>
+                            <i class="bi bi-house"></i>
+                            <i data-feather="home" width="20"></i>
+                            <span>Acesso ao ecommerce</span>
+                        </a>
                     </li>
                 </ul>
 
