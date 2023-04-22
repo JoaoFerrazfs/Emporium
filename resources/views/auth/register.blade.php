@@ -10,7 +10,7 @@
                         <img src="/images/favicon.png" height="48" class="mb-4">
                         <h3>Registrar conta</h3>
                     </div>
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('user.register') }}">
                         @csrf
                         <div class="row mb-4 ">
                             <div class="col-md-4 col-12">

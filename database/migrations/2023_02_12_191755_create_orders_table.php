@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->string('city');
+            $table->string('neighborhood');
             $table->string('street');
             $table->string('number');
             $table->string('status');

@@ -47,7 +47,7 @@ class ResetPasswordVerification extends Notification
      */
     public function toMail($notifiable)
     {
-        $url = 'http://localhost:8000/password/reset/'. $this->token.'?email='.$this->email;
+        $url = url('reset-password').'/'. $this->token.'?email='.$this->email;
         $minutos = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
 
         return (new MailMessage)

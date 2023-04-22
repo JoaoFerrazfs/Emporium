@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrder;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use PDF;
 use Illuminate\Http\Request;
@@ -95,6 +97,10 @@ class OrderController extends Controller
            'observation' => $order['observation'] ?? 'Não há',
            'status' => 'aguardando confirmacao de pagamento',
        ]);
+
+       Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($order));
+
+//       dd($order);
 
 
        $this->unsetCookies();
