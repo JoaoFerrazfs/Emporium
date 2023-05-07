@@ -17,6 +17,7 @@ class Order extends Model
         'status',
         'cart_id',
         'observation',
+        'neighborhood',
     ];
 
     public function cart()

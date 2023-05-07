@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientNewOrder;
 use App\Mail\NewOrder;
 use App\Models\Order;
 use App\Models\Cart;
@@ -10,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-use PDF;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -44,7 +44,7 @@ class OrderController extends Controller
         if ($request->method() == 'GET') {
             $preparedOrder = [
                 'user_id' => auth()->id(),
-                'zipCode' =>  env('zipCode'),
+                'zipCode' => env('zipCode'),
                 'neighborhood' => env('NEIGHBORHOOD'),
                 'city' => env('CITY'),
                 'street' => env('STREET'),
@@ -60,7 +60,7 @@ class OrderController extends Controller
             $preparedOrder = [
                 'user_id' => auth()->id(),
                 'city' => $request->city,
-                'zipCode' =>  $request->zipCode,
+                'zipCode' => $request->zipCode,
                 'neighborhood' => $request->neighborhood,
                 'street' => $request->street,
                 'number' => $request->number,
@@ -78,37 +78,20 @@ class OrderController extends Controller
 
     public function save(Request $request): RedirectResponse
     {
-       $order = json_decode($request->cookie('order'),1)[0];
-       $userId = auth()->id();
+        $order = json_decode($request->cookie('order'), 1)[0];
 
-       $cart =  Cart::create([
-            'user_id' => $userId,
-            'products_id' => json_encode(array_keys(array_column($order['completeCartItems'],'id'))),
-            'total' =>$order['total'],
-        ]);
+        $createdOrder = $this->createOrder($order);
+        $payment = app(PaymentController::class);
+        $paymentUrl = $payment->makePayments($order['completeCartItems']);
 
-
-       $order = Order::create([
-           'user_id' => $userId ,
-           'cart_id' => $cart->id,
-           'city' => $order['city'] ,
-           'street' => $order['street'],
-           'number' => $order['number'],
-           'observation' => $order['observation'] ?? 'Não há',
-           'status' => 'aguardando confirmacao de pagamento',
-       ]);
-
-       Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($order));
-
-//       dd($order);
+        $this->sendEmails($createdOrder, $paymentUrl );
 
 
-       $this->unsetCookies();
-
-       return redirect(route('building.page'));
+        return redirect($paymentUrl);
     }
 
-    private function unsetCookies():void {
+    private function unsetCookies(): void
+    {
 
         setcookie('order', null, -1);
         setcookie('totalCart', null, -1);
@@ -133,7 +116,6 @@ class OrderController extends Controller
             $treatedItems[$item['id']]['price'] = $item['price'];
             $treatedItems[$item['id']]['stock'] = $item['stock'];
 
-
         }
 
         return $treatedItems;
@@ -151,7 +133,6 @@ class OrderController extends Controller
 
     private function validateStock(array $items): array
     {
-
         $result = [];
 
         foreach ($items as $key => $item) {
@@ -171,6 +152,45 @@ class OrderController extends Controller
         }
 
         return $result;
+
+    }
+
+    private function createCart(array $order, $userId): Cart
+    {
+        return Cart::create([
+            'user_id' => $userId,
+            'products' => json_encode($order['completeCartItems']),
+            'total' => $order['total'],
+        ]);
+    }
+
+    private function createOrder(array $order): Order
+    {
+        $userId = auth()->id();
+        $cart = $this->createCart($order, $userId);
+
+        $order = Order::create([
+            'user_id' => $userId,
+            'cart_id' => $cart->id,
+            'city' => $order['city'],
+            'street' => $order['street'],
+            'number' => $order['number'],
+            'neighborhood' => $order['neighborhood'],
+            'observation' => $order['observation'] ?? 'Não há',
+            'status' => 'aguardando confirmacao de pagamento',
+        ]);
+
+        $this->unsetCookies();
+
+        return  $order;
+    }
+
+    private function sendEmails(Order $createdOrder, string $paymentUrl): void
+    {
+
+
+        Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
+        Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
 
     }
 

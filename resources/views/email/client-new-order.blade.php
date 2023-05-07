@@ -1,5 +1,5 @@
 @component('mail::message')
-# Novo pedido registrado  -  Pedido numero {{$order->id}}
+# Seu numero de pedido é  -  Pedido numero {{$order->id}}
 
 ## Dados do pedido
 
@@ -23,13 +23,20 @@
 | ID  | Nome | Quantidade |
 | ------------- |:-------------:|:-------------:|
 @foreach(json_decode($order->cart()->get()[0]['products'], true) as $cart)
-|{{ $cart['id'] }}     | {{$cart['name']}}    | {{$cart['quantity']}}    |
+|{{ $cart['id'] }} | {{$cart['name']}}| {{$cart['quantity']}}|
 @endforeach
 
 @component('mail::button', ['url' => ''])
-Verificar pedido
+Verificar Pedido
 @endcomponent
 
-Thanks,<br>
+## Ainda não realizou o pagamento? Clique no link abaixo para finalizar:
+
+@component('mail::button', ['url' => $paymentUrl])
+Pagar Pedido
+@endcomponent
+
+Obrigado,<br>
 {{ config('app.name') }}
 @endcomponent
+
