@@ -90,6 +90,16 @@ class OrderController extends Controller
         return redirect($paymentUrl);
     }
 
+    public function showOrderDetail(string $id): View
+    {
+        $order = Order::find((int)$id);
+
+        return auth()->user()->rule ?
+            view('admin.orders.orderDetail', compact('order')) :
+            view('ecommerce.orders.orderDetail', compact('order')) ;
+    }
+
+
     private function unsetCookies(): void
     {
 
@@ -193,5 +203,6 @@ class OrderController extends Controller
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
 
     }
+
 
 }

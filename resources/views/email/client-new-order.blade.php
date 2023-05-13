@@ -26,8 +26,8 @@
 |{{ $cart['id'] }} | {{$cart['name']}}| {{$cart['quantity']}}|
 @endforeach
 
-@component('mail::button', ['url' => ''])
-Verificar Pedido
+@component('mail::button', ['url' => $paymentUrl])
+Verificar pedido
 @endcomponent
 
 ## Ainda não realizou o pagamento? Clique no link abaixo para finalizar:

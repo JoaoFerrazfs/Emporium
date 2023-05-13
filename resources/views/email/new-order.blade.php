@@ -26,8 +26,8 @@
 |{{ $cart['id'] }}     | {{$cart['name']}}    | {{$cart['quantity']}}    |
 @endforeach
 
-@component('mail::button', ['url' => ''])
-Verificar pedido
+@component('mail::button', ['url' => '#'])
+ Verificar pedido
 @endcomponent
 
 Thanks,<br>

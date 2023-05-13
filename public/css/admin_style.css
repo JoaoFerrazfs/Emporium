@@ -98,3 +98,12 @@
     margin: 5% 0;
     width: 40%;
 }
+
+.container-order-header {
+    display: flex;
+    /*justify-content: space-between;*/
+}
+
+.container-order-header p {
+    /*width: 45%;*/
+}

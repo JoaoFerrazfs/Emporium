@@ -15,6 +15,8 @@ Route::get('/produto/{id}',[ProductController::class,'viewProduct'])->name('prod
 
 Route::get('/carrinho/visualizar',[OrderController::class,'showShoppingList'])->name('cart');
 
+Route::get('/pedido/{id}',[OrderController::class,'showOrderDetail'])->name('show.order');
+
 Route::middleware(['auth', 'hasAvailableCart'])->group(function () {
     Route::get('/frete', function () {return view('ecommerce.checkout.freight') ;})->name('freight');
     Route::post('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
