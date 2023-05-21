@@ -23,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('number');
             $table->string('status');
             $table->string('observation');
+            $table->boolean('pickUpInStore');
             $table->unsignedBigInteger('cart_id');
 
             $table->foreign('user_id')->references('id')->on('users');

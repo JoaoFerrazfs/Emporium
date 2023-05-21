@@ -2,7 +2,7 @@
     <div id="sidebar" class='active'>
         <div class="sidebar-wrapper active">
             <div class="sidebar-header">
-                <img src="/img/commons/emporium-logo.png" alt="">
+                <img class="img-fluid" src="/img/commons/emporium-logo.png" alt="">
             </div>
             <div class="sidebar-menu">
                 <ul class="menu">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Products\ProductsRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Admin\contents\Image;
@@ -18,7 +19,7 @@ class ProductController extends Controller
         $this->image = $image;
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(ProductsRequest $request): RedirectResponse
     {
         $formData = $request->all();
         $input = [
@@ -57,7 +58,7 @@ class ProductController extends Controller
         return redirect()->back();
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(ProductsRequest $request): RedirectResponse
     {
         $product = Product::find($request['id']);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Address\AddressRequest;
 use App\Mail\ClientNewOrder;
 use App\Mail\NewOrder;
 use App\Models\Order;
@@ -30,7 +31,7 @@ class OrderController extends Controller
 
     }
 
-    public function resolveOrder(Request $request): View
+    public function resolveOrder(AddressRequest $request): View
     {
 
         $completeCartItems = $this->getCartInformation();
@@ -178,7 +179,6 @@ class OrderController extends Controller
     {
         $userId = auth()->id();
         $cart = $this->createCart($order, $userId);
-
         $order = Order::create([
             'user_id' => $userId,
             'cart_id' => $cart->id,
@@ -188,6 +188,7 @@ class OrderController extends Controller
             'neighborhood' => $order['neighborhood'],
             'observation' => $order['observation'] ?? 'Não há',
             'status' => 'aguardando confirmacao de pagamento',
+            'pickUpInStore' => $order['pickUpInStore'],
         ]);
 
         $this->unsetCookies();

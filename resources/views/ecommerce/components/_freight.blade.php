@@ -24,6 +24,17 @@
         <p class="">Para pedidos de entrega será adicionado uma taxa de R$ 7 reais para o envio</p>
     </div>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
     <div class="container-total-value">
         <form method="post" action="{{route('order.with.freight')}}" class="form form-vertical">
             @csrf

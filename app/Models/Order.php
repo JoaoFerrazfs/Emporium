@@ -18,6 +18,7 @@ class Order extends Model
         'cart_id',
         'observation',
         'neighborhood',
+        'pickUpInStore',
     ];
 
     public function cart()
@@ -28,6 +29,18 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getFullAddress(): string
+    {
+        $address = implode(', ', [
+            $this->city,
+            $this->neighborhood,
+            $this->street,
+            $this->number
+        ]);
+
+        return $address;
     }
 
 }
