@@ -1,8 +1,11 @@
 @extends('admin.layouts.main')
 @section('title', 'Emporium')
-@section('function_title', 'Produtos')
+@section('function_title', 'Pedidos')
 
-@include('admin.components._sidebar')
+@section('products',  'active' )
 
+@section('content')
+
+    @include('admin.components._title')
 
 @endsection

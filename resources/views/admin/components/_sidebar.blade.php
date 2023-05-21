@@ -8,7 +8,7 @@
                 <ul class="menu">
                     <li class='sidebar-title'>Menu</li>
                     <li class="sidebar-item @yield('orders') ">
-                        <a href="{{route('building.page')}}" class='sidebar-link'>
+                        <a href="{{route('admin.orders')}}" class='sidebar-link'>
                             <i class="bi bi-bar-chart-line"></i>
                             <span>Pedidos</span>
                         </a>
