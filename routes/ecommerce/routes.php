@@ -25,6 +25,7 @@ Route::middleware(['auth', 'hasAvailableCart'])->group(function () {
 });
 
 Route::get('/emContrucao', fn() =>  view('commons.buildingFunction'))->name('building.page');
+Route::get('/contato', fn() =>  view('ecommerce.about.contact'))->name('about');
 
 
 

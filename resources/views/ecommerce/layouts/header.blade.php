@@ -75,7 +75,7 @@
                             <a class="nav-link" href="{{ route('products.list') }}">Produtos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="why.html">Contato</a>
+                            <a class="nav-link" href="{{ route('about') }}">Contatos</a>
                         </li>
                     </ul>
                 </div>

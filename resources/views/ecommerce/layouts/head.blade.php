@@ -26,6 +26,7 @@
     <link href="/css/ecommerce_style.css" rel="stylesheet">
     <!-- responsive style -->
     <link href="/css/responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
 </head>
 

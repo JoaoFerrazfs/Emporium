@@ -57,7 +57,7 @@
 
                 <div class="form-group">
                     <label for="contact-info-vertical">Bairro</label>
-                    <input type="text" id="neighborhood" class="form-control" name="contact"
+                    <input type="text" id="neighborhood" class="form-control" name="neighborhood"
                            placeholder="Bairro">
                 </div>
 
