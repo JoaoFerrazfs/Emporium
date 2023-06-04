@@ -841,17 +841,14 @@ a:focus {
 
 .unit-product {
     margin: 0 5%;
-    font-size: 60px;
+    font-size: 300%;
     font-weight: bold;
     float: left;
-    flex: 1;
 }
 
 .price-product {
-    margin-right: 10%;
-    font-size: 45px;
+    font-size: 300%;
     font-weight: bold;
-    float: end;
 }
 
 
@@ -870,7 +867,6 @@ a:focus {
     color: #fff;
     font-size: 16px;
     width: 30%;
-    height: 80px;
     background-color: #475f7b;
     display: flex; /* torna o container flexível */
     justify-content: center; /* alinha o conteúdo horizontalmente */
@@ -886,13 +882,31 @@ a:focus {
     color: #fff;
     font-size: 16px;
     width: 30%;
-    height: 80px;
     background-color: #475f7b;
     display: flex; /* torna o container flexível */
     justify-content: center; /* alinha o conteúdo horizontalmente */
     align-items: center; /* alinha o conteúdo verticalmente */
     float: right;
 }
+
+
+@media (max-width: 576px) {
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centraliza verticalmente */
+        align-items: center; /* alinha o conteúdo verticalmente */
+
+    }
+
+    .btn-add-to-cart,
+    .btn-buy {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+
 
 .cart-page-container {
     width: 100%;
