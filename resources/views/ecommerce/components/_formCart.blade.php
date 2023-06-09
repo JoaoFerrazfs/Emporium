@@ -35,10 +35,12 @@
         </div>
     </div>
 
-    <div class="container-total-value">
-        <p class="label-total-value">Valor total:</p>
-        <p class="total-value">@php echo array_sum(array_column($cart, 'price')); @endphp</p>
+    <div class="alert alert-light" role="alert">
+        <h4 class="alert-heading">Valor total:</h4>
+        <p class="total-value">R$ @php echo array_sum(array_column($cart, 'price')); @endphp</p>
+        <hr>
         <a href="{{ route('freight')}}" class="btn btn btn-secondary">Continuar compra</a>
+
     </div>
 
     <a href="{{ route('home')}}" class="btn btn btn-secondary">Voltar</a>

@@ -72,10 +72,12 @@
         </div>
     </div>
 
-    <div class="container-total-value">
-        <p class="label-total-value">Valor total:</p>
+    <div class="alert alert-light" role="alert">
+        <h4 class="alert-heading">Valor total:</h4>
         <p class="total-value"> R$ {{$preparedOrder['total']}}</p>
+        <hr>
         <a href="{{ route('process.order')}}" id="orderConfirmation" class="btn btn btn-secondary">Realizar pagamento</a>
+
     </div>
 
     <a href="{{ route('freight')}}" class="btn btn btn-secondary">Voltar</a>

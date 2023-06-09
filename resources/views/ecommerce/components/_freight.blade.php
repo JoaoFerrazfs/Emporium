@@ -73,8 +73,8 @@
                            placeholder="Voce tem alguma observação?">
                 </div>
             </div>
-            <div class="btn-freight-confirm">
 
+            <div class="btn-freight-confirm">
                 <button type="submit" class="btn  me-1 mb-1"> Confirmar Entrega </button>
             </div>
 
