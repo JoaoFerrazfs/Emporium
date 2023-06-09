@@ -81,26 +81,6 @@ class ProductController extends Controller
         return redirect(route('admin.products.list'));
     }
 
-    public function changeOrder(Request $request): RedirectResponse
-    {
-        $product = Product::find($request['id']);
-        $delivery = $product->isOrder($product->order);
-        $delivery ? $product->update(['order' => 'Pronta Entrega']) : $product->update(['order' => 'Encomenda']);
-
-        return redirect('/meusProdutos/editarProdutos/' . $request->id);
-
-    }
-
-    public function changeAvailability(Request $request): RedirectResponse
-    {
-        $product = Product::find($request['id']);
-        $availability = $product->isAvailable();
-        $availability ? $product->update(['availability' => 'Indisponivel']) : $product->update(['availability' => 'Disponível']);
-
-        return redirect('/meusProdutos/editarProdutos/' . $request->id);
-
-    }
-
     public function destroy($id): RedirectResponse
     {
         Product::where('id', $id)->delete();
@@ -116,22 +96,9 @@ class ProductController extends Controller
 
     public function viewProduct($id): View
     {
-
         $product = Product::find($id);
 
         return view('ecommerce.products.productPage', ['product' => $product]);
     }
 
-    public function changedStore(string $id, int $quantity): void
-    {
-        $newInventory = 0;
-        $product = Product::where('id', $id)->get();
-
-        foreach ($product as $value) {
-            $newInventory = $value->inventory - $quantity;
-        }
-
-        $inventory = ['inventory' => $newInventory];
-        $product->update($inventory);
-    }
 }
