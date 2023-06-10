@@ -17,7 +17,12 @@ class ProductSearchControllerTest extends TestCase
         $product = $this->instance(Product::class, m::mock(Product::class)->makePartial());
         $realProduct = new Product();
         $realProduct->name = 'Pizza';
-        $expected = '{"data":[{"name":"Pizza"},{"name":"Pizza"}]}';
+        $expected = [
+            'data' => [
+                ['name' => 'Pizza'],
+                ['name' => 'Pizza']
+            ]
+        ];
 
         $builder = m::mock(Builder::class);
 
@@ -35,7 +40,7 @@ class ProductSearchControllerTest extends TestCase
         $actual =$this->post('http://localhost:8000/api/productSearch/?term=pizza');
 
         // Assertions
-        $this->assertSame($expected, $actual->getContent());
+        $this->assertSame(json_encode($expected), $actual->getContent());
         $this->assertSame(200, $actual->getStatusCode());
 
     }
@@ -45,7 +50,9 @@ class ProductSearchControllerTest extends TestCase
         // Set
         $product = $this->instance(Product::class, m::mock(Product::class)->makePartial());
         $realProduct = new Product();
-        $expected = '{"data":[]}';
+        $expected = [
+            'data' => []
+        ];
 
         $builder = m::mock(Builder::class);
 
@@ -63,7 +70,7 @@ class ProductSearchControllerTest extends TestCase
         $actual =$this->post('http://localhost:8000/api/productSearch/?term=pizza');
 
         // Assertions
-        $this->assertSame($expected, $actual->getContent());
+        $this->assertSame(json_encode($expected), $actual->getContent());
         $this->assertSame(200, $actual->getStatusCode());
     }
 }
