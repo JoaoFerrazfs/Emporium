@@ -1,13 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace App\Http\Apis\v1\Product;
 
 use App\Models\Product;
-
 use Illuminate\Database\Eloquent\Builder;
-use Tests\TestCase;
-
 use Mockery as m;
+use Tests\TestCase;
 
 class ProductSearchControllerTest extends TestCase
 {
@@ -19,8 +17,26 @@ class ProductSearchControllerTest extends TestCase
         $realProduct->name = 'Pizza';
         $expected = [
             'data' => [
-                ['name' => 'Pizza'],
-                ['name' => 'Pizza']
+                [
+                    'name' => 'Pizza',
+                    'description' => null,
+                    'price' => null,
+                    'image' => null,
+                    'status' => null,
+                    'stock' => null,
+                    'validate' => null,
+                    'ingredients' => null,
+                ],
+                [
+                    'name' => 'Pizza',
+                    'description' => null,
+                    'price' => null,
+                    'image' => null,
+                    'status' => null,
+                    'stock' => null,
+                    'validate' => null,
+                    'ingredients' => null,
+                ],
             ]
         ];
 
@@ -34,13 +50,12 @@ class ProductSearchControllerTest extends TestCase
 
         $builder->expects()
             ->get()
-            ->andReturn(collect([$realProduct,$realProduct]));
+            ->andReturn(collect([$realProduct, $realProduct]));
 
         // Action
-        $actual =$this->post('http://localhost:8000/api/productSearch/?term=pizza');
-
+        $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
         // Assertions
-        $this->assertSame(json_encode($expected), $actual->getContent());
+        $this->assertSame($expected, json_decode($actual->getContent(),1));
         $this->assertSame(200, $actual->getStatusCode());
 
     }
@@ -67,7 +82,7 @@ class ProductSearchControllerTest extends TestCase
             ->andReturn(collect($realProduct));
 
         // Action
-        $actual =$this->post('http://localhost:8000/api/productSearch/?term=pizza');
+        $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
 
         // Assertions
         $this->assertSame(json_encode($expected), $actual->getContent());
