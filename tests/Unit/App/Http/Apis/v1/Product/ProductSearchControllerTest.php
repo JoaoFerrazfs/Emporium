@@ -3,7 +3,9 @@
 namespace App\Http\Apis\v1\Product;
 
 use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Mockery as m;
 use Tests\TestCase;
 
@@ -12,7 +14,7 @@ class ProductSearchControllerTest extends TestCase
     public function testReturnAnExistentProduct(): void
     {
         // Set
-        $product = $this->instance(Product::class, m::mock(Product::class)->makePartial());
+        $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
         $realProduct = new Product();
         $realProduct->name = 'Pizza';
         $expected = [
@@ -40,20 +42,16 @@ class ProductSearchControllerTest extends TestCase
             ]
         ];
 
-        $builder = m::mock(Builder::class);
+      $collection = new Collection([$realProduct,$realProduct]);
 
         // Expectations
         $product->expects()
-            ->where()
-            ->withAnyArgs()
-            ->andReturn($builder);
-
-        $builder->expects()
-            ->get()
-            ->andReturn(collect([$realProduct, $realProduct]));
+            ->findProductByName('pizza')
+            ->andReturn($collection);
 
         // Action
         $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
+
         // Assertions
         $this->assertSame($expected, json_decode($actual->getContent(),1));
         $this->assertSame(200, $actual->getStatusCode());
@@ -63,23 +61,17 @@ class ProductSearchControllerTest extends TestCase
     public function testNotReturnAnExistentProduct(): void
     {
         // Set
-        $product = $this->instance(Product::class, m::mock(Product::class)->makePartial());
-        $realProduct = new Product();
+        $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
         $expected = [
             'data' => []
         ];
 
-        $builder = m::mock(Builder::class);
+        $collection = new Collection();
 
         // Expectations
         $product->expects()
-            ->where()
-            ->withAnyArgs()
-            ->andReturn($builder);
-
-        $builder->expects()
-            ->get()
-            ->andReturn(collect($realProduct));
+            ->findProductByName('pizza')
+            ->andReturn($collection);
 
         // Action
         $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');

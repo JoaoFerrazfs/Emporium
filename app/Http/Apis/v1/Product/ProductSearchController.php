@@ -5,14 +5,14 @@ namespace App\Http\Apis\v1\Product;
 use App\Http\Apis\Requests\v1\Products\ProductRequest;
 use App\Http\Apis\Transformers\v1\Product\ProductTransformer;
 use App\Http\Apis\v1\BaseApi;
-use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\JsonResponse;
 
 class ProductSearchController extends BaseApi
 {
-    public function __construct(Product $product, ProductTransformer $transformer)
+    public function __construct(ProductRepository $productRepository, ProductTransformer $transformer)
     {
-        $this->product = $product;
+        $this->productRepository = $productRepository;
         $this->transformer = $transformer;
     }
 
@@ -20,7 +20,10 @@ class ProductSearchController extends BaseApi
     {
         $term = $request->get('term');
 
-        $data = $this->product->where('name', 'LIKE', '%' . $term . '%')->get();
+        if(!$data = $this->productRepository->findProductByName($term))
+        {
+            return $this->response();
+        }
 
         $data = $this->transformer->transform($data);
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Apis\Transformers\v1\Product;
 
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductTransformer
 {

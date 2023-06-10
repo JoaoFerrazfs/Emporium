@@ -3,7 +3,7 @@
 namespace App\Http\Apis\Transformers\v1\Product;
 
 use App\Models\Product;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Tests\TestCase;
 
 class ProductTransformerTest extends TestCase
