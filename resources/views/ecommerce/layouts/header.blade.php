@@ -53,12 +53,12 @@
         <div class="container-fluid">
             <nav class="navbar navbar-expand-lg custom_nav-container ">
 
-                <from class="search_form">
-                    <input type="text" class="form-control" placeholder="Search here...">
+                <form action="{{route('product.search')}}" method="get" class="search_form">
+                    <input type="text" name="search_term" class="form-control" placeholder="Pesquise produtos aqui">
                     <button class="" type="submit">
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
-                </from>
+                </form>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

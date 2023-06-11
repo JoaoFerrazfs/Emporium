@@ -9,11 +9,10 @@ use Mockery as m;
 
 class ProductRepositoryTest extends TestCase
 {
-    public function testShouldReturnFilledCollection(): void
+    public function testShouldFindProductsByTerm(): void
     {
         // Set
         $product = $this->makeProduct();
-
 
         $productRepository = new ProductRepository($product);
 
@@ -28,6 +27,58 @@ class ProductRepositoryTest extends TestCase
 
         // Action
         $actual = $productRepository->findProductByName('pizza');
+
+        // Assertions
+        $this->isInstanceOf(Collection::class);
+        $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
+
+    }
+    public function testShouldFindAvailableProductsByTerm(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+
+        $productRepository = new ProductRepository($product);
+
+        // Expectation
+        $product->expects()
+            ->where('name', 'LIKE', '%pizza%')
+            ->andReturnSelf();
+
+        $product->expects()
+            ->where('status', 'disponivel')
+            ->andReturnSelf();
+
+        $product->expects()
+            ->get()
+            ->andReturn(new Collection([$product]));
+
+        // Action
+        $actual = $productRepository->findAvailableProductByName('pizza');
+
+        // Assertions
+        $this->isInstanceOf(Collection::class);
+        $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
+
+    }
+    public function testShouldReturnAllAvailableProducts(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+
+        $productRepository = new ProductRepository($product);
+
+        // Expectation
+        $product->expects()
+            ->where('status', 'disponivel')
+            ->andReturnSelf();
+
+        $product->expects()
+            ->get()
+            ->andReturn(new Collection([$product]));
+
+        // Action
+        $actual = $productRepository->findAllAvailableProducts();
 
         // Assertions
         $this->isInstanceOf(Collection::class);

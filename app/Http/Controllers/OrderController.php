@@ -198,8 +198,6 @@ class OrderController extends Controller
 
     private function sendEmails(Order $createdOrder, string $paymentUrl): void
     {
-
-
         Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
 

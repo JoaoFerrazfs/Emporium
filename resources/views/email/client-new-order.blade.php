@@ -20,8 +20,8 @@
 
 ## Itens do Pedido
 
-| ID  | Nome | Quantidade |
-| ------------- |:-------------:|:-------------:|
+| Código do Produto  | Nome | Quantidade |
+| :-------------: |:-------------:|:-------------:|
 @foreach(json_decode($order->cart()->get()[0]['products'], true) as $cart)
 |{{ $cart['id'] }} | {{$cart['name']}}| {{$cart['quantity']}}|
 @endforeach

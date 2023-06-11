@@ -8,9 +8,9 @@
                 <div class="col-sm-6 col-lg-4">
                     <div class="box">
                         <div class="img-box">
-                            <img src="{{'img/products/' . $product->image }}" alt="{{ $product->name }}">
-                            <a href="{{route('product.page',$product->id)}}" class="add_cart_btn">
-                                <span> Visualizar </span>
+                            <img src="{{'/img/products/' . $product->image }}" alt="{{ $product->name }}">
+                            <a href="{{ route('product.page', ['id' => $product->id]) }}" class="add_cart_btn">
+                            <span> Visualizar </span>
                             </a>
                         </div>
                         <div class="detail-box">

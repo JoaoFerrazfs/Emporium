@@ -20,16 +20,17 @@
 
 ## Itens do Pedido
 
-| ID  | Nome | Quantidade |
-| ------------- |:-------------:|:-------------:|
+| Código do Produto |     Nome      | Quantidade |
+| :--------------: | :-----------: | :--------: |
 @foreach(json_decode($order->cart()->get()[0]['products'], true) as $cart)
-|{{ $cart['id'] }}     | {{$cart['name']}}    | {{$cart['quantity']}}    |
+    |   {{ $cart['id'] }}    | {{$cart['name']}} | {{$cart['quantity']}} |
 @endforeach
+
 
 @component('mail::button', ['url' => '#'])
  Verificar pedido
 @endcomponent
 
-Thanks,<br>
+Obrigado,<br>
 {{ config('app.name') }}
 @endcomponent
