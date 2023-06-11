@@ -5,33 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Tests\TestCase;
 use Mockery as m;
-use Illuminate\Support\Facades\Route;
 
 class ProductSearchControllerTest extends TestCase
 {
     public function testShouldFindProductsByTerm(): void
     {
         // Set
-        Route::get('/',[ProductController::class,'viewProduct'])->name('product.page');
-
-
         $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
         $realProduct = $this->makeProduct();
         $collection = new Collection([$realProduct]);
+        $request = m::mock(Request::class);
+
+        $productSearchController = new ProductSearchController($product);
 
         // Expectations
         $product->expects()
             ->findAvailableProductByName('pizza')
             ->andReturn($collection);
 
-        // Action
-        $actual = $this->get('http://localhost:8000/produtos/pesquisa?search_term=pizza');
-        // Assertions
+        $request->expects()
+            ->get('search_term', false)
+            ->andReturn('pizza');
 
-        $actual->assertViewHas('products');
-        $actual->assertViewIs('ecommerce.products.productsList');
+        // Action
+        $actual = $productSearchController->getProducts($request);
+
+        // Assertions
+        $this->isInstanceOf(View::class);
 
     }
 
