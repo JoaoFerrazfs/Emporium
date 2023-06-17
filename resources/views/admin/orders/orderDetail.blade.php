@@ -3,5 +3,5 @@
 @section('function_title', 'Produtos')
 @section('content')
     @include('admin.components._title')
-    @include('admin.components._orders_list')
+    @include('admin.components._order')
 @endsection

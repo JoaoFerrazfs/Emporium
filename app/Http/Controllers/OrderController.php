@@ -8,6 +8,7 @@ use App\Mail\NewOrder;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Repositories\OrderRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +18,18 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     private const DEFAULT_FREIGHT_VALUE = 7;
+    private OrderRepository $orderRepository;
 
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
+    public function index(): View
+    {
+        $orders = $this->orderRepository->getAllOrders();
+       return view('admin.orders.home', compact('orders')) ;
+    }
     public function showShoppingList(Request $request): View
     {
         $cart = json_decode($request->cookie('cart'));
@@ -99,7 +111,6 @@ class OrderController extends Controller
             view('admin.orders.orderDetail', compact('order')) :
             view('ecommerce.orders.orderDetail', compact('order')) ;
     }
-
 
     private function unsetCookies(): void
     {

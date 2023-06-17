@@ -5,7 +5,6 @@
 @section('products',  'active' )
 
 @section('content')
-
     @include('admin.components._title')
-
+    @include('admin.components._orders_list')
 @endsection
