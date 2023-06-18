@@ -26,10 +26,12 @@
                                 <!-- Dropdown menu -->
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item" href="{{route('building.page')}}">Meu Perfil</a>
-                                    <a class="dropdown-item" href="{{route('building.page')}}">Meus Pedidos</a>
                                     @if(auth()->user()->rule)
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{{route('admin')}}">Acessar Admin</a>
+                                        @elseif(!auth()->user()->rule)
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="{{route('client.orders')}}">Meus pedidos</a>
                                     @endif
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{route('logout')}}">Logout</a>

@@ -16,9 +16,11 @@ Route::middleware(['auth', 'hasAvailableCart'])->group(function () {
     Route::post('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
     Route::get('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
     Route::get('/processarPedido', [OrderController::class,'save'])->name('process.order');
+    Route::get('/processarPedido', [OrderController::class,'save'])->name('process.order');
 
 });
 
+Route::get('/pedidos',[OrderController::class,'getUserOrders'])->name('client.orders');
 Route::get('/emContrucao', fn() =>  view('commons.buildingFunction'))->name('building.page');
 Route::get('/contato', fn() =>  view('ecommerce.about.contact'))->name('about');
 Route::get('/produtos/pesquisa',[ProductSearchController::class,'getProducts'])->name('product.search');

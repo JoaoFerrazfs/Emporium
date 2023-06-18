@@ -787,6 +787,24 @@ a:focus {
 .footer_section p a {
     color: inherit;
 }
+.order-page-container {
+    width: 100%;
+    min-height: 45vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 767px) {
+    .order-page-container {
+        height: auto;
+    }
+}
+
+.order-page-container .card {
+    margin-bottom: 20px;
+}
 
 .product-page-container {
     width: 100%;

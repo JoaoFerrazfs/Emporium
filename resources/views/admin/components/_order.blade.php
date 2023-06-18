@@ -29,6 +29,9 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Detalhes do cliente</button>
                         </div>
+                        <div class="col-6 mt-4">
+                            <strong>Status do pedido:</strong> {{$order->status}}
+                        </div>
                     </div>
 
                 </div>
@@ -51,7 +54,7 @@
                         <td>{{$product->name}}</td>
                         <td>R$ {{$product->price}}</td>
                         <td>
-                            <a href="{{route('admin.products.edit', ['id' => $product->id])}}" class="btn btn-info card-content-btn">Detalhes</a>
+                            <a href="{{route('admin.products.edit', ['id' => $product->id])}}" class="btn btn-info card-content-btn">Detalhes do Produto</a>
                         </td>
                     </tr>
                 @endforeach

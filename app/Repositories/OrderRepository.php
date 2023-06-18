@@ -18,4 +18,9 @@ class OrderRepository
     {
         return $this->order->all();
     }
+
+    public function getOrderById(int $userId): Collection
+    {
+        return $this->order->where(['user_id' => $userId])->get();
+    }
 }

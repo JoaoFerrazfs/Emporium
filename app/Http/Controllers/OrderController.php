@@ -28,8 +28,18 @@ class OrderController extends Controller
     public function index(): View
     {
         $orders = $this->orderRepository->getAllOrders();
-       return view('admin.orders.home', compact('orders')) ;
+
+        return view('admin.orders.home', compact('orders'));
     }
+
+    public function getUserOrders(Request $request): View
+    {
+        $userId = $request->user()->id;
+        $orders = $this->orderRepository->getOrderById($userId);
+
+        return view('ecommerce.user.orders.orders', compact('orders'));
+    }
+
     public function showShoppingList(Request $request): View
     {
         $cart = json_decode($request->cookie('cart'));
@@ -40,12 +50,10 @@ class OrderController extends Controller
         }
 
         return view('ecommerce.checkout.emptyCart');
-
     }
 
     public function resolveOrder(AddressRequest $request): View
     {
-
         $completeCartItems = $this->getCartInformation();
         $preparedOrder = [];
         $totalPrice = $this->getTotalPrice($completeCartItems);
@@ -97,7 +105,7 @@ class OrderController extends Controller
         $payment = app(PaymentController::class);
         $paymentUrl = $payment->makePayments($order['completeCartItems']);
 
-        $this->sendEmails($createdOrder, $paymentUrl );
+        $this->sendEmails($createdOrder, $paymentUrl);
 
 
         return redirect($paymentUrl);
@@ -109,7 +117,7 @@ class OrderController extends Controller
 
         return auth()->user()->rule ?
             view('admin.orders.orderDetail', compact('order')) :
-            view('ecommerce.orders.orderDetail', compact('order')) ;
+            view('ecommerce.orders.orderDetail', compact('order'));
     }
 
     private function unsetCookies(): void
@@ -170,11 +178,9 @@ class OrderController extends Controller
                     'necessaryAmount' => $item['quantity'],
                 ];
             };
-
         }
 
         return $result;
-
     }
 
     private function createCart(array $order, $userId): Cart
@@ -204,7 +210,7 @@ class OrderController extends Controller
 
         $this->unsetCookies();
 
-        return  $order;
+        return $order;
     }
 
     private function sendEmails(Order $createdOrder, string $paymentUrl): void
