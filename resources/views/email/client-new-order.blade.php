@@ -1,5 +1,5 @@
 @component('mail::message')
-# Seu numero de pedido é  -  Pedido numero {{$order->id}}
+# Seu numero de pedido é  -   {{$order->id}}
 
 ## Dados do pedido
 
@@ -26,7 +26,7 @@
 |{{ $cart['id'] }} | {{$cart['name']}}| {{$cart['quantity']}}|
 @endforeach
 
-@component('mail::button', ['url' => $paymentUrl])
+@component('mail::button', ['url' => route('client.orders')])
 Verificar pedido
 @endcomponent
 

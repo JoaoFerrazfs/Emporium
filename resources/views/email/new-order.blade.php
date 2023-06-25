@@ -27,10 +27,10 @@
 @endforeach
 
 
-@component('mail::button', ['url' => '#'])
+@component('mail::button', ['url' => route('admin.show.order',['id' => $order->id])])
  Verificar pedido
 @endcomponent
 
-Obrigado,<br>
+Verifique o pedido no painel administrativo,<br>
 {{ config('app.name') }}
 @endcomponent
