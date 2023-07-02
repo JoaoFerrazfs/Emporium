@@ -1,11 +1,6 @@
 <h1 align="center"> Projeto Emporium</h1>
 <p align="center"> Plataforma de Ecommerce</p>
 
-
-# :construction: Projeto em construção :construction:
-
-![GitHub Org's stars](https://img.shields.io/github/stars/JoaoFerrazfs?style=social)
-
 ## Descrição do Projeto 
 
 Este projeto busca implementar uma plataforma simples e acessivel para uso de pequenos comercios.  
