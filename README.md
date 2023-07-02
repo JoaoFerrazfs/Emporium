@@ -18,15 +18,20 @@ O sistema permitirá o controle de estoque, clientes, produtos, vendas  e além 
 - `Criação de catálogo de produtos`
 - `Gerenciamento de Vendas`
 - `Gerenciamento de estoque de produtos`
-- `Guardar histórico de movimentações`
-- `Gerar relatórios`
-- `Gerar valores de frete para determinadas localidades`
+- `Envio de email de confirmação de venda`
+- `Validação do email cadastrado`
 
 ## :white_check_mark: Tecnologias Utilizadas
 - `PHP 8`
 - `Laravel 8`
 - `MySql`
-- `Visual Studio Code`
+- `PHPStorm`
+- `Bootstrap`
+- `Mercado Pago`
+
+
+## 🌐 Acesso ao Site em funcionamento
+[Emporium](http://emporiumecommerce.duckdns.org)
 
 ## Autores
 
