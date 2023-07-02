@@ -12,6 +12,7 @@ use App\Repositories\OrderRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 
@@ -42,7 +43,7 @@ class OrderController extends Controller
 
     public function showShoppingList(Request $request): View
     {
-        $cart = json_decode($request->cookie('cart'));
+        $cart = json_decode($request->cookie('cart'),1);
 
         if (!empty($cart)) {
             return view('ecommerce.checkout.cart', ['cart' => $cart]);
@@ -52,16 +53,18 @@ class OrderController extends Controller
         return view('ecommerce.checkout.emptyCart');
     }
 
-    public function resolveOrder(AddressRequest $request): View
+    public function resolveOrder(AddressRequest $request): View | RedirectResponse
     {
-        $completeCartItems = $this->getCartInformation();
-        $preparedOrder = [];
+        if (!$completeCartItems = $this->getCartInformation($request)) {
+            return redirect()->back();
+        }
         $totalPrice = $this->getTotalPrice($completeCartItems);
 
         if (!empty($this->validateStock($completeCartItems))) {
-            echo "O pedido não pode ser integrado por falta de estoque";
+           return redirect()->back(400);
         }
 
+        $preparedOrder = [];
         if ($request->method() == 'GET') {
             $preparedOrder = [
                 'user_id' => auth()->id(),
@@ -75,6 +78,8 @@ class OrderController extends Controller
                 'total' => $totalPrice,
                 'pickUpInStore' => true,
             ];
+
+            return view('ecommerce.checkout.orderConfirmation', compact('preparedOrder'));
         }
 
         if ($request->method() == 'POST') {
@@ -88,7 +93,7 @@ class OrderController extends Controller
                 'observation' => $request->observation ?? '',
                 'status' => 'Aguardando confirmacao',
                 'completeCartItems' => $completeCartItems,
-                'total' => $totalPrice + self::DEFAULT_FREIGHT_VALUE,
+                'total' => number_format($totalPrice + self::DEFAULT_FREIGHT_VALUE, 2, '.'),
                 'pickUpInStore' => false,
 
             ];
@@ -104,9 +109,7 @@ class OrderController extends Controller
         $createdOrder = $this->createOrder($order);
         $payment = app(PaymentController::class);
         $paymentUrl = $payment->makePayments($order['completeCartItems']);
-
         $this->sendEmails($createdOrder, $paymentUrl);
-
 
         return redirect($paymentUrl);
     }
@@ -122,15 +125,16 @@ class OrderController extends Controller
 
     private function unsetCookies(): void
     {
-
         setcookie('order', null, -1);
         setcookie('totalCart', null, -1);
         setcookie('cart', null, -1);
     }
 
-    private function getCartInformation(): array
+    private function getCartInformation(AddressRequest $request): ?array
     {
-        $items = json_decode(Cookie::get('cart'), true);
+        if(!$items = json_decode($request->cookie('cart'), true)){
+            return null;
+        }
 
         $treatedItems = [];
         foreach ($items as $item) {
@@ -148,7 +152,7 @@ class OrderController extends Controller
 
         }
 
-        return $treatedItems;
+        return array_values($treatedItems);
     }
 
     private function getTotalPrice($items): float

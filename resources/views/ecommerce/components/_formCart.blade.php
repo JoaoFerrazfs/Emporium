@@ -17,12 +17,12 @@
                         @foreach($cart as $key => $item)
                             <tr>
                                 <td class="text-bold-500"><img style="width: 100px"
-                                                               src="{{ "/img/products/" . $item->image }}"></td>
-                                <td class="text-bold-500">{{ $item->name }}</td>
-                                <td> R$ {{ $item->price }}</td>
+                                                               src="{{ "/img/products/" . $item['image'] }}"></td>
+                                <td class="text-bold-500">{{ $item['name'] }}</td>
+                                <td> R$ {{ $item['price'] }}</td>
                                 <td class="text-bold-500">
-                                    <button id="delete-button-{{$item->id}}" href="#" class="btn btn-danger"
-                                            data-product-id={{$item->id}}>Retirar
+                                    <button id="delete-button-{{$item['id']}}" href="#" class="btn btn-danger"
+                                            data-product-id={{$item['id']}}>Retirar
                                     </button>
                                 </td>
                             </tr>

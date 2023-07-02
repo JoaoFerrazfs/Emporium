@@ -13,7 +13,7 @@ class PaymentController extends Controller
         $this->clientMercadoPago = $clientMercadoPago;
     }
 
-    public function makePayments($cart)
+    public function makePayments($cart): string
     {
         return $this->clientMercadoPago->makePaymentLink($cart);
     }

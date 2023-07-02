@@ -44,7 +44,6 @@ class ProductsRequest extends FormRequest
             'validate.date' => 'O campo Validade deve ser uma data válida.',
             'validate.after_or_equal' => 'O campo de Validade deve ser maior ou igual a hoje.',
 
-
             'price.required' => 'O campo Preço é obrigatório.',
             'price.numeric' => 'O campo Preço deve ser um valor numérico.',
 

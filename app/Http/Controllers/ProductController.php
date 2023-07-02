@@ -61,9 +61,7 @@ class ProductController extends Controller
     public function update(ProductsRequest $request): RedirectResponse
     {
         $product = Product::find($request['id']);
-
         $formData = $request->all();
-
 
         $input = [
             'name' => $formData['name'],
