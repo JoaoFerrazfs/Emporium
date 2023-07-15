@@ -33,6 +33,7 @@ class ProductRepositoryTest extends TestCase
         $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
 
     }
+
     public function testShouldFindAvailableProductsByTerm(): void
     {
         // Set
@@ -61,11 +62,11 @@ class ProductRepositoryTest extends TestCase
         $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
 
     }
+
     public function testShouldReturnAllAvailableProducts(): void
     {
         // Set
         $product = $this->makeProduct();
-
         $productRepository = new ProductRepository($product);
 
         // Expectation
@@ -86,10 +87,61 @@ class ProductRepositoryTest extends TestCase
 
     }
 
+    public function testShouldSaveAProduct(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+        $input = [
+            'name' => 'Bolo',
+            'description' => 'Bolo doce',
+            'ingredients' => 'Coco',
+            'stock' => 90,
+            'validate' => '23/04/2023',
+            'price' => '90',
+            'status' => 'disponivel',
+            'image' => '/anyImage'
+        ];
+
+        $productRepository = new ProductRepository($product);
+
+        // Expectation
+        $product->expects()
+            ->create($input)
+            ->andReturnTrue();
+
+        // Action
+        $actual = $productRepository->saveProduct($input);
+
+        // Assertions
+        $this->assertTrue($actual);
+
+    }
+
+    public function testShouldGetProduct(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+        $productRepository = new ProductRepository($product);
+
+        // Expectation
+        $product->expects()
+            ->find(10)
+            ->andReturn($product);
+
+        // Action
+        $actual = $productRepository->first(10);
+
+        // Assertions
+        $this->assertInstanceOf(Product::class, $actual);
+        $this->assertSame($product->getAttributes(), $actual->getAttributes());
+
+    }
+
     private function makeProduct(): Product
     {
         $product = m::mock(Product::class)->makePartial();
-        $product->fill([
+        $product->fill(
+            [
             'name' => 'Pizza',
             'description' => 'Pizza promoção',
             'price' => 9.99,
@@ -98,7 +150,8 @@ class ProductRepositoryTest extends TestCase
             'stock' => 99,
             'validate' => '2023-06-11',
             'ingredients' => 'tudo e mais um pouco'
-        ]);
+            ]
+        );
 
         return $product;
     }

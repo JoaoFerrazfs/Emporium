@@ -20,8 +20,7 @@ class ProductSearchController extends BaseApi
     {
         $term = $request->get('term');
 
-        if(!$data = $this->productRepository->findProductByName($term))
-        {
+        if(!$data = $this->productRepository->findProductByName($term)) {
             return $this->response();
         }
 

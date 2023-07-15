@@ -235,14 +235,16 @@ class OrderControllerTest extends TestCase
         $request->expects()
             ->all()
             ->times(7)
-            ->andReturn([
+            ->andReturn(
+                [
                 'city' => 'São Joaquim de Bicas',
                 'zipCode' => '32000-000',
                 'neighborhood' => 'Vila Rica',
                 'street' => 'Santa clara',
                 'number' => 160,
                 'observation' => '',
-            ]);
+                ]
+            );
 
         // Action
         $actual = $orderController->resolveOrder($request);
@@ -268,7 +270,7 @@ class OrderControllerTest extends TestCase
         $actual = $orderController->resolveOrder($request);
 
         // Assertions
-        $this->assertSame(302,$actual->status());
+        $this->assertSame(302, $actual->status());
 
     }
 

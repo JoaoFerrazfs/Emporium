@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use http\Exception\UnexpectedValueException;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository
@@ -30,5 +31,20 @@ class ProductRepository
     {
         return $this->product->where('name', 'LIKE', '%' . $term . '%')->where('status', 'disponivel')->get();
 
+    }
+
+    public function saveProduct(array $input):bool
+    {
+        return (bool) $this->product->create($input);
+    }
+
+    public function first(int $productId):Product
+    {
+        return $this->product->find($productId);
+    }
+
+    public function getAllProducts(): Collection
+    {
+        return  $this->product->all();
     }
 }

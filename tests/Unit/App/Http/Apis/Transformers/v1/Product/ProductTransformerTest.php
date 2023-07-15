@@ -27,7 +27,8 @@ class ProductTransformerTest extends TestCase
     private function makeProduct(): Product
     {
         $product = new Product();
-        $product->fill([
+        $product->fill(
+            [
             'name' => 'Pizza',
             'description' => 'Pizza promoção',
             'price' => 9.99,
@@ -36,7 +37,8 @@ class ProductTransformerTest extends TestCase
             'stock' => 99,
             'validate' => '2023-06-11',
             'ingredients' => 'tudo e mais um pouco'
-        ]);
+            ]
+        );
 
         return  $product;
     }

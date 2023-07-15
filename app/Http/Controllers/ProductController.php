@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Products\ProductsRequest;
-use Illuminate\Http\Request;
+use App\Repositories\ProductRepository;
 use App\Models\Product;
 use Admin\contents\Image;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 
 class ProductController extends Controller
 {
     private Image $image;
+    private ProductRepository $productRepository;
 
-    public function __construct(Image $image)
+    public function __construct(Image $image, ProductRepository $productRepository)
     {
         $this->image = $image;
+        $this->productRepository = $productRepository;
     }
 
-    public function store(ProductsRequest $request): RedirectResponse
+    public function store(ProductsRequest $request): View
     {
         $formData = $request->all();
         $input = [
@@ -30,37 +31,42 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->image->saveLocalImage($request) ?? "default.jpg" ,
+            'image' => $this->image->saveLocalImage($request) ?? "default.jpg",
         ];
 
-        Product::create($input);
-
-        return redirect('/admin');
+        return $this->productRepository->saveProduct($input) ?
+            view('admin.products.productsList', ['products' => Product::all()]) :
+            view('admin.products.productsList', ['products' => Product::all()])->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function myProducts(): View
     {
-        return view('admin.products.productsList', ['products' =>  Product::all()]);
+        return view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]);
     }
 
-    public function editProducts(string $productId): View
+    public function editProducts(int $productId): View
     {
-        return view('admin.products.productEdit',
+        return view(
+            'admin.products.productEdit',
             [
-                'product' => Product::find((int)$productId)
+                'product' => $this->productRepository->first((int)$productId)
             ]
         );
     }
 
-    public function deleteProducts(string $productId): RedirectResponse
+    public function deleteProducts(int $productId): View
     {
-        Product::find((int)$productId)->delete();
-        return redirect()->back();
+        $product = $this->productRepository->first($productId);
+
+        return $product->delete() ?
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
+
     }
 
-    public function update(ProductsRequest $request): RedirectResponse
+    public function update(ProductsRequest $request): View
     {
-        $product = Product::find($request['id']);
+        $product = $this->productRepository->first($request['id']);
         $formData = $request->all();
 
         $input = [
@@ -71,30 +77,23 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->image->saveLocalImage($request) ?? $product->image ,
+            'image' => $this->image->saveLocalImage($request) ?? $product->image,
         ];
 
-        $product->update($input);
-
-        return redirect(route('admin.products.list'));
-    }
-
-    public function destroy($id): RedirectResponse
-    {
-        Product::where('id', $id)->delete();
-        $user = auth()->user()->_id;
-        return redirect('/meusProdutos/' . $user);
+        return $product->update($input) ?
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function index(): View
     {
-        $products = Product::where('status', 'disponivel')->get();
+        $products = $this->productRepository->findAllAvailableProducts();
         return view('ecommerce.products.productsList', ['products' => $products]);
     }
 
-    public function viewProduct($id): View
+    public function viewProduct(int $productId): View
     {
-        $product = Product::find($id);
+        $product = $this->productRepository->first($productId);
 
         return view('ecommerce.products.productPage', ['product' => $product]);
     }

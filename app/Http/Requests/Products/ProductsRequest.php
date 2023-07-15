@@ -8,8 +8,7 @@ class ProductsRequest extends FormRequest
 {
     public function rules(): array
     {
-        if ($this->method() == 'GET')
-        {
+        if ($this->method() == 'GET') {
             return [] ;
         }
 

@@ -42,7 +42,7 @@ class ProductSearchControllerTest extends TestCase
             ]
         ];
 
-      $collection = new Collection([$realProduct,$realProduct]);
+        $collection = new Collection([$realProduct,$realProduct]);
 
         // Expectations
         $product->expects()
@@ -53,7 +53,7 @@ class ProductSearchControllerTest extends TestCase
         $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
 
         // Assertions
-        $this->assertSame($expected, json_decode($actual->getContent(),1));
+        $this->assertSame($expected, json_decode($actual->getContent(), 1));
         $this->assertSame(200, $actual->getStatusCode());
 
     }

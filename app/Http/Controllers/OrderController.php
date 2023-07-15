@@ -43,7 +43,7 @@ class OrderController extends Controller
 
     public function showShoppingList(Request $request): View
     {
-        $cart = json_decode($request->cookie('cart'),1);
+        $cart = json_decode($request->cookie('cart'), 1);
 
         if (!empty($cart)) {
             return view('ecommerce.checkout.cart', ['cart' => $cart]);
@@ -61,7 +61,7 @@ class OrderController extends Controller
         $totalPrice = $this->getTotalPrice($completeCartItems);
 
         if (!empty($this->validateStock($completeCartItems))) {
-           return redirect()->back(400);
+            return redirect()->back(400);
         }
 
         $preparedOrder = [];
@@ -132,7 +132,7 @@ class OrderController extends Controller
 
     private function getCartInformation(AddressRequest $request): ?array
     {
-        if(!$items = json_decode($request->cookie('cart'), true)){
+        if(!$items = json_decode($request->cookie('cart'), true)) {
             return null;
         }
 
@@ -189,18 +189,21 @@ class OrderController extends Controller
 
     private function createCart(array $order, $userId): Cart
     {
-        return Cart::create([
+        return Cart::create(
+            [
             'user_id' => $userId,
             'products' => json_encode($order['completeCartItems']),
             'total' => $order['total'],
-        ]);
+            ]
+        );
     }
 
     private function createOrder(array $order): Order
     {
         $userId = auth()->id();
         $cart = $this->createCart($order, $userId);
-        $order = Order::create([
+        $order = Order::create(
+            [
             'user_id' => $userId,
             'cart_id' => $cart->id,
             'city' => $order['city'],
@@ -210,7 +213,8 @@ class OrderController extends Controller
             'observation' => $order['observation'] ?? 'Não há',
             'status' => 'aguardando confirmacao de pagamento',
             'pickUpInStore' => $order['pickUpInStore'],
-        ]);
+            ]
+        );
 
         $this->unsetCookies();
 

@@ -42,7 +42,8 @@ class ProductSearchControllerTest extends TestCase
     private function makeProduct(): Product
     {
         $product = m::mock(Product::class)->makePartial();
-        $product->fill([
+        $product->fill(
+            [
             'name' => 'Pizza',
             'description' => 'Pizza promoção',
             'price' => 9.99,
@@ -51,7 +52,8 @@ class ProductSearchControllerTest extends TestCase
             'stock' => 99,
             'validate' => '2023-06-11',
             'ingredients' => 'tudo e mais um pouco'
-        ]);
+            ]
+        );
 
         $product->id = 10;
 
