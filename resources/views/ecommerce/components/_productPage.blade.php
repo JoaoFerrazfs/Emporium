@@ -27,7 +27,7 @@
                     <h2 class="card-title">{{$product->name}}</h2>
                     <p class="card-text">{{ $product->description }}</p>
                     <h2 class="card-title">Ingredientes</h2>
-                    <p class="card-text">{{ $product->ingredientes ?? "alguma coisa" }}</p>
+                    <p class="card-text">{{ $product->ingredients}}</p>
                 </div>
             </div>
         </div>
