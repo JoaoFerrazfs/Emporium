@@ -119,7 +119,7 @@ class OrderController extends Controller
 
     public function showOrderDetail(string $id): View
     {
-        $order = $this->orderRepository->find((int)$id);
+        $order = $this->orderRepository->first((int)$id);
 
         return auth()->user()->rule ?
             view('admin.orders.orderDetail', compact('order')) :
