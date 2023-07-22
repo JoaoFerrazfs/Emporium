@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Repositories\OrderRepository;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
@@ -20,10 +21,12 @@ class OrderController extends Controller
 {
     private const DEFAULT_FREIGHT_VALUE = 7;
     private OrderRepository $orderRepository;
+    private ProductRepository $productRepository;
 
-    public function __construct(OrderRepository $orderRepository)
+    public function __construct(OrderRepository $orderRepository, ProductRepository $productRepository)
     {
         $this->orderRepository = $orderRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function index(): View
@@ -116,7 +119,7 @@ class OrderController extends Controller
 
     public function showOrderDetail(string $id): View
     {
-        $order = Order::find((int)$id);
+        $order = $this->orderRepository->find((int)$id);
 
         return auth()->user()->rule ?
             view('admin.orders.orderDetail', compact('order')) :
@@ -171,7 +174,7 @@ class OrderController extends Controller
 
         foreach ($items as $key => $item) {
 
-            if (!$product = Product::find($key)) {
+            if (!$product = $this->productRepository->first($key)) {
 
                 continue;
             }

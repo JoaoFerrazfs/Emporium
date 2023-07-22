@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Address\AddressRequest;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use App\Repositories\OrderRepository;
+use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Mockery as m;
@@ -17,7 +19,8 @@ class OrderControllerTest extends TestCase
     {
         // Set
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
         $order = new Order();
         $order->fill($this->getOrderAttibutes());
         $order->id = 1;
@@ -42,7 +45,8 @@ class OrderControllerTest extends TestCase
         $request = m::mock(Request::class);
         $user = m::mock(User::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
         $order = new Order();
         $order->fill($this->getOrderAttibutes());
         $order->id = 1;
@@ -74,7 +78,8 @@ class OrderControllerTest extends TestCase
         // Set
         $request = m::mock(Request::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
 
         $cart = [
             [
@@ -110,7 +115,8 @@ class OrderControllerTest extends TestCase
         // Set
         $request = m::mock(Request::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
 
         // Expectations
         $request->expects()
@@ -129,7 +135,9 @@ class OrderControllerTest extends TestCase
         // Set
         $request = m::mock(AddressRequest::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $product = m::mock(Product::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
         $cart = [
             [
                 "id" => 10,
@@ -173,6 +181,14 @@ class OrderControllerTest extends TestCase
             ->method()
             ->andReturn('GET');
 
+        $productRepository->expects()
+            ->first(0)
+            ->andReturn($product);
+
+        $product->expects()
+            ->hasEnoughStock(1)
+            ->andReturnTrue();
+
         // Action
         $actual = $orderController->resolveOrder($request);
 
@@ -186,7 +202,9 @@ class OrderControllerTest extends TestCase
         // Set
         $request = m::mock(AddressRequest::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $product = m::mock(Product::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
         $cart = [
             [
                 "id" => 10,
@@ -246,6 +264,14 @@ class OrderControllerTest extends TestCase
                 ]
             );
 
+        $productRepository->expects()
+            ->first(0)
+            ->andReturn($product);
+
+        $product->expects()
+            ->hasEnoughStock(1)
+            ->andReturnTrue();
+
         // Action
         $actual = $orderController->resolveOrder($request);
 
@@ -259,7 +285,8 @@ class OrderControllerTest extends TestCase
         // Set
         $request = m::mock(AddressRequest::class);
         $orderRepository = m::mock(OrderRepository::class);
-        $orderController = new OrderController($orderRepository);
+        $productRepository = m::mock(ProductRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository);
 
         // Expectations
         $request->expects()

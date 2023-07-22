@@ -4,7 +4,6 @@
 @section('content')
 @include('ecommerce.components._freight')
 
-
 @endsection
 
 @section('script')

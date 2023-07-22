@@ -23,4 +23,9 @@ class OrderRepository
     {
         return $this->order->where(['user_id' => $userId])->get();
     }
+
+    public function first(int $orderUd): ?Order
+    {
+        return $this->order->find($orderUd);
+    }
 }

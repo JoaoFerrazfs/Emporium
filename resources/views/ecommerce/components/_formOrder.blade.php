@@ -50,7 +50,6 @@
                             <th class="text-bold-500">Numero</th>
 
                         </tr>
-                        @foreach($preparedOrder['completeCartItems'] as $key => $item)
                             <tr>
                                 <td class="text-bold-500">{{ $preparedOrder['zipCode'] }}</td>
                                 <td class="text-bold-500">{{ $preparedOrder['city'] }}</td>
@@ -58,7 +57,6 @@
                                 <td class="text-bold-500">{{ $preparedOrder['street'] }}</td>
                                 <td class="text-bold-500">{{ $preparedOrder['number'] }}</td>
                             </tr>
-                        @endforeach
                         </tbody>
                     </table>
                     @else

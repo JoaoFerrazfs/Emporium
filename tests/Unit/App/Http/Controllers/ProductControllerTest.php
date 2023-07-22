@@ -45,6 +45,9 @@ class ProductControllerTest extends TestCase
             ->saveProduct($input)
             ->andReturnTrue();
 
+        $productRepository->expects()
+            ->getAllProducts()
+            ->andReturn(new Collection([]));
         // Actions
         $actual = $product->store($request);
 
@@ -84,6 +87,10 @@ class ProductControllerTest extends TestCase
         $productRepository->expects()
             ->saveProduct($input)
             ->andReturnFalse();
+
+        $productRepository->expects()
+            ->getAllProducts()
+            ->andReturn(new Collection([]));
 
         // Actions
         $actual = $product->store($request);

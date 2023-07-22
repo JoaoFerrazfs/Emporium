@@ -35,8 +35,8 @@ class ProductController extends Controller
         ];
 
         return $this->productRepository->saveProduct($input) ?
-            view('admin.products.productsList', ['products' => Product::all()]) :
-            view('admin.products.productsList', ['products' => Product::all()])->with(['msg' => 'Erro ao cadastrar produto']);
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function myProducts(): View

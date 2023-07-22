@@ -38,7 +38,7 @@ class ProductRepository
         return (bool) $this->product->create($input);
     }
 
-    public function first(int $productId):Product
+    public function first(int $productId): ?Product
     {
         return $this->product->find($productId);
     }
