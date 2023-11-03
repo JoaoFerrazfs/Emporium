@@ -2,14 +2,11 @@ version: "3.7"
 services:
     app:
         build:
-            args:
-                user: sammy
-                uid: 1000
             context: ./
             dockerfile: Dockerfile
         image: emporium
         container_name: emporium-app
-        restart: unless-stopped
+        restart: always
         working_dir: /var/www/
         volumes:
             - ./:/var/www
@@ -31,3 +28,6 @@ services:
 networks:
     emporium:
         driver: bridge
+
+volumes:
+    mysql_data:
