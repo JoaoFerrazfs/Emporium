@@ -5,7 +5,8 @@ namespace App\Http\Apis\v1\Auth;
 use App\Http\Apis\Requests\Auth\AuthLoginRequest;
 use App\Http\Apis\Requests\Auth\AuthRegisterRequest;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -13,9 +14,15 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 
 class UserAuthController extends Controller
 {
+    public function __construct(
+        private readonly UserRepository $repository,
+        private readonly Application $application,
+    ){
+    }
+
     public function register(AuthRegisterRequest $request): Response|Application|ResponseFactory
     {
-        $user = User::create($request->all());
+        $user = $this->repository->createUser($request->all());
         $token = $user->createToken('API Token')->accessToken;
 
         return response(compact('user','token'));
@@ -23,7 +30,9 @@ class UserAuthController extends Controller
 
     public function login(AuthLoginRequest $request): Response | Application | ResponseFactory
     {
-        if (!auth()->attempt($request->all())) {
+        $AuthFactory = $this->application->make( AuthFactory::class);
+
+        if (!$AuthFactory->attempt($request->all())) {
             return response([
                 'error_message' => 'Incorrect Details. Please try again'
             ]);

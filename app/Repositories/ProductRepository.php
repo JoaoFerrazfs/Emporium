@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository
 {
-    public function __construct(Product $product)
-    {
-        $this->product = $product ;
+    public function __construct(
+        private readonly Product $product
+    ){
     }
 
     public function findProductByName(string $term): ?Collection
