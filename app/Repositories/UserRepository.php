@@ -13,6 +13,9 @@ class UserRepository
 
     public function createUser(array $userData): ?User
     {
+        $userData = array_merge($userData,[
+            'scopes' => json_encode($userData['scopes'])
+        ]);
        return  $this->user->create($userData);
     }
 }

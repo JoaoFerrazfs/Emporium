@@ -13,6 +13,7 @@ class AuthRegisterRequest extends FormRequest
           'email' => 'required|email|unique:users',
           'password' => 'required|confirmed',
           'rule' => 'boolean',
+          'scopes' => 'array'
       ];
   }
 

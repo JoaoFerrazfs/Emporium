@@ -26,7 +26,8 @@ class UserAuthControllerTest extends TestCase
         $personalAccessTokenResult->accessToken = '123zxc123';
         $input =  [
             'email' => 'joaoferrazp@gmail.com',
-            'password' => '123456'
+            'password' => '123456',
+            'scopes' => ['products_read']
         ];
         $expected = [
             'user' => 'serealized user',
@@ -38,12 +39,16 @@ class UserAuthControllerTest extends TestCase
             ->all()
             ->andReturn($input);
 
+        $request->expects()
+            ->input('scopes', [])
+            ->andReturn($input['scopes']);
+
         $userRepository->expects()
             ->createUser($input)
             ->andReturn($user);
 
         $user->expects()
-            ->createToken('API Token')
+            ->createToken('API Token', $input['scopes'])
             ->andReturn($personalAccessTokenResult);
 
         $user->expects()
@@ -108,7 +113,9 @@ class UserAuthControllerTest extends TestCase
         $input =  [
             'email' => 'joaoferrazp@gmail.com',
             'password' => '123456'
+
         ];
+        $scopes = ['scopes' => 'products_read'];
         $expected = [
             'user' => 'serealized user',
             'token' => '123zxc123'
@@ -127,7 +134,11 @@ class UserAuthControllerTest extends TestCase
             ->attempt($input)->andReturnTrue();
 
         $user->expects()
-            ->createToken('API Token')
+            ->getAttribute('scopes')
+            ->andReturn(json_encode($scopes));
+
+        $user->expects()
+            ->createToken('API Token', $scopes)
             ->andReturn($personalAccessTokenResult);
 
         $user->expects()
