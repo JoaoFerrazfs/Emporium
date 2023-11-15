@@ -5,18 +5,125 @@ namespace App\Http\Apis\v1\Product;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Apis\Requests\v1\Products\ProductRequest;
+use App\Http\Apis\Transformers\v1\Product\ProductTransformer;
 use Mockery as m;
 use Tests\TestCase;
 
 class ProductSearchControllerTest extends TestCase
 {
-    public function testReturnAnExistentProduct(): void
+    public function testShouldReturnAnExistentProduct(): void
     {
         // Set
-        $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransfomer = m::mock(ProductTransformer::class);
+        $request = m::mock(ProductRequest::class);
+        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
         $realProduct = new Product();
         $realProduct->name = 'Pizza';
-        $expected = [
+        $expected = $this->getExpectedResponse() ;
+
+        $collection = new Collection([$realProduct,$realProduct]);
+
+        // Expectations
+        $request->expects()
+            ->get('term')
+            ->andReturn('pizza');
+
+        $productRepository->expects()
+            ->findProductByName('pizza')
+            ->andReturn($collection);
+
+        $productTransfomer->expects()
+            ->transform($collection)
+            ->andReturn($expected);
+
+        // Action
+        $actual = $ProductSearchController->search($request);
+
+        // Assertions
+        $this->assertSame(200, $actual->getStatusCode());
+
+    }
+
+    public function testShouldNotReturnAnExistentProduct(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransfomer = m::mock(ProductTransformer::class);
+        $request = m::mock(ProductRequest::class);
+        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
+
+        // Expectations
+        $request->expects()
+            ->get('term')
+            ->andReturn('pizza');
+
+        $productRepository->expects()
+            ->findProductByName('pizza')
+            ->andReturnNull();
+
+        // Action
+        $actual = $ProductSearchController->search($request);
+
+        // Assertions
+        $this->assertSame(404, $actual->status());
+    }
+
+    public function testShouldReturnAnListOfProducts(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransfomer = m::mock(ProductTransformer::class);
+        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
+        $realProduct = new Product();
+        $realProduct->name = 'Pizza';
+        $expected = $this->getExpectedResponse() ;
+
+        $collection = new Collection([$realProduct,$realProduct]);
+
+        // Expectations
+        $productRepository->expects()
+            ->findAllAvailableProducts()
+            ->andReturn($collection);
+
+        $productTransfomer->expects()
+            ->transform($collection)
+            ->andReturn($expected);
+
+        // Action
+        $actual = $ProductSearchController->listAvailableProducts();
+
+        // Assertions
+        $this->assertSame(200, $actual->getStatusCode());
+
+    }
+
+    public function testShouldNotReturnAnListOfProducts(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransfomer = m::mock(ProductTransformer::class);
+        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
+        $realProduct = new Product();
+        $realProduct->name = 'Pizza';
+
+        // Expectations
+        $productRepository->expects()
+            ->findAllAvailableProducts()
+            ->andReturn();
+
+        // Action
+        $actual = $ProductSearchController->listAvailableProducts();
+
+        // Assertions
+        $this->assertSame(404, $actual->getStatusCode());
+
+    }
+
+    private function getExpectedResponse(): array
+    {
+        return [
             'data' => [
                 [
                     'name' => 'Pizza',
@@ -40,43 +147,5 @@ class ProductSearchControllerTest extends TestCase
                 ],
             ]
         ];
-
-        $collection = new Collection([$realProduct,$realProduct]);
-
-        // Expectations
-        $product->expects()
-            ->findProductByName('pizza')
-            ->andReturn($collection);
-
-        // Action
-        $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
-
-        // Assertions
-        $this->assertSame($expected, json_decode($actual->getContent(), 1));
-        $this->assertSame(200, $actual->getStatusCode());
-
-    }
-
-    public function testNotReturnAnExistentProduct(): void
-    {
-        // Set
-        $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
-        $expected = [
-            'data' => []
-        ];
-
-        $collection = new Collection();
-
-        // Expectations
-        $product->expects()
-            ->findProductByName('pizza')
-            ->andReturn($collection);
-
-        // Action
-        $actual = $this->post('http://localhost:8000/api/productSearch/?term=pizza');
-
-        // Assertions
-        $this->assertSame(json_encode($expected), $actual->getContent());
-        $this->assertSame(200, $actual->getStatusCode());
     }
 }

@@ -11,4 +11,9 @@ class BaseApi
         return response()->json(['data' => $data])->setStatusCode($status);
     }
 
+    public function responseNotFound(array $data = [], int $status = 404): JsonResponse
+    {
+        return response()->json(['data' => $data])->setStatusCode($status);
+    }
+
 }

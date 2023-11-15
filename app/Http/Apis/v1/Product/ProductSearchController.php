@@ -18,15 +18,28 @@ class ProductSearchController extends BaseApi
 
     public function search(ProductRequest $request):JsonResponse
     {
+
         $term = $request->get('term');
 
         if(!$data = $this->productRepository->findProductByName($term)) {
-            return $this->response();
+            return $this->responseNotFound();
         }
 
         $data = $this->transformer->transform($data);
 
         return $this->response($data);
+    }
+
+    public function listAvailableProducts():JsonResponse
+    {
+        if(!$data = $this->productRepository->findAllAvailableProducts()) {
+            return $this->responseNotFound();
+        }
+
+
+        $data = $this->transformer->transform($data);
+
+        return  $this->response($data);
     }
 }
 

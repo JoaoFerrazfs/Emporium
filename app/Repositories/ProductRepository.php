@@ -17,13 +17,14 @@ class ProductRepository
     {
         $data = $this->product->where('name', 'LIKE', '%' . $term . '%')->get();
 
-        return !$data->first() ? null: $data ;
+        return $data->count() ? $data : null ;
 
     }
 
-    public function findAllAvailableProducts(): Collection
+    public function findAllAvailableProducts(): ?Collection
     {
-        return $this->product->where('status', 'disponivel')->get();
+        $result = $this->product->where('status', 'disponivel')->get();
+        return $result->count() ? $result : null  ;
 
     }
 
