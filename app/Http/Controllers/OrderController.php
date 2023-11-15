@@ -7,26 +7,23 @@ use App\Mail\ClientNewOrder;
 use App\Mail\NewOrder;
 use App\Models\Order;
 use App\Models\Cart;
-use App\Models\Product;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     private const DEFAULT_FREIGHT_VALUE = 7;
-    private OrderRepository $orderRepository;
-    private ProductRepository $productRepository;
 
-    public function __construct(OrderRepository $orderRepository, ProductRepository $productRepository)
-    {
-        $this->orderRepository = $orderRepository;
-        $this->productRepository = $productRepository;
+    public function __construct(
+        private readonly OrderRepository $orderRepository,
+        private readonly ProductRepository $productRepository,
+        private readonly ConfigRepository $configRepository
+    ){
     }
 
     public function index(): View
@@ -71,11 +68,11 @@ class OrderController extends Controller
         if ($request->method() == 'GET') {
             $preparedOrder = [
                 'user_id' => auth()->id(),
-                'zipCode' => env('zipCode'),
-                'neighborhood' => env('NEIGHBORHOOD'),
-                'city' => env('CITY'),
-                'street' => env('STREET'),
-                'number' => env('NUMBER'),
+                'zipCode' => $this->configRepository->get('companyData.address.zipCode'),
+                'neighborhood' => $this->configRepository->get('companyData.address.neighborhood'),
+                'city' => $this->configRepository->get('companyData.address.city'),
+                'street' => $this->configRepository->get('companyData.address.street'),
+                'number' => $this->configRepository->get('companyData.address.number'),
                 'status' => 'Aguardando confirmacao',
                 'completeCartItems' => $completeCartItems,
                 'total' => $totalPrice,

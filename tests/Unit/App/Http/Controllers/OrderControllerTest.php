@@ -6,6 +6,7 @@ use App\Http\Requests\Address\AddressRequest;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Config\Repository as ConfigRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +21,8 @@ class OrderControllerTest extends TestCase
         // Set
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
         $order = new Order();
         $order->fill($this->getOrderAttibutes());
         $order->id = 1;
@@ -46,7 +48,8 @@ class OrderControllerTest extends TestCase
         $user = m::mock(User::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
         $order = new Order();
         $order->fill($this->getOrderAttibutes());
         $order->id = 1;
@@ -79,7 +82,8 @@ class OrderControllerTest extends TestCase
         $request = m::mock(Request::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
 
         $cart = [
             [
@@ -116,7 +120,8 @@ class OrderControllerTest extends TestCase
         $request = m::mock(Request::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
 
         // Expectations
         $request->expects()
@@ -137,7 +142,8 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $product = m::mock(Product::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
         $cart = [
             [
                 "id" => 10,
@@ -189,6 +195,26 @@ class OrderControllerTest extends TestCase
             ->hasEnoughStock(1)
             ->andReturnTrue();
 
+        $configRepository->expects()
+            ->get('companyData.address.zipCode')
+            ->andReturn('32920-000');
+
+        $configRepository->expects()
+            ->get('companyData.address.neighborhood')
+            ->andReturn('Pedra Branca');
+
+        $configRepository->expects()
+            ->get('companyData.address.city')
+            ->andReturn('Sao Joaquim de Bicas');
+
+        $configRepository->expects()
+            ->get('companyData.address.street')
+            ->andReturn('Poços de Caldas');
+
+        $configRepository->expects()
+            ->get('companyData.address.number')
+            ->andReturn('26');
+
         // Action
         $actual = $orderController->resolveOrder($request);
 
@@ -204,7 +230,8 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $product = m::mock(Product::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
         $cart = [
             [
                 "id" => 10,
@@ -286,7 +313,8 @@ class OrderControllerTest extends TestCase
         $request = m::mock(AddressRequest::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository);
+        $configRepository = m::mock(ConfigRepository::class);
+        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
 
         // Expectations
         $request->expects()
