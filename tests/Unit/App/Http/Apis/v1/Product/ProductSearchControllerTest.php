@@ -4,7 +4,6 @@ namespace App\Http\Apis\v1\Product;
 
 use App\Models\Product;
 use App\Repositories\ProductRepository;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery as m;
 use Tests\TestCase;
