@@ -5,6 +5,8 @@ services:
             context: ./
             dockerfile: Dockerfile
         image: emporium
+        environment:
+            - COMPOSER_ALLOW_SUPERUSER=1
         container_name: emporium-app
         restart: always
         working_dir: /var/www/

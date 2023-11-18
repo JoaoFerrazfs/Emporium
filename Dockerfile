@@ -19,7 +19,13 @@ RUN apt-get install -y \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
     libpng-dev \
-    libxml2-dev
+    libxml2-dev \
+    libpcre3-dev \
+    libssl-dev \
+    libnghttp2-dev
+
+# Install and enable Swoole
+RUN pecl install swoole && docker-php-ext-enable swoole
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -33,7 +39,15 @@ RUN touch /var/www/database/database.sqlite
 RUN chown -R www-data:www-data /var/www/database
 
 # Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Copy code base
+COPY . /var/www
+
+# Install dependencies
+RUN composer install --no-interaction
 
 # Copy the initialization script
 COPY init.sh /usr/local/bin/
