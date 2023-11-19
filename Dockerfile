@@ -27,6 +27,9 @@ RUN apt-get install -y \
 # Install and enable Swoole
 RUN pecl install swoole && docker-php-ext-enable swoole
 
+# Install and enable phpredis
+RUN pecl install redis && docker-php-ext-enable redis
+
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
