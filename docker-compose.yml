@@ -4,6 +4,9 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
+            args:
+                UID: ${UID}
+                GID: ${GID}
         image: emporium
         environment:
             - COMPOSER_ALLOW_SUPERUSER=1
@@ -40,6 +43,3 @@ services:
 networks:
     emporium:
         driver: bridge
-
-volumes:
-    mysql_data:

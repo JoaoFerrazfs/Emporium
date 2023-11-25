@@ -7,6 +7,8 @@ insert_final_newline = true
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
+ignore = chmod
+ignore = chown
 
 [*.md]
 trim_trailing_whitespace = false
