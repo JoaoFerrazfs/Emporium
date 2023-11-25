@@ -9,20 +9,19 @@ class ProductSeeder extends Seeder
 {
     public function run()
     {
-        Product::factory()->create([
-            'name' => 'Pizza',
-            "image" => "pizza1.jpg"
-        ]);
+        $i = 0;
+        while($i < 50){
+            Product::factory()->create([
+                'name' => 'Pizza',
+                "description" => "Nova pizza $i",
+                "price" => $i * random_int(0, 20),
+                "image" => "pizza$i.jpg",
+                "status" => "Ativo",
+                "stock" => $i * random_int(0, 5),
+                "validate" => new \DateTime('+ 50 days')
+            ]);
 
-        Product::factory()->create([
-            'name' => 'Pizza 2',
-            "image" => "pizza2.png"
-        ]);
-
-        Product::factory()->create([
-            'name' => 'Pizza 3',
-            "image" => "pizza3.jpg"
-        ]);
-
+            $i++;
+        }
     }
 }
