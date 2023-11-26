@@ -3,6 +3,7 @@
 namespace Admin\reports\products;
 
 use Admin\reports\ReportsExporter;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,18 +28,21 @@ class Job implements ShouldQueue
 
     public function handle(Processor $processor):void
     {
-        $data = $processor->process($this->products);
+        if(!$data = $processor->process($this->products)){
+            throw  new Exception('Empty data');
+        }
 
-        (new ReportsExporter($data))->store(
-            $this->fullPath,
-            's3'
-        );
+        $reportsExporter = new ReportsExporter($data);
+
+        if(!$reportsExporter->store($this->fullPath)){
+            throw  new Exception('Error with exportation');
+        }
+
     }
 
     public function handlePath(): string
     {
        return self::DEFAULT_FOLDER . DIRECTORY_SEPARATOR .
             "$this->id.csv";
-
     }
 }

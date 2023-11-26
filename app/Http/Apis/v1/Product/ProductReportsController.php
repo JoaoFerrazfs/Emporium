@@ -5,6 +5,8 @@ namespace App\Http\Apis\v1\Product;
 use Admin\reports\products\Job;
 use App\Http\Apis\v1\BaseApi;
 use App\Repositories\ProductRepository;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 
 class ProductReportsController extends BaseApi
@@ -14,24 +16,22 @@ class ProductReportsController extends BaseApi
     ){
     }
 
-    public function exportProducts() {
+    public function exportProducts(): JsonResponse
+    {
         if(!$products = $this->productRepository->findAllAvailableProducts()) {
             return $this->responseNotFound();
         }
 
-        $id = $this->createId();
-        $job = new Job($products, $id);
-        dispatch($job);
+        try {
+            $job = new Job($products, uniqid('products_report_'));
+            dispatch($job);
 
-        return $this->response([
-            'link' => Storage::url($job->fullPath)
-        ]);
+            $link = Storage::url($job->fullPath);
 
+            return $this->response(compact('link'));
+
+        }catch (Exception $exception){
+            return $this->errorResponse([$exception->getMessage()]);
+        }
     }
-
-    private function createId(): string
-    {
-       return uniqid('products_report_');
-    }
-
 }
