@@ -20,6 +20,16 @@ class Product extends Model
         'ingredients',
     ];
 
+    const REPORTS_FIELDS = [
+        'name',
+        'description',
+        'price',
+        'status',
+        'stock',
+        'validate',
+        'ingredients',
+    ];
+
 
     public function hasEnoughStock(float $quantity): bool {
 
