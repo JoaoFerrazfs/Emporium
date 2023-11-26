@@ -5,6 +5,7 @@ namespace Admin\reports\products;
 use Admin\reports\ReportsExporter;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,13 +27,13 @@ class Job implements ShouldQueue
         $this->fullPath = $this->handlePath();
     }
 
-    public function handle(Processor $processor):void
+    public function handle(Processor $processor, Container $container):void
     {
         if(!$data = $processor->process($this->products)){
             throw  new Exception('Empty data');
         }
 
-        $reportsExporter = new ReportsExporter($data);
+        $reportsExporter = $container->make(ReportsExporter::class,['reports' => $data]);
 
         if(!$reportsExporter->store($this->fullPath)){
             throw  new Exception('Error with exportation');
@@ -40,7 +41,7 @@ class Job implements ShouldQueue
 
     }
 
-    public function handlePath(): string
+    private function handlePath(): string
     {
        return self::DEFAULT_FOLDER . DIRECTORY_SEPARATOR .
             "$this->id.csv";
