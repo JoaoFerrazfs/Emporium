@@ -12,6 +12,11 @@ Route::prefix('v1')->group(function () {
      * Products routes
      */
     include_once __DIR__.'/apis/products.php';
+
+    /**
+     * Reports routes
+     */
+    include_once __DIR__.'/apis/reports.php';
 });
 
 
