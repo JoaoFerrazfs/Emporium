@@ -13,8 +13,8 @@
                             </ul>
                         </div>
                     @endif
-                    @if($product->id ?? false)
-                        <p>Código: {{$product->id}} </p>
+                    @if($product['id'] ?? false)
+                        <p>Código: {{$product['id']}} </p>
                     @endif
                     <form method="POST" action="@yield('action_route')" class="form"  enctype="multipart/form-data">
                         @csrf
@@ -23,59 +23,59 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Nome</label>
-                                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name', $product->name ?? null) }}" >
+                                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name', $product['name'] ?? null) }}" >
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Descrição</label>
-                                        <input type="text" id="description" class="form-control" name="description" value="{{ old('description', $product->description ?? null) }}"  >
+                                        <input type="text" id="description" class="form-control" name="description" value="{{ old('description', $product['description'] ?? null) }}"  >
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Ingredientes</label>
-                                        <input type="text" id="ingredients" class="form-control" name="ingredients" value="{{ old('ingredients', $product->ingredients ?? null) }}" >
+                                        <input type="text" id="ingredients" class="form-control" name="ingredients" value="{{ old('ingredients', $product['ingredients'] ?? null) }}" >
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Estoque</label>
-                                        <input type="number" id="stock" class="form-control" name="stock" value="{{ old('stock', $product->stock ?? null) }}"  >
+                                        <input type="number" id="stock" class="form-control" name="stock" value="{{ old('stock', $product['stock'] ?? null) }}"  >
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Validade</label>
-                                        <input type="date" id="validate" class="form-control" name="validate" value="{{ old('validate', $product->validate ?? null) }}"  >
+                                        <input type="date" id="validate" class="form-control" name="validate" value="{{ old('validate', $product['validate'] ?? null) }}"  >
                                     </div>
                                 </div>
 
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Preço</label>
-                                        <input type="text" name="price" class="form-control" id="price" onKeyUp="coinMask(this, event)"  value="{{ old('price', $product->price ?? null) }}"  >
+                                        <input type="text" name="price" class="form-control" id="price" onKeyUp="coinMask(this, event)"  value="{{ old('price', $product['price'] ?? null) }}"  >
                                     </div>
                                 </div>
 
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="email-id-vertical">Imagem</label>
-                                        <input type="file" id="image" class="form-control" name="image" value="{{ old('image', $product->image ?? null) }}" >
+                                        <input type="file" id="image" class="form-control" name="image" value="{{ old('image', $product['image'] ?? null) }}" >
                                     </div>
                                 </div>
 
-                                @if($product->id ?? false)
-                                    <input type="hidden" name="id" id="id" value={{$product->id}}  >
+                                @if($product['id'] ?? false)
+                                    <input type="hidden" name="id" id="id" value={{$product['id']}}  >
                                 @endif
 
-                                @if($product->image ?? false)
-                                    <img class="image-product-edit" src="{{ '/img/products/'. $product->image }}" alt="{{ $product->name }}">
+                                @if($product['image'] ?? false)
+                                    <img class="image-product-edit" src="{{ asset($product['image'])}}" alt="{{ $product['name'] }}">
                                 @endif
 
                                 <div class="form-check">
                                     <div class="checkbox">
-                                        <input type="checkbox" id="status" name="status" class="form-check-input" @if(($product->status ?? false) == "disponivel" ) checked="" @endif>
+                                        <input type="checkbox" id="status" name="status" class="form-check-input" @if(($product['status'] ?? false) == "disponivel" ) checked="" @endif>
                                         <label for="checkbox3">Disponível</label>
                                     </div>
                                 </div>

@@ -4,20 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Products\ProductsRequest;
 use App\Repositories\ProductRepository;
-use App\Models\Product;
-use Admin\contents\Image;
+use App\Http\Transformers\Product as ProductTransformer;
+use DateTime;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    private Image $image;
-    private ProductRepository $productRepository;
+    public function __construct(
+        private readonly ProductRepository $productRepository,
+        private readonly DateTime $dateTime,
+        private readonly ProductTransformer $productTransformer,
 
-    public function __construct(Image $image, ProductRepository $productRepository)
-    {
-        $this->image = $image;
-        $this->productRepository = $productRepository;
+    ){
+
     }
 
     public function store(ProductsRequest $request): View
@@ -31,7 +32,7 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->image->saveLocalImage($request) ?? "default.jpg",
+            'image' => $this->saveImage($request) ?? "default.jpg",
         ];
 
         return $this->productRepository->saveProduct($input) ?
@@ -46,10 +47,14 @@ class ProductController extends Controller
 
     public function editProducts(int $productId): View
     {
+        if(!$product = $this->productRepository->first($productId)){
+            return $this->myProducts();
+        }
+
         return view(
             'admin.products.productEdit',
             [
-                'product' => $this->productRepository->first((int)$productId)
+                'product' => $this->productTransformer->transformProduct($product)
             ]
         );
     }
@@ -77,7 +82,7 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->image->saveLocalImage($request) ?? $product->image,
+            'image' => $this->saveImage($request) ?? $product->image,
         ];
 
         return $product->update($input) ?
@@ -97,5 +102,23 @@ class ProductController extends Controller
 
         return view('ecommerce.products.productPage', ['product' => $product]);
     }
+
+    private function saveImage(Request $request): ?string
+    {
+        if(!$request->hasFile('image') || !$request->file('image')){
+            return  false;
+        }
+
+        $extension = $request->image->extension();
+        $date = $this->dateTime->format('Y-m-d-H:i:s');
+
+        $imageName = $request->name . '-' . $date . "." . $extension;
+        $fullPath = "images/$imageName";
+
+        Storage::disk('s3')->put($fullPath, file_get_contents($request->file('image')));
+
+        return $fullPath;
+    }
+
 
 }
