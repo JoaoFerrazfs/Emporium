@@ -2,38 +2,35 @@
 
 namespace App\Http\Apis\v1\Product;
 
+use App\Http\Apis\v1\BaseApi;
 use App\Http\Requests\Products\ProductsRequest;
-use App\Http\Transformers\Product as ProductTransformer;
 use App\Repositories\ProductRepository;
-use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 
-class ProductController
+class ProductController extends BaseApi
 {
     public function __construct(
         private readonly ProductRepository $productRepository,
-        private readonly DateTime $dateTime,
-        private readonly ProductTransformer $productTransformer,
-
     ){
-
     }
 
-    public function store(ProductsRequest $request): View
+    public function store(ProductsRequest $request): JsonResponse
     {
-        $formData = $request->all();
         $input = [
-            'name' => $formData['name'],
-            'description' => $formData['description'],
-            'ingredients' => $formData['ingredients'],
-            'stock' => $formData['stock'],
-            'validate' => $formData['validate'],
-            'price' => $formData['price'],
-            'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->saveImage($request) ?? "default.jpg",
+            'name' => $request->name,
+            'description' => $request->description,
+            'ingredients' => $request->ingredients,
+            'stock' => $request->stock,
+            'validate' => $request->validate,
+            'price' => $request->price,
+            'status' => $request->status ?? false ? 'disponivel' : 'indisponivel',
+            'image' => saveImage($request) ?? "default.jpg",
         ];
 
-        return $this->productRepository->saveProduct($input) ?
-            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
-            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
+        $product = $this->productRepository->saveProduct($input);
+
+        return $product ?
+           $this->response(compact('product')) :
+           $this->errorResponse(['error' => 'Error when trying to register a new product']);
     }
 }

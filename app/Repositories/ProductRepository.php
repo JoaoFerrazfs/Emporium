@@ -34,9 +34,9 @@ class ProductRepository
 
     }
 
-    public function saveProduct(array $input):bool
+    public function saveProduct(array $input)
     {
-        return (bool) $this->product->create($input);
+        return $this->product->create($input);
     }
 
     public function first(int $productId): ?Product
