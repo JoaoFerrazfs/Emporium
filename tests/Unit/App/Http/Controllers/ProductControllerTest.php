@@ -52,7 +52,6 @@ class ProductControllerTest extends TestCase
 
         $request->expects()
             ->file('image')
-            ->twice()
             ->andReturn($file->getPathname());
 
         $productRepository->expects()
@@ -62,6 +61,7 @@ class ProductControllerTest extends TestCase
         $productRepository->expects()
             ->getAllProducts()
             ->andReturn(new Collection([]));
+
         // Actions
         $actual = $product->store($request);
 
@@ -269,6 +269,10 @@ class ProductControllerTest extends TestCase
             ->update(m::type('array'))
             ->andReturnTrue();
 
+        $product->expects()
+            ->getAttribute('image')
+            ->andReturn('path');
+
         // Action
         $actual = $productController->update($request);
 
@@ -320,6 +324,10 @@ class ProductControllerTest extends TestCase
 
         $request->expects()
             ->hasFile('image')
+            ->andReturnFalse();
+
+        $product->expects()
+            ->getAttribute('image')
             ->andReturnFalse();
 
         $product->expects()

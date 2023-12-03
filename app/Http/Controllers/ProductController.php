@@ -17,9 +17,7 @@ class ProductController extends Controller
         private readonly DateTime $dateTime,
         private readonly ProductTransformer $productTransformer,
 
-    ){
-
-    }
+    ){}
 
     public function store(ProductsRequest $request): View
     {
@@ -32,7 +30,7 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->saveImage($request) ?? "default.jpg",
+            'image' => saveImage($request) ?? "default.jpg",
         ];
 
         return $this->productRepository->saveProduct($input) ?
@@ -73,7 +71,6 @@ class ProductController extends Controller
     {
         $product = $this->productRepository->first($request['id']);
         $formData = $request->all();
-
         $input = [
             'name' => $formData['name'],
             'description' => $formData['description'],
@@ -82,7 +79,7 @@ class ProductController extends Controller
             'validate' => $formData['validate'],
             'price' => $formData['price'],
             'status' => $formData['status'] ?? false ? 'disponivel' : 'indisponivel',
-            'image' => $this->saveImage($request) ?? $product->image,
+            'image' => saveImage($request) ?? $product->image,
         ];
 
         return $product->update($input) ?
@@ -102,23 +99,4 @@ class ProductController extends Controller
 
         return view('ecommerce.products.productPage', ['product' => $product]);
     }
-
-    private function saveImage(Request $request): ?string
-    {
-        if(!$request->hasFile('image') || !$request->file('image')){
-            return  false;
-        }
-
-        $extension = $request->image->extension();
-        $date = $this->dateTime->format('Y-m-d-H:i:s');
-
-        $imageName = $request->name . '-' . $date . "." . $extension;
-        $fullPath = "images/$imageName";
-
-        Storage::disk('s3')->put($fullPath, file_get_contents($request->file('image')));
-
-        return $fullPath;
-    }
-
-
 }
