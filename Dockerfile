@@ -3,61 +3,66 @@ FROM php:8.2.0-fpm
 # Set working directory
 WORKDIR /var/www
 
-# Set up user and group IDs
-ARG UID
-ARG GID
+# Install system dependencies and build tools
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libcurl4-openssl-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev \
+    libonig-dev \
+    autoconf \
+    gcc \
+    make
 
-# Install system dependencies
-RUN apt-get update && apt-get upgrade -y \
-    && apt-get install -y \
-        git \
-        curl \
-        libpng-dev \
-        libonig-dev \
-        libxml2-dev \
-        zip \
-        unzip \
-        libcurl4-openssl-dev \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libxml2-dev \
-        libpcre3-dev \
-        libssl-dev \
-        libnghttp2-dev
-
-# Install and enable Swoole
-RUN pecl install swoole && docker-php-ext-enable swoole
-
-# Install and enable phpredis
-RUN pecl install redis && docker-php-ext-enable redis
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
+# Install additional PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd xml curl
 
-# Create SQLite file and directory
-RUN mkdir -p /var/www/database
-RUN touch /var/www/database/database.sqlite
-RUN chown -R $UID:$GID /var/www/database
-
-# Get latest Composer
+# Install and enable Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Instalar a extensão zip
+RUN apt-get update \
+    && apt-get install -y zlib1g-dev libzip-dev \
+    && docker-php-ext-install zip
+
+# Install cURL with the version required by PHP extension
+RUN apt-get install -y libcurl4 libcurl4-openssl-dev \
+    && docker-php-ext-configure curl --with-curl \
+    && docker-php-ext-install curl
+
+# Install and enable redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
 
 # Copy code base
-COPY . /var/www
+COPY . .
 
-# Install dependencies
+# Install project dependencies
+COPY composer.json composer.lock ./
 RUN composer install --no-interaction
 
-# Copy the initialization script
-COPY init.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/init.sh
+# Create storage directory for Pail
+RUN mkdir -p /var/www/storage/pail
 
-# Start PHP-FPM with the initialization script
-CMD ["/usr/local/bin/init.sh"]
+# Adjust permissions for storage directory
+RUN chown -R www-data:www-data /var/www/storage
+RUN chmod -R 775 /var/www/storage
+
+# Adjust permissions for the Pail directory and its files
+RUN chown -R www-data:www-data /var/www/storage/pail
+RUN chmod -R 775 /var/www/storage/pail
+
+# Defina UID e GID do usuário www-data para corresponder ao host
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
+# Switch to www-data user for the following commands
+USER www-data
+
+# Start PHP-FPM
+CMD ["php-fpm"]
