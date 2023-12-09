@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/storage/pail/*
 /public/img/*
 /public/images/*
 /public/img/commons/*
@@ -19,3 +20,4 @@ yarn-error.log
 /.vscode
 .phpunit.cache
 .phpunit.cache/*
+
