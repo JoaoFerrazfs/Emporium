@@ -24,3 +24,6 @@ yarn-error.log
 .composer
 .bash_history
  storage/pail/
+.phpunit.cache/test-results/
+.phpunit.cache/test-results/*
+
