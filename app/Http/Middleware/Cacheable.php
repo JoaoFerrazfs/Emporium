@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Symfony\Component\HttpFoundation\Response;
 
-class Cacheble
+class Cacheable
 {
     public function handle(Request $request, Closure $next): Response
     {
@@ -19,7 +19,6 @@ class Cacheble
         $response = $next($request);
 
         Redis::set($cacheKey, $response->content(), 'EX', 3600);
-
 
         return $response;
     }
