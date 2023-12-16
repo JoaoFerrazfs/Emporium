@@ -50,7 +50,9 @@ class ProductController extends BaseApi
 
     public function getProductById(string $id):JsonResponse
     {
-        if(!$product = $this->productRepository->first($id)) {
+        $product = $this->productRepository->first($id);
+
+        if($product?->getAttribute('status') !== 'disponivel') {
             return $this->responseNotFound();
         }
 

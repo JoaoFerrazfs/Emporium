@@ -165,7 +165,7 @@ class ProductControllerTest extends TestCase
         $productRepository = m::mock(ProductRepository::class);
         $productTransformer = m::mock(ProductTransformer::class);
         $productController = new ProductController($productRepository, $productTransformer);
-        $product = new Product();
+        $product = new Product(['status' => 'disponivel']);
 
         // Expectations
         $productRepository->expects()
