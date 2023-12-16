@@ -26,4 +26,5 @@ yarn-error.log
  storage/pail/
 .phpunit.cache/test-results/
 .phpunit.cache/test-results/*
+phpcs_report.json
 
