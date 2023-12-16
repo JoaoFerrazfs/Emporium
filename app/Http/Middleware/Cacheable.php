@@ -16,7 +16,14 @@ class Cacheable
             return response()->json(json_decode($cachedData, 1));
         }
 
+        /**
+         * @var $response Response
+         */
         $response = $next($request);
+
+        if($response->getStatusCode() >= 300 ){
+            return $response;
+        }
 
         Redis::set($cacheKey, $response->content(), 'EX', 3600);
 
