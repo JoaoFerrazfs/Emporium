@@ -9,7 +9,6 @@ class ProductTransformer
     public function transform(Collection $products): array
     {
         foreach ($products as $product) {
-
             $transformedProducts[] = [
                 'name' => $product->name ,
                 'description' => $product->description,

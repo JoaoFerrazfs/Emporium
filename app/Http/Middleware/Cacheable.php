@@ -25,7 +25,7 @@ class Cacheable
             return $response;
         }
 
-        Redis::set($cacheKey, $response->content(), 'EX', 3600);
+        Redis::set($cacheKey, $response->getContent(), 'EX', 3600);
 
         return $response;
     }

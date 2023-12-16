@@ -106,10 +106,9 @@ class CacheableTest extends TestCase
 
             if($this->status < 300) {
                 $response->expects()
-                    ->content()
+                    ->getContent()
                     ->andReturn("{'data':'result'}");
             };
-
 
             $response->expects()
                 ->getStatusCode()

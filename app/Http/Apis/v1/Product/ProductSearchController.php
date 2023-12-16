@@ -10,18 +10,18 @@ use Illuminate\Http\JsonResponse;
 
 class ProductSearchController extends BaseApi
 {
-    public function __construct(ProductRepository $productRepository, ProductTransformer $transformer)
-    {
-        $this->productRepository = $productRepository;
-        $this->transformer = $transformer;
+    public function __construct(
+        private readonly ProductRepository  $productRepository,
+        private readonly ProductTransformer $transformer
+    ){
     }
 
-    public function search(ProductRequest $request):JsonResponse
+    public function search(ProductRequest $request): JsonResponse
     {
 
         $term = $request->get('term');
 
-        if(!$data = $this->productRepository->findProductByName($term)) {
+        if (!$data = $this->productRepository->findProductByName($term)) {
             return $this->responseNotFound();
         }
 
@@ -30,16 +30,7 @@ class ProductSearchController extends BaseApi
         return $this->response($data);
     }
 
-    public function listAvailableProducts():JsonResponse
-    {
-        if(!$data = $this->productRepository->findAllAvailableProducts()) {
-            return $this->responseNotFound();
-        }
-
-
-        $data = $this->transformer->transform($data);
-
-        return  $this->response($data);
-    }
 }
+
+
 

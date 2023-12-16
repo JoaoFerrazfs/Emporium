@@ -70,57 +70,6 @@ class ProductSearchControllerTest extends TestCase
         $this->assertSame(404, $actual->status());
     }
 
-    public function testShouldReturnAnListOfProducts(): void
-    {
-        // Set
-        $productRepository = m::mock(ProductRepository::class);
-        $productTransfomer = m::mock(ProductTransformer::class);
-        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
-        $realProduct = new Product();
-        $realProduct->name = 'Pizza';
-        $expected = $this->getExpectedResponse() ;
-
-        $collection = new Collection([$realProduct,$realProduct]);
-
-        // Expectations
-        $productRepository->expects()
-            ->findAllAvailableProducts()
-            ->andReturn($collection);
-
-        $productTransfomer->expects()
-            ->transform($collection)
-            ->andReturn($expected);
-
-        // Action
-        $actual = $ProductSearchController->listAvailableProducts();
-
-        // Assertions
-        $this->assertSame(200, $actual->getStatusCode());
-
-    }
-
-    public function testShouldNotReturnAnListOfProducts(): void
-    {
-        // Set
-        $productRepository = m::mock(ProductRepository::class);
-        $productTransfomer = m::mock(ProductTransformer::class);
-        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
-        $realProduct = new Product();
-        $realProduct->name = 'Pizza';
-
-        // Expectations
-        $productRepository->expects()
-            ->findAllAvailableProducts()
-            ->andReturn();
-
-        // Action
-        $actual = $ProductSearchController->listAvailableProducts();
-
-        // Assertions
-        $this->assertSame(404, $actual->getStatusCode());
-
-    }
-
     private function getExpectedResponse(): array
     {
         return [

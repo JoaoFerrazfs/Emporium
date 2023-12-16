@@ -10,7 +10,8 @@ Route::prefix('products')->group(function () {
     Route::middleware('api.cache')->group(function () {
 
         Route::post('/search', [ProductSearchController::class,'search'])->name('product.search');
-        Route::post('/list', [ProductSearchController::class,'listAvailableProducts'])->name('available.products');
+        Route::post('/list', [ProductController::class,'listAvailableProducts'])->name('available.products');
+        Route::get('/{id}', [ProductController::class,'getProductById'])->name('product');
     });
 });
 

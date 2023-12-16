@@ -2,9 +2,11 @@
 
 namespace App\Http\Apis\v1\Product;
 
+use App\Http\Apis\Transformers\v1\Product\ProductTransformer;
 use App\Http\Requests\Products\ProductsRequest;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Mockery as m;
@@ -17,7 +19,8 @@ class ProductControllerTest extends TestCase
         // Set
         $request = m::mock(ProductsRequest::class);
         $productRepository = m::mock(ProductRepository::class);
-        $productController = new ProductController($productRepository);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
         $image = UploadedFile::fake()->image('image-fake');
 
         $input = [
@@ -63,7 +66,8 @@ class ProductControllerTest extends TestCase
         // Set
         $request = m::mock(ProductsRequest::class);
         $productRepository = m::mock(ProductRepository::class);
-        $productController = new ProductController($productRepository);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
         Storage::fake();
         $errorMessage = 'Error when trying to register a new product';
         $image = UploadedFile::fake()->image('image-fake');
@@ -105,5 +109,120 @@ class ProductControllerTest extends TestCase
         $this->assertStringContainsString($errorMessage, $actual->content());
 
     }
+
+    public function testShouldNotReturnAnListOfProducts(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
+        $realProduct = new Product();
+        $realProduct->name = 'Pizza';
+
+        // Expectations
+        $productRepository->expects()
+            ->findAllAvailableProducts()
+            ->andReturn();
+
+        // Action
+        $actual = $productController->listAvailableProducts();
+
+        // Assertions
+        $this->assertSame(404, $actual->getStatusCode());
+    }
+
+    public function testShouldReturnAnListOfProducts(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
+        $realProduct = new Product();
+        $realProduct->name = 'Pizza';
+        $expected = $this->getExpectedResponse() ;
+
+        $collection = new Collection([$realProduct,$realProduct]);
+
+        // Expectations
+        $productRepository->expects()
+            ->findAllAvailableProducts()
+            ->andReturn($collection);
+
+        $productTransformer->expects()
+            ->transform($collection)
+            ->andReturn($expected);
+
+        // Action
+        $actual = $productController->listAvailableProducts();
+
+        // Assertions
+        $this->assertSame(200, $actual->getStatusCode());
+    }
+
+    public function testShouldGetProductById(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
+        $product = new Product();
+
+        // Expectations
+        $productRepository->expects()
+            ->first('55')
+            ->andReturn($product);
+
+        $productTransformer->expects()
+            ->transform(m::type(Collection::class))
+            ->andReturn([]);
+
+        // Action
+        $actual = $productController->getProductById('55');
+
+        // Assertions
+        $this->assertSame(200, $actual->getStatusCode());
+    }
+
+    public function testShouldNotGetNoxExistProductById(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransformer = m::mock(ProductTransformer::class);
+        $productController = new ProductController($productRepository, $productTransformer);
+
+        // Expectations
+        $productRepository->expects()
+            ->first('55')
+            ->andReturnNull();
+
+        // Action
+        $actual = $productController->getProductById('55');
+
+        // Assertions
+        $this->assertSame(404, $actual->getStatusCode());
+    }
+
+    private function getExpectedResponse(): array
+    {
+        $product =  [
+            'name' => 'Pizza',
+            'description' => null,
+            'price' => null,
+            'image' => null,
+            'status' => null,
+            'stock' => null,
+            'validate' => null,
+            'ingredients' => null,
+        ];
+
+        return [
+            'data' => [
+                $product,
+                $product,
+            ]
+        ];
+    }
+
+
 }
 
