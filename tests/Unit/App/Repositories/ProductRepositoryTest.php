@@ -9,6 +9,26 @@ use Mockery as m;
 
 class ProductRepositoryTest extends TestCase
 {
+    public function testShouldGetAllProducts(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+        $collection = new Collection([$product]);
+
+        $productRepository = new ProductRepository($product);
+
+        // Expectation
+        $product->expects()
+            ->all()
+            ->andReturn($collection);
+
+        // Action
+        $actual = $productRepository->getAllProducts();
+
+        // Assertions
+        $this->isInstanceOf(Collection::class);
+        $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
+    }
     public function testShouldFindProductsByTerm(): void
     {
         // Set
@@ -31,7 +51,6 @@ class ProductRepositoryTest extends TestCase
         // Assertions
         $this->isInstanceOf(Collection::class);
         $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
-
     }
 
     public function testShouldFindAvailableProductsByTerm(): void
@@ -60,7 +79,6 @@ class ProductRepositoryTest extends TestCase
         // Assertions
         $this->isInstanceOf(Collection::class);
         $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
-
     }
 
     public function testShouldReturnAllAvailableProducts(): void
@@ -84,7 +102,6 @@ class ProductRepositoryTest extends TestCase
         // Assertions
         $this->isInstanceOf(Collection::class);
         $this->assertSame($this->getExpectation(), $actual->first()->getAttributes());
-
     }
 
     public function testShouldSaveAProduct(): void
@@ -114,7 +131,6 @@ class ProductRepositoryTest extends TestCase
 
         // Assertions
         $this->assertTrue($actual);
-
     }
 
     public function testShouldGetProduct(): void
@@ -134,7 +150,6 @@ class ProductRepositoryTest extends TestCase
         // Assertions
         $this->assertInstanceOf(Product::class, $actual);
         $this->assertSame($product->getAttributes(), $actual->getAttributes());
-
     }
 
     private function makeProduct(): Product
