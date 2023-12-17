@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Admin\contents\Image;
 use App\Http\Requests\Products\ProductsRequest;
 use App\Http\Transformers\Product as ProductTransformer;
 use App\Models\Product;
-use DateTime;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use App\Repositories\ProductRepository;
@@ -17,14 +15,13 @@ use Mockery as m;
 
 class ProductControllerTest extends TestCase
 {
-    public function testShouldCreateNewProduct(): void
+    public function testShouldStoreNewProduct(): void
     {
         // Set
-        $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
+        $productRepository = m::mock(ProductRepository::class);
         $request = m::mock(ProductsRequest::class);
-        Storage::fake()->append('bolo.jpg','sas');
+        Storage::fake()->append('bolo.jpg', 'sas');
         $uploadedFile = UploadedFile::fake();
         $file = $uploadedFile->image('bolo.jpg', 5, 5);
         $input = [
@@ -38,7 +35,7 @@ class ProductControllerTest extends TestCase
             'image' => $file
         ];
 
-        $product = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $request->expects()
@@ -63,7 +60,7 @@ class ProductControllerTest extends TestCase
             ->andReturn(new Collection([]));
 
         // Actions
-        $actual = $product->store($request);
+        $actual = $productController->store($request);
 
         // Assertions
         $this->assertNotEmpty($actual->getData());
@@ -74,10 +71,9 @@ class ProductControllerTest extends TestCase
     {
         // Set
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
         $request = m::mock(ProductsRequest::class);
-        Storage::fake()->append('bolo.jpg','sas');
+        Storage::fake()->append('bolo.jpg', 'sas');
         $uploadedFile = UploadedFile::fake();
         $file = $uploadedFile->image('bolo.jpg', 5, 5);
         $input = [
@@ -91,7 +87,7 @@ class ProductControllerTest extends TestCase
             'image' => $file
         ];
 
-        $product = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $request->expects()
@@ -111,7 +107,8 @@ class ProductControllerTest extends TestCase
             ->andReturn(new Collection([]));
 
         // Actions
-        $actual = $product->store($request);
+        $actual = $productController->store($request);
+
         // Assertions
         $this->assertNotEmpty($actual->getData());
         $this->assertSame('admin.products.productsList', $actual->name());
@@ -124,10 +121,9 @@ class ProductControllerTest extends TestCase
         $product = $this->makeProduct();
         $productCollection = new Collection([$product]);
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $productRepository->expects()
@@ -149,10 +145,9 @@ class ProductControllerTest extends TestCase
         $product = $this->makeProduct();
         $productCollection = new Collection([$product]);
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $productRepository->expects()
@@ -175,10 +170,9 @@ class ProductControllerTest extends TestCase
         $product = $this->makeProduct();
 
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $productRepository->expects()
@@ -194,15 +188,14 @@ class ProductControllerTest extends TestCase
         $this->assertSame('ecommerce.products.productPage', $actual->name());
     }
 
-    public function testShouldReturnAPageWithOneProduct(): void
+    public function testShouldReturnEditProductPage(): void
     {
         // Set
         $product = $this->makeProduct();
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectations
         $productRepository->expects()
@@ -218,6 +211,33 @@ class ProductControllerTest extends TestCase
 
         // Assertions
         $this->assertArrayHasKey('product', $actual->getData());
+        $this->assertSame('admin.products.productEdit', $actual->name());
+    }
+
+    public function testShouldNotReturnEditProductPage(): void
+    {
+        // Set
+        $product = $this->makeProduct();
+        $productRepository = m::mock(ProductRepository::class);
+        $productTransformer = m::mock(ProductTransformer::class);
+
+        $productController = new ProductController($productRepository, $productTransformer);
+
+        // Expectations
+        $productRepository->expects()
+            ->first(10)
+            ->andReturnNull();
+
+        $productRepository->expects()
+            ->getAllProducts()
+            ->andReturn(new Collection($product));
+
+
+        // Actions
+        $actual = $productController->editProducts('10');
+
+        // Assertions
+        $this->assertSame('admin.products.productsList', $actual->name());
     }
 
     public function testShouldUpdateProduct(): void
@@ -240,9 +260,8 @@ class ProductControllerTest extends TestCase
         ];
 
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectation
         $request->expects()
@@ -301,9 +320,8 @@ class ProductControllerTest extends TestCase
         ];
 
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectation
         $request->expects()
@@ -349,10 +367,9 @@ class ProductControllerTest extends TestCase
         $product = m::mock(Product::class);
 
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectation
         $productRepository->expects()
@@ -381,10 +398,9 @@ class ProductControllerTest extends TestCase
         $product = m::mock(Product::class);
 
         $productRepository = m::mock(ProductRepository::class);
-        $dateTime =  new DateTime();
         $productTransformer = m::mock(ProductTransformer::class);
 
-        $productController = new ProductController($productRepository, $dateTime, $productTransformer);
+        $productController = new ProductController($productRepository, $productTransformer);
 
         // Expectation
         $productRepository->expects()

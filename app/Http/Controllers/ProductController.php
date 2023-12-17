@@ -5,19 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Products\ProductsRequest;
 use App\Repositories\ProductRepository;
 use App\Http\Transformers\Product as ProductTransformer;
-use DateTime;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function __construct(
         private readonly ProductRepository $productRepository,
-        private readonly DateTime $dateTime,
         private readonly ProductTransformer $productTransformer,
-
-    ){}
+    ) {
+    }
 
     public function store(ProductsRequest $request): View
     {
@@ -45,7 +41,7 @@ class ProductController extends Controller
 
     public function editProducts(int $productId): View
     {
-        if(!$product = $this->productRepository->first($productId)){
+        if (!$product = $this->productRepository->first($productId)) {
             return $this->myProducts();
         }
 
@@ -64,7 +60,6 @@ class ProductController extends Controller
         return $product->delete() ?
             view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
             view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
-
     }
 
     public function update(ProductsRequest $request): View
