@@ -15,7 +15,7 @@ class ProductSearchControllerTest extends TestCase
     public function testShouldFindProductsByTerm(): void
     {
         // Set
-        $product = $this->instance(ProductRepository::class, m::mock(ProductRepository::class));
+        $product =  m::mock(ProductRepository::class);
         $realProduct = $this->makeProduct();
         $collection = new Collection([$realProduct]);
         $request = m::mock(Request::class);
@@ -28,32 +28,58 @@ class ProductSearchControllerTest extends TestCase
             ->andReturn($collection);
 
         $request->expects()
-            ->get('search_term', false)
+            ->get('search_term')
             ->andReturn('pizza');
+
+        // Action
+        $actual =  $productSearchController->getProducts($request);
+
+        // Assertions
+        $this->assertInstanceOf(View::class, $actual);
+        $this->assertInstanceOf(Product::class, $actual->getData()['products'][0]);
+    }
+
+    public function testShouldFindNotProductsByTerm(): void
+    {
+        // Set
+        $product =  m::mock(ProductRepository::class);
+        $realProduct = $this->makeProduct();
+        $collection = new Collection([$realProduct]);
+        $request = m::mock(Request::class);
+
+        $productSearchController = new ProductSearchController($product);
+
+        // Expectations
+        $product->expects()
+            ->findAllAvailableProducts()
+            ->andReturn($collection);
+
+        $request->expects()
+            ->get('search_term')
+            ->andReturnNull();
 
         // Action
         $actual = $productSearchController->getProducts($request);
 
         // Assertions
-        $this->isInstanceOf(View::class);
-
+        $this->assertInstanceOf(View::class, $actual);
+        $this->assertInstanceOf(Product::class, $actual->getData()['products'][0]);
     }
 
     private function makeProduct(): Product
     {
-        $product = m::mock(Product::class)->makePartial();
-        $product->fill(
-            [
-            'name' => 'Pizza',
-            'description' => 'Pizza promoção',
-            'price' => 9.99,
-            'image' => 'pizza1.jpg',
-            'status' => 'disponivel',
-            'stock' => 99,
-            'validate' => '2023-06-11',
-            'ingredients' => 'tudo e mais um pouco'
-            ]
-        );
+        $product = m::mock(Product::class)
+            ->makePartial()
+            ->fill([
+                'name' => 'Pizza',
+                'description' => 'Pizza promoção',
+                'price' => 9.99,
+                'image' => 'pizza1.jpg',
+                'status' => 'disponivel',
+                'stock' => 99,
+                'validate' => '2023-06-11',
+                'ingredients' => 'tudo e mais um pouco'
+            ]);
 
         $product->id = 10;
 
