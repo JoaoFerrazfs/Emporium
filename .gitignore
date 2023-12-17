@@ -28,4 +28,5 @@ yarn-error.log
 .phpunit.cache/test-results/*
 phpcs_report.json
 coverage/*
+.config
 
