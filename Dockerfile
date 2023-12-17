@@ -39,6 +39,12 @@ RUN apt-get install -y libcurl4 libcurl4-openssl-dev \
 # Install and enable redis extension
 RUN pecl install redis && docker-php-ext-enable redis
 
+# Install and enable xdebug extension
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install and enable pcov extension
+RUN pecl install pcov && docker-php-ext-enable pcov
+
 
 # Copy code base
 COPY . .
