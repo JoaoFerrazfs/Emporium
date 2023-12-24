@@ -12,12 +12,13 @@ class ReportsExporter implements FromCollection
 
     public function __construct(
         private readonly array $reports
-    ){
+    ) {
     }
 
     public function collection(): Collection
     {
-        return collect($this->reports);
+        return collect(
+            $this->reports
+        )    ;
     }
-
 }

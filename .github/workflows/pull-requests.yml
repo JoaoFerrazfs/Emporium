@@ -1,0 +1,62 @@
+name: Pull requests pipeline
+
+on: [push]
+
+jobs:
+  phpcs:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2.0'
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: |
+          composer update
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Set Modified Files Env Variable
+        run: |
+          BASE_BRANCH=$(gh pr view ${{ github.event.number }} --json baseRefName | jq -r '.baseRefName')
+          MODIFIED_FILES=$(git diff --name-only origin/$BASE_BRANCH)
+          FILES=$(echo $MODIFIED_FILES | tr '\n' ' ')
+          echo "MODIFIED_FILES=${FILES}" >> $GITHUB_ENV
+
+      - name: Run PHPCS on Modified Files
+        run: |
+          IFS=' ' read -ra FILES <<< "${{ env.MODIFIED_FILES }}"
+          for file in "${FILES[@]}"; do
+            echo "Running PHPCS on $file"
+            vendor/bin/phpcs --standard=PSR2 "$file"
+          done
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: phpcs
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2.0'
+
+      - uses: actions/checkout@v3
+
+      - name: Make a copy of the .env file
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install Dependencies
+        run: |
+          composer update
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Execute tests via PHPUnit
+        run: vendor/bin/phpunit
+
