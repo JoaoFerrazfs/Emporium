@@ -2,10 +2,8 @@ name: PR verifications
 
 on:
   push:
-  pull_request:
     branches-ignore:
-      - master
-
+      - develop
 jobs:
   phpcs:
     runs-on: ubuntu-latest
