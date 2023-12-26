@@ -13,4 +13,17 @@
     <exclude-pattern>docker-compose/*</exclude-pattern>
     <exclude-pattern>resources/*</exclude-pattern>
     <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>tests/Pest.php</exclude-pattern>
+
+
+    <!-- Remove namespace validation for helpers and migrations -->
+    <rule ref="PSR2.Namespaces.NamespaceDeclaration" severity="0">
+        <exclude-pattern>helpers/*</exclude-pattern>
+        <exclude-pattern>database/*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR1.Classes.ClassDeclaration" severity="0">
+        <exclude-pattern>database/*</exclude-pattern>
+    </rule>
+
 </ruleset>

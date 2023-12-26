@@ -18,5 +18,3 @@ Route::prefix('v1')->group(function () {
      */
     include_once __DIR__.'/apis/reports.php';
 });
-
-

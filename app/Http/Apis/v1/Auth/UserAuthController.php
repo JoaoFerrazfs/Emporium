@@ -13,13 +13,12 @@ use Illuminate\Http\Response;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
 
-
 class UserAuthController extends Controller
 {
     public function __construct(
         private readonly UserRepository $repository,
         private readonly Application $application,
-    ){
+    ) {
     }
 
     public function register(AuthRegisterRequest $request): Response|Application|ResponseFactory
@@ -28,12 +27,12 @@ class UserAuthController extends Controller
         $user = $this->repository->createUser($request->all());
         $token = $user->createToken('API Token', $scopes)->accessToken;
 
-        return response(compact('user','token'));
+        return response(compact('user', 'token'));
     }
 
     public function login(AuthLoginRequest $request): Response | Application | ResponseFactory
     {
-        $AuthFactory = $this->application->make( AuthFactory::class);
+        $AuthFactory = $this->application->make(AuthFactory::class);
         if (!$AuthFactory->attempt($request->all())) {
             return response([
                 'error_message' => 'Incorrect Details. Please try again'
@@ -45,6 +44,5 @@ class UserAuthController extends Controller
         $token = $user->createToken('API Token', $scopes)->accessToken;
 
         return response(compact('user', 'token'));
-
     }
 }

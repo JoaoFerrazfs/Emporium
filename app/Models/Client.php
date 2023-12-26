@@ -17,5 +17,4 @@ class Client extends Model
     protected $state;
     protected $city;
     protected $number;
-
 }

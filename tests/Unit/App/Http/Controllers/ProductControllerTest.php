@@ -243,7 +243,7 @@ class ProductControllerTest extends TestCase
     public function testShouldUpdateProduct(): void
     {
         // Set
-        Route::post('/produtos/salvarEdicao', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::post('/produtos/salvarEdicao', [ProductController::class, 'update'])->name('Admin.products.update');
         $request = m::mock(ProductsRequest::class);
         $product = $this->makeProduct();
         $productCollection = new Collection([$product]);
@@ -303,7 +303,7 @@ class ProductControllerTest extends TestCase
     public function testShouldNotUpdateProduct(): void
     {
         // Set
-        Route::post('/produtos/salvarEdicao', [ProductController::class, 'update'])->name('admin.products.update');
+        Route::post('/produtos/salvarEdicao', [ProductController::class, 'update'])->name('Admin.products.update');
         $request = m::mock(ProductsRequest::class);
         $product = $this->makeProduct();
         $productCollection = new Collection([$product]);

@@ -16,8 +16,8 @@ class HasAvailableCart
      */
     public function handle(Request $request, Closure $next): Response|RedirectResponse
     {
-        if(!$request->cookie('cart')){
-           return redirect(route('cart'));
+        if (!$request->cookie('cart')) {
+            return redirect(route('cart'));
         }
 
         return $next($request);

@@ -32,6 +32,4 @@ class AddressRequest extends FormRequest
             'number.numeric' => 'O campo Número deve ser um valor numérico.',
         ];
     }
-
-
 }

@@ -17,8 +17,7 @@ class MercadoPago
     {
         $mercadoItems = [];
 
-        foreach ($cartItems as $item){
-
+        foreach ($cartItems as $item) {
             $mpItem = new Item();
 
             $mpItem->id = $item['id'];

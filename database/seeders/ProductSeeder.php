@@ -10,7 +10,7 @@ class ProductSeeder extends Seeder
     public function run()
     {
         $i = 0;
-        while($i < 50){
+        while ($i < 50) {
             Product::factory()->create([
                 'name' => 'Pizza',
                 "description" => "Nova pizza $i",

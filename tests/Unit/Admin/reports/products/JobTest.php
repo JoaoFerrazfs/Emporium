@@ -1,7 +1,7 @@
 <?php
 
-use Admin\reports\products\Job;
-use Admin\reports\products\Processor;
+namespace Admin\reports\products;
+
 use Admin\reports\ReportsExporter;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,7 +17,7 @@ class JobTest extends TestCase
         $processor = m::mock(Processor::class);
         $container = m::mock(Container::class);
         $reportsExporter = m::mock(ReportsExporter::class);
-        $job = new Job($collection,'some_id');
+        $job = new Job($collection, 'some_id');
 
         // Expectations
         $processor->expects()
@@ -42,7 +42,7 @@ class JobTest extends TestCase
         $collection = m::mock(Collection::class);
         $processor = m::mock(Processor::class);
         $container = m::mock(Container::class);
-        $job = new Job($collection,'some_id');
+        $job = new Job($collection, 'some_id');
 
         // Expectations
         $processor->expects()
@@ -62,7 +62,7 @@ class JobTest extends TestCase
         $processor = m::mock(Processor::class);
         $container = m::mock(Container::class);
         $reportsExporter = m::mock(ReportsExporter::class);
-        $job = new Job($collection,'some_id');
+        $job = new Job($collection, 'some_id');
 
         // Expectations
         $processor->expects()

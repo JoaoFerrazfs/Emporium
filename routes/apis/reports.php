@@ -7,8 +7,5 @@ Route::prefix('reports')->group(function () {
 
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductReportsController::class,'exportProducts'])->name('products.report');
-
     });
-
 });
-

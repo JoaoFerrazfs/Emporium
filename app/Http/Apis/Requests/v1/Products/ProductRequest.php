@@ -12,5 +12,4 @@ class ProductRequest extends FormRequest
             'term' => 'required|min:3'
         ];
     }
-
 }

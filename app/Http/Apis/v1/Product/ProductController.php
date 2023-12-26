@@ -14,7 +14,7 @@ class ProductController extends BaseApi
     public function __construct(
         private readonly ProductRepository $productRepository,
         private readonly ProductTransformer $transformer
-    ){
+    ) {
     }
 
     public function store(ProductsRequest $request): JsonResponse
@@ -39,7 +39,7 @@ class ProductController extends BaseApi
 
     public function listAvailableProducts():JsonResponse
     {
-        if(!$data = $this->productRepository->findAllAvailableProducts()) {
+        if (!$data = $this->productRepository->findAllAvailableProducts()) {
             return $this->responseNotFound();
         }
 
@@ -52,15 +52,14 @@ class ProductController extends BaseApi
     {
         $product = $this->productRepository->first($id);
 
-        if($product?->getAttribute('status') !== 'disponivel') {
+        if ($product?->getAttribute('status') !== 'disponivel') {
             return $this->responseNotFound();
         }
 
-        $productCollection = New Collection([$product]);
+        $productCollection = new Collection([$product]);
 
         $data = $this->transformer->transform($productCollection);
 
         return  $this->response($data);
     }
-
 }

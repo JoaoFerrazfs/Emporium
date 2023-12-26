@@ -20,5 +20,4 @@ class BaseApi
     {
         return response()->json(['error' => $data])->setStatusCode($status);
     }
-
 }

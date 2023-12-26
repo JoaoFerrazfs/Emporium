@@ -22,6 +22,3 @@ include_once __DIR__.'/ecommerce/routes.php';
  * Admin control access routes
  */
 include_once __DIR__.'/admin/routes.php';
-
-
-

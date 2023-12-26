@@ -23,7 +23,7 @@ class OrderController extends Controller
         private readonly OrderRepository $orderRepository,
         private readonly ProductRepository $productRepository,
         private readonly ConfigRepository $configRepository
-    ){
+    ) {
     }
 
     public function index(): View
@@ -47,7 +47,6 @@ class OrderController extends Controller
 
         if (!empty($cart)) {
             return view('ecommerce.checkout.cart', ['cart' => $cart]);
-
         }
 
         return view('ecommerce.checkout.emptyCart');
@@ -132,13 +131,12 @@ class OrderController extends Controller
 
     private function getCartInformation(AddressRequest $request): ?array
     {
-        if(!$items = json_decode($request->cookie('cart'), true)) {
+        if (!$items = json_decode($request->cookie('cart'), true)) {
             return null;
         }
 
         $treatedItems = [];
         foreach ($items as $item) {
-
             if (array_key_exists($item['id'], $treatedItems)) {
                 $treatedItems[$item['id']]['quantity']++;
                 continue;
@@ -149,7 +147,6 @@ class OrderController extends Controller
             $treatedItems[$item['id']]['name'] = $item['name'];
             $treatedItems[$item['id']]['price'] = $item['price'];
             $treatedItems[$item['id']]['stock'] = $item['stock'];
-
         }
 
         return array_values($treatedItems);
@@ -170,9 +167,7 @@ class OrderController extends Controller
         $result = [];
 
         foreach ($items as $key => $item) {
-
             if (!$product = $this->productRepository->first($key)) {
-
                 continue;
             }
             if (!$product->hasEnoughStock($item['quantity'])) {
@@ -225,8 +220,5 @@ class OrderController extends Controller
     {
         Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
-
     }
-
-
 }

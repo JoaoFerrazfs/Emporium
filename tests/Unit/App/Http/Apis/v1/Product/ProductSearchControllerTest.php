@@ -43,7 +43,6 @@ class ProductSearchControllerTest extends TestCase
 
         // Assertions
         $this->assertSame(200, $actual->getStatusCode());
-
     }
 
     public function testShouldNotReturnAnExistentProduct(): void

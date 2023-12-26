@@ -60,7 +60,6 @@ class UserAuthControllerTest extends TestCase
 
         // Assertions
         $this->assertSame(json_encode($expected), $action->content());
-
     }
 
     public function testShouldNotMakeUserLogin(): void
@@ -96,7 +95,6 @@ class UserAuthControllerTest extends TestCase
 
         // Assertions
         $this->assertSame(json_encode($expected), $action->content());
-
     }
 
     public function testShouldMakeUserLogin(): void
@@ -154,6 +152,5 @@ class UserAuthControllerTest extends TestCase
 
         // Assertions
         $this->assertSame(json_encode($expected), $action->content());
-
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 if (!function_exists('saveImage')) {
     function saveImage(Request $request): ?string
     {
-        if(!$request->hasFile('image')){
+        if (!$request->hasFile('image')) {
             return  null;
         }
 
