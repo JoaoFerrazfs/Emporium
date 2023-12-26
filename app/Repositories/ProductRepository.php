@@ -10,7 +10,7 @@ class ProductRepository
 {
     public function __construct(
         private readonly Product $product
-    ){
+    ) {
     }
 
     public function findProductByName(string $term): ?Collection
@@ -18,20 +18,17 @@ class ProductRepository
         $data = $this->product->where('name', 'LIKE', '%' . $term . '%')->get();
 
         return $data->count() ? $data : null ;
-
     }
 
     public function findAllAvailableProducts(): ?Collection
     {
         $result = $this->product->where('status', 'disponivel')->get();
         return $result->count() ? $result : null  ;
-
     }
 
     public function findAvailableProductByName(string $term): ?Collection
     {
         return $this->product->where('name', 'LIKE', '%' . $term . '%')->where('status', 'disponivel')->get();
-
     }
 
     public function saveProduct(array $input)

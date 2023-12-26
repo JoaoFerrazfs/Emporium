@@ -56,7 +56,7 @@ class ApiLoggingTest extends TestCase
 
     private function buildClosure(): Closure
     {
-        return function (){
+        return function () {
             $response = m::mock(Response::class);
 
             $response->expects()

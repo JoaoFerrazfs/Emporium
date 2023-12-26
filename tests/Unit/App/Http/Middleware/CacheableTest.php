@@ -35,7 +35,7 @@ class CacheableTest extends TestCase
             ->andReturnNull();
 
         Redis::shouldReceive('set')
-            ->with('api:3019c81267f0062b3a22e395d13e942c', "{'data':'result'}", 'EX', 3600 )
+            ->with('api:3019c81267f0062b3a22e395d13e942c', "{'data':'result'}", 'EX', 3600)
             ->once()
             ->andReturnNull();
 
@@ -63,7 +63,7 @@ class CacheableTest extends TestCase
             ->andReturnNull();
 
         Redis::shouldReceive('set')
-            ->with('api:3019c81267f0062b3a22e395d13e942c', "{'data':'result'}", 'EX', 3600 )
+            ->with('api:3019c81267f0062b3a22e395d13e942c', "{'data':'result'}", 'EX', 3600)
             ->never()
             ->andReturnNull();
 
@@ -101,10 +101,10 @@ class CacheableTest extends TestCase
 
     private function buildClosure(): Closure
     {
-        return function (){
+        return function () {
             $response = m::mock(Response::class);
 
-            if($this->status < 300) {
+            if ($this->status < 300) {
                 $response->expects()
                     ->getContent()
                     ->andReturn("{'data':'result'}");

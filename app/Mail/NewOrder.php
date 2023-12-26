@@ -16,7 +16,7 @@ class NewOrder extends Mailable
 
     public function __construct(Order $order)
     {
-       $this->order = $order;
+        $this->order = $order;
     }
 
     public function build(): self

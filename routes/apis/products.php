@@ -17,12 +17,5 @@ Route::prefix('products')->group(function () {
         Route::get('/{id}', [ProductController::class,'getProductById'])->name('product');
 
         Route::get('/search', [ProductSearchController::class,'search'])->name('product.search');
-
-
     });
-
-
 });
-
-
-

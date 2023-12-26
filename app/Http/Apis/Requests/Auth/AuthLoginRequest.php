@@ -6,11 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AuthLoginRequest extends FormRequest
 {
-  public function rules()
-  {
-      return [
+    public function rules()
+    {
+        return [
           'email' => 'required|email|',
           'password' => 'required|confirmed',
-      ];
-  }
+        ];
+    }
 }

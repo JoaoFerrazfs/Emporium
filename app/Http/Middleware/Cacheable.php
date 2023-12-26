@@ -21,7 +21,7 @@ class Cacheable
          */
         $response = $next($request);
 
-        if($response->getStatusCode() >= 300 ){
+        if ($response->getStatusCode() >= 300) {
             return $response;
         }
 

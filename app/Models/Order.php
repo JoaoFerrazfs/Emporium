@@ -42,7 +42,4 @@ class Order extends Model
 
         return $address;
     }
-
 }
-
-

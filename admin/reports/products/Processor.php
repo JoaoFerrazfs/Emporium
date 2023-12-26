@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\reports\products;
+namespace admin\reports\products;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +20,6 @@ class Processor
         }
 
         return empty($data) ? null : $this->addHeaders($data);
-
     }
 
     private function addHeaders(array $data): array

@@ -1,12 +1,13 @@
 <?php
 
-use Admin\reports\products\Processor;
+namespace Admin\reports\products;
+
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Mockery as m;
 use Tests\TestCase;
 
-class ProcessorTest  extends TestCase
+class ProcessorTest extends TestCase
 {
     public function testShouldProcess():void
     {
