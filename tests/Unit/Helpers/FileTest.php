@@ -41,7 +41,6 @@ class FileTest extends TestCase
     public function testShouldNotSaveImage(): void
     {
         // Set
-        $image = UploadedFile::fake()->image('image');
         $request = m::mock(Request::class);
         Storage::fake();
 

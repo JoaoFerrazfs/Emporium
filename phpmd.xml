@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="My Rules">
+    <description>Custom rules for my Laravel project</description>
+
+    <fileExtensions>
+        <include name="php"/>
+    </fileExtensions>
+
+
+    <exclude-pattern>app/Notifications/*</exclude-pattern>
+    <exclude-pattern>app/Console/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>public/*</exclude-pattern>
+    <exclude-pattern>bootstrap/*</exclude-pattern>
+    <exclude-pattern>coverage/*</exclude-pattern>
+    <exclude-pattern>docker-compose/*</exclude-pattern>
+    <exclude-pattern>resources/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>app/Exceptions/Handler.php</exclude-pattern>
+    <exclude-pattern>tests/Pest.php</exclude-pattern>
+
+    <rule ref="rulesets/unusedcode.xml"/>
+    <!-- Adicione outras regras conforme necessário -->
+</ruleset>
