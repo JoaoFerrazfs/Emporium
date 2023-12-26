@@ -2,7 +2,6 @@ name: PR verifications
 
 on:
   push:
-  pull_request:
     branches-ignore:
       - master
 
