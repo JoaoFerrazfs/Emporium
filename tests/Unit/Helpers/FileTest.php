@@ -1,12 +1,14 @@
 <?php
 
+namespace Helpers;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Mockery as m;
 use Tests\TestCase;
 
-class fileTest extends TestCase
+class FileTest extends TestCase
 {
     public function testShouldSaveImage(): void
     {
@@ -54,5 +56,4 @@ class fileTest extends TestCase
         // Assertions
         $this->assertNull($actual);
     }
-
 }

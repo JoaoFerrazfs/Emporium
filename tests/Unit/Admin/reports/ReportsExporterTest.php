@@ -1,6 +1,7 @@
 <?php
 
-use Admin\reports\ReportsExporter;
+namespace Admin\reports;
+
 use Tests\TestCase;
 
 class ReportsExporterTest extends TestCase

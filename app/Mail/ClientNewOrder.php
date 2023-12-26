@@ -33,6 +33,6 @@ class ClientNewOrder extends Mailable
      */
     public function build()
     {
-        return $this->markdown('email.client-new-order', ['order' => $this->order, 'paymentUrl' => $this->paymentUrl] );
+        return $this->markdown('email.client-new-order', ['order' => $this->order, 'paymentUrl' => $this->paymentUrl]);
     }
 }

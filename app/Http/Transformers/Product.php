@@ -21,5 +21,4 @@ class Product
             'image' => Storage::disk('s3')->url($product->image),
         ];
     }
-
 }

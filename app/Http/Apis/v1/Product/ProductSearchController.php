@@ -13,7 +13,7 @@ class ProductSearchController extends BaseApi
     public function __construct(
         private readonly ProductRepository  $productRepository,
         private readonly ProductTransformer $transformer
-    ){
+    ) {
     }
 
     public function search(ProductRequest $request): JsonResponse
@@ -29,8 +29,4 @@ class ProductSearchController extends BaseApi
 
         return $this->response($data);
     }
-
 }
-
-
-

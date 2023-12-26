@@ -58,7 +58,6 @@ class ProductControllerTest extends TestCase
         // Assertions
 
         $this->assertSame(200, $actual->getStatusCode());
-
     }
 
     public function testShouldNotRegisterAProduct(): void
@@ -107,7 +106,6 @@ class ProductControllerTest extends TestCase
         // Assertions
         $this->assertSame(500, $actual->getStatusCode());
         $this->assertStringContainsString($errorMessage, $actual->content());
-
     }
 
     public function testShouldNotReturnAnListOfProducts(): void
@@ -222,7 +220,4 @@ class ProductControllerTest extends TestCase
             ]
         ];
     }
-
-
 }
-

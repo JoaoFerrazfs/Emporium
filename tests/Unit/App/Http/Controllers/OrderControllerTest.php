@@ -326,7 +326,6 @@ class OrderControllerTest extends TestCase
 
         // Assertions
         $this->assertSame(302, $actual->status());
-
     }
 
     private function getOrderAttibutes(): array

@@ -13,12 +13,12 @@ class ProductReportsController extends BaseApi
 {
     public function __construct(
         private readonly ProductRepository $productRepository,
-    ){
+    ) {
     }
 
     public function exportProducts(): JsonResponse
     {
-        if(!$products = $this->productRepository->findAllAvailableProducts()) {
+        if (!$products = $this->productRepository->findAllAvailableProducts()) {
             return $this->responseNotFound();
         }
 
@@ -29,8 +29,7 @@ class ProductReportsController extends BaseApi
             $link = Storage::url($job->fullPath);
 
             return $this->response(compact('link'));
-
-        }catch (Exception $exception){
+        } catch (Exception $exception) {
             return $this->errorResponse([$exception->getMessage()]);
         }
     }

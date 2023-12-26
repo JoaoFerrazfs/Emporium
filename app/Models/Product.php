@@ -31,7 +31,8 @@ class Product extends Model
     ];
 
 
-    public function hasEnoughStock(float $quantity): bool {
+    public function hasEnoughStock(float $quantity): bool
+    {
 
         return $this->stock > $quantity;
     }

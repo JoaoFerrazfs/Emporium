@@ -31,7 +31,8 @@ class ProductController extends Controller
 
         return $this->productRepository->saveProduct($input) ?
             view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
-            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])
+                ->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function myProducts(): View
@@ -59,7 +60,8 @@ class ProductController extends Controller
 
         return $product->delete() ?
             view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
-            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])
+                ->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function update(ProductsRequest $request): View
@@ -79,7 +81,8 @@ class ProductController extends Controller
 
         return $product->update($input) ?
             view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()]) :
-            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])->with(['msg' => 'Erro ao cadastrar produto']);
+            view('admin.products.productsList', ['products' => $this->productRepository->getAllProducts()])
+                ->with(['msg' => 'Erro ao cadastrar produto']);
     }
 
     public function index(): View

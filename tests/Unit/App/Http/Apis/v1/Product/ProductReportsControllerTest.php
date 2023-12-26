@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 use Mockery as m;
 
-class ProductReportsControllerTest  extends TestCase
+class ProductReportsControllerTest extends TestCase
 {
     public function testShouldExportProductsExports(): void
     {
@@ -30,7 +30,7 @@ class ProductReportsControllerTest  extends TestCase
         $actual = $productReportsController->exportProducts();
 
         // Assertions
-        $this->assertStringContainsString( "products_report_", $actual->content());
+        $this->assertStringContainsString("products_report_", $actual->content());
     }
 
     public function testShouldNotExportProductsExports(): void
@@ -53,7 +53,6 @@ class ProductReportsControllerTest  extends TestCase
         $actual = $productReportsController->exportProducts();
 
         // Assertions
-        $this->assertStringContainsString( "error", $actual->content());
+        $this->assertStringContainsString("error", $actual->content());
     }
-
 }

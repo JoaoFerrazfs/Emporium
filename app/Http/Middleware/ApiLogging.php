@@ -11,8 +11,7 @@ class ApiLogging
 {
     public function __construct(
         private readonly LogManager $log,
-    ){
-
+    ) {
     }
     public function handle(Request $request, Closure $next): Response
     {
