@@ -1,4 +1,4 @@
-name: Pull requests pipeline
+name: PR verifications
 
 on: [push]
 
@@ -18,7 +18,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          composer update
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Set Modified Files Env Variable
@@ -33,7 +32,7 @@ jobs:
           IFS=' ' read -ra FILES <<< "${{ env.MODIFIED_FILES }}"
           for file in "${FILES[@]}"; do
             echo "Running PHPCS on $file"
-            vendor/bin/phpcs --standard=PSR2 "$file"
+            vendor/bin/phpcs  "$file"
           done
 
   unit-tests:
@@ -51,7 +50,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          composer update
           composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Directory Permissions
