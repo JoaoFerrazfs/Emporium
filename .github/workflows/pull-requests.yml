@@ -4,8 +4,9 @@ on:
   push:
     branches-ignore:
       - develop
+      - master
 jobs:
-  phpcs:
+  code-analysis:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
@@ -44,9 +45,24 @@ jobs:
           done
 
 
+      - name: Run PHPMD on Modified Files
+        run: |
+          IFS=' ' read -ra FILES <<< "${{ env.MODIFIED_FILES }}"
+          for file in "${FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "File $file was excluded. Skipping PHPMD process."
+              continue
+            fi
+
+            echo "Running PHPMD on file: $file"
+            vendor/bin/phpmd "$file" text phpmd.xml
+            echo "Nothing wrong with file: $file"
+          done
+
+
   unit-tests:
     runs-on: ubuntu-latest
-    needs: phpcs
+    needs: code-analysis
     steps:
       - uses: shivammathur/setup-php@v2
         with:
