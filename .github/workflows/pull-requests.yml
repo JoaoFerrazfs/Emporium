@@ -33,9 +33,16 @@ jobs:
         run: |
           IFS=' ' read -ra FILES <<< "${{ env.MODIFIED_FILES }}"
           for file in "${FILES[@]}"; do
-            echo "Running PHPCS on $file"
-            vendor/bin/phpcs  "$file"
+            if [ ! -f "$file" ]; then
+              echo "File $file was excluded. Skipping PHPCS process."
+              continue
+            fi
+
+            echo "Running PHPCS on file: $file"
+            vendor/bin/phpcs "$file"
+            echo "Nothing wrong with file: $file"
           done
+
 
   unit-tests:
     runs-on: ubuntu-latest

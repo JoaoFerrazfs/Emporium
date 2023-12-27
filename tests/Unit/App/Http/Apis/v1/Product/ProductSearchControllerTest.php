@@ -18,7 +18,7 @@ class ProductSearchControllerTest extends TestCase
         $productRepository = m::mock(ProductRepository::class);
         $productTransfomer = m::mock(ProductTransformer::class);
         $request = m::mock(ProductRequest::class);
-        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
+        $productSearchController = new ProductSearchController($productRepository, $productTransfomer);
         $realProduct = new Product();
         $realProduct->name = 'Pizza';
         $expected = $this->getExpectedResponse() ;
@@ -39,7 +39,7 @@ class ProductSearchControllerTest extends TestCase
             ->andReturn($expected);
 
         // Action
-        $actual = $ProductSearchController->search($request);
+        $actual = $productSearchController->search($request);
 
         // Assertions
         $this->assertSame(200, $actual->getStatusCode());
@@ -51,7 +51,7 @@ class ProductSearchControllerTest extends TestCase
         $productRepository = m::mock(ProductRepository::class);
         $productTransfomer = m::mock(ProductTransformer::class);
         $request = m::mock(ProductRequest::class);
-        $ProductSearchController = new ProductSearchController($productRepository, $productTransfomer);
+        $productSearchController = new ProductSearchController($productRepository, $productTransfomer);
 
         // Expectations
         $request->expects()
@@ -63,7 +63,7 @@ class ProductSearchControllerTest extends TestCase
             ->andReturnNull();
 
         // Action
-        $actual = $ProductSearchController->search($request);
+        $actual = $productSearchController->search($request);
 
         // Assertions
         $this->assertSame(404, $actual->status());
