@@ -4,6 +4,7 @@ namespace App\Http\Apis\v1\Product;
 
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -47,7 +48,7 @@ class ProductReportsControllerTest extends TestCase
             ->andReturn($collection);
 
         Queue::shouldReceive('connection')
-            ->andThrow(new \Exception('error'));
+            ->andThrow(new Exception('error'));
 
         // Actions
         $actual = $productReportsController->exportProducts();
