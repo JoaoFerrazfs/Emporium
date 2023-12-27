@@ -3,32 +3,61 @@
 
 ## Descrição do Projeto 
 
-Este projeto busca implementar uma plataforma simples e acessivel para uso de pequenos comercios.  
+Este projeto busca implementar uma plataforma simples e acessível para uso de pequenos comércios.  
 
-O sistema permitirá o controle de estoque, clientes, produtos, vendas  e além de guardar o historico de vendas do produtos.
+O sistema permitirá o controle de estoque, clientes, produtos, vendas  e além de guardar o histórico de vendas dos produtos.
 
-## :hammer: Funcionalidades do projeto
+## :hammer: Funcionalidades Principais
 
-- `Cadastro de diferentes tipos de usuários`
-- `Criação de catálogo de produtos`
-- `Gerenciamento de Vendas`
-- `Gerenciamento de estoque de produtos`
-- `Envio de email de confirmação de venda`
-- `Validação do email cadastrado`
+- **Gerenciamento de Usuários**
+- **Catálogo de Produtos**
+- **Gerenciamento de Vendas**
+- **Controle de Estoque**
+- **Confirmação via E-mail**
+- **Validações de Usuário**
+- **Funcionalidades Disponibilizadas via APIs**
 
 ## :white_check_mark: Tecnologias Utilizadas
-- `PHP 8`
-- `Laravel 8`
-- `MySql`
-- `PHPStorm`
-- `Bootstrap`
-- `Mercado Pago`
 
+- **PHP 8**
+- **Laravel 10**
+- **SQLite**
+- **Redis**
+- **Bootstrap**
+- **GitHub Actions**
+- **API de Pagamentos do Mercado Pago**
+- **PHPMD**
+- **PHPCS**
 
 ## 🌐 Acesso ao Site em funcionamento
 [Emporium](http://emporiumecommerce.duckdns.org)
 
-## Autores
+## Instruções de Instalação
 
-| [<img src="https://avatars.githubusercontent.com/u/50000291?v=4" width=115><br><sub>JoaoFerrazfs</sub>](https://github.com/JoaoFerrazfs) 
-| :---: |
+### O projeto esta configurado para ser funcional utilizando o docker:
+
+```bash
+`docker compose build`
+`docker compose up -d`
+`docker compose exec app php artisan key:generate`
+```
+
+### Foi adicionado ao projeto seed pra produtos e usuários, caso quera utilize o comando:
+```bash
+docker compose exec app php artisan db:seed
+```
+
+Credenciais para acesso
+| Email                     | Senha         |
+|---------------------------|---------------|
+| joaoferrazp@gmail.com     | 12345678      |
+| jpferrazsoares@gmail.com  | 12345678      |
+
+
+## Instruções para Execução Local
+
+Depois do projeto iniciado o acesso será feito pela url: http://localhost:8000/
+
+## Licença
+
+Este projeto é licenciado sob a [Licença MIT](LICENSE).
