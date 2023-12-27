@@ -6,7 +6,7 @@
         <include name="php"/>
     </fileExtensions>
 
-
+    <!-- Excluded folders -->
     <exclude-pattern>app/Notifications/*</exclude-pattern>
     <exclude-pattern>app/Console/*</exclude-pattern>
     <exclude-pattern>vendor/*</exclude-pattern>
@@ -19,6 +19,20 @@
     <exclude-pattern>app/Exceptions/Handler.php</exclude-pattern>
     <exclude-pattern>tests/Pest.php</exclude-pattern>
 
+    <!-- Rules -->
     <rule ref="rulesets/unusedcode.xml"/>
-    <!-- Adicione outras regras conforme necessário -->
+
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="TooManyPublicMethods"/>
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <property name="maxmethods" value="20"/>
+        </properties>
+    </rule>
+
+<!--    <rule ref="rulesets/cleancode.xml" />-->
+    <rule ref="rulesets/controversial.xml" />
+
+
 </ruleset>
