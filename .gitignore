@@ -29,4 +29,5 @@ yarn-error.log
 phpcs_report.json
 coverage/*
 .config
+.pdepend/
 

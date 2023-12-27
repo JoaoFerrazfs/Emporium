@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use DateTime;
 
 class ProductSeeder extends Seeder
 {
@@ -18,7 +19,7 @@ class ProductSeeder extends Seeder
                 "image" => "pizza$i.jpg",
                 "status" => "Ativo",
                 "stock" => $i * random_int(0, 5),
-                "validate" => new \DateTime('+ 50 days')
+                "validate" => new DateTime('+ 50 days')
             ]);
 
             $i++;

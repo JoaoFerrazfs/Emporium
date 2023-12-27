@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<ruleset name="My Rules">
+    <description>Custom rules for Emporium</description>
+
+    <fileExtensions>
+        <include name="php"/>
+    </fileExtensions>
+
+    <!-- Excluded folders -->
+    <exclude-pattern>app/Notifications/*</exclude-pattern>
+    <exclude-pattern>app/Console/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>public/*</exclude-pattern>
+    <exclude-pattern>bootstrap/*</exclude-pattern>
+    <exclude-pattern>coverage/*</exclude-pattern>
+    <exclude-pattern>docker-compose/*</exclude-pattern>
+    <exclude-pattern>resources/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>app/Exceptions/Handler.php</exclude-pattern>
+    <exclude-pattern>tests/Pest.php</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+
+    <!-- Rules -->
+
+    <!-- Default Rules -->
+    <rule ref="rulesets/unusedcode.xml"/>
+    <rule ref="rulesets/controversial.xml" />
+    <rule ref="rulesets/unusedcode.xml" />
+
+    <!-- Custom Rules -->
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="TooManyPublicMethods"/>
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <property name="maxmethods" value="20"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/naming.xml">
+        <exclude name="ShortVariable"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="LongVariable"/>
+    </rule>
+    <rule ref="rulesets/naming.xml/ShortVariable">
+        <properties>
+            <property name="minimum" description="Minimum length for a variable, property or parameter name" value="3"/>
+            <property name="exceptions" value="id,i" />
+        </properties>
+    </rule>
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" description="Minimum length for a variable, property or parameter name" value="3"/>
+            <property name="exceptions" value="up,run" />
+        </properties>
+    </rule>
+    <rule ref="rulesets/naming.xml/LongVariable">
+        <properties>
+            <property name="maximum" description="Minimum length for a variable, property or parameter name" value="26"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="StaticAccess"/>
+        <exclude name="IfStatementAssignment"/>
+        <exclude name="UndefinedVariable"/>
+    </rule>
+
+
+</ruleset>
