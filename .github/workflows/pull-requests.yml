@@ -52,5 +52,11 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: Execute tests via PHPUnit
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --coverage-html=coverage-report
 
+      - name: Upload HTML Coverage Report
+        uses: actions/upload-artifact@v4
+        id: artifact-upload-step
+        with:
+          name: coverage-report
+          path: coverage-report
