@@ -7,7 +7,7 @@ jobs:
   code-analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2.0'
 
@@ -24,8 +24,9 @@ jobs:
 
   unit-tests:
     runs-on: ubuntu-latest
+    needs: code-analysis
     steps:
-      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2.0'
 
@@ -41,4 +42,11 @@ jobs:
         run: chmod -R 777 storage bootstrap/cache
 
       - name: Execute tests via PHPUnit
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --coverage-html=coverage-report
+
+      - name: Upload HTML Coverage Report
+        uses: actions/upload-artifact@v4
+        id: artifact-upload-step
+        with:
+          name: coverage-report
+          path: coverage-report
