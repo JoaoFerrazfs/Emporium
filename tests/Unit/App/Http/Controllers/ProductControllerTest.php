@@ -9,7 +9,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
 use App\Repositories\ProductRepository;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use Mockery as m;
 
@@ -21,9 +20,7 @@ class ProductControllerTest extends TestCase
         $productTransformer = m::mock(ProductTransformer::class);
         $productRepository = m::mock(ProductRepository::class);
         $request = m::mock(ProductsRequest::class);
-        Storage::fake()->append('bolo.jpg', 'sas');
-        $uploadedFile = UploadedFile::fake();
-        $file = $uploadedFile->image('bolo.jpg', 5, 5);
+        $file = $this->createImage();
         $input = [
             'name' => 'Bolo',
             'description' => 'Bolo doce',
@@ -73,9 +70,7 @@ class ProductControllerTest extends TestCase
         $productRepository = m::mock(ProductRepository::class);
         $productTransformer = m::mock(ProductTransformer::class);
         $request = m::mock(ProductsRequest::class);
-        Storage::fake()->append('bolo.jpg', 'sas');
-        $uploadedFile = UploadedFile::fake();
-        $file = $uploadedFile->image('bolo.jpg', 5, 5);
+        $file = $this->createImage();
         $input = [
             'name' => 'Bolo',
             'description' => 'Bolo doce',
@@ -440,5 +435,17 @@ class ProductControllerTest extends TestCase
         );
 
         return $product;
+    }
+
+    private function createImage(): UploadedFile
+    {
+        $imagePath = storage_path('../tests/assets/images/logo.jpg');
+        return new UploadedFile(
+            $imagePath,
+            'image-fake.jpg',
+            'image/jpeg',
+            null,
+            true
+        );
     }
 }
