@@ -4,7 +4,6 @@ namespace Helpers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Mockery as m;
 use Tests\TestCase;
 
@@ -13,9 +12,8 @@ class FileTest extends TestCase
     public function testShouldSaveImage(): void
     {
         // Set
-        $image = UploadedFile::fake()->image('image');
+        $image = $this->createImage();
         $request = m::mock(Request::class);
-        Storage::fake();
 
         //Expectations
         $request->expects()
@@ -42,7 +40,6 @@ class FileTest extends TestCase
     {
         // Set
         $request = m::mock(Request::class);
-        Storage::fake();
 
         //Expectations
         $request->expects()
@@ -54,5 +51,17 @@ class FileTest extends TestCase
 
         // Assertions
         $this->assertNull($actual);
+    }
+
+    private function createImage(): UploadedFile
+    {
+        $imagePath = storage_path('../tests/assets/images/logo.jpg');
+        return new UploadedFile(
+            $imagePath,
+            'image-fake.jpg',
+            'image/jpeg',
+            null,
+            true
+        );
     }
 }
