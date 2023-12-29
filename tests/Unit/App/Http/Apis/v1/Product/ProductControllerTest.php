@@ -21,7 +21,7 @@ class ProductControllerTest extends TestCase
         $productRepository = m::mock(ProductRepository::class);
         $productTransformer = m::mock(ProductTransformer::class);
         $productController = new ProductController($productRepository, $productTransformer);
-        $image = UploadedFile::fake()->image('image-fake');
+        $image = $this->createImage();
 
         $input = [
             'name' => 'Bolo de pizza',
@@ -69,7 +69,7 @@ class ProductControllerTest extends TestCase
         $productController = new ProductController($productRepository, $productTransformer);
         Storage::fake();
         $errorMessage = 'Error when trying to register a new product';
-        $image = UploadedFile::fake()->image('image-fake');
+        $image = $this->createImage();
 
         $input = [
             'name' => 'Bolo de pizza',
@@ -219,5 +219,17 @@ class ProductControllerTest extends TestCase
                 $product,
             ]
         ];
+    }
+
+    private function createImage(): UploadedFile
+    {
+        $imagePath = storage_path('../tests/assets/images/logo.jpg');
+        return new UploadedFile(
+            $imagePath,
+            'image-fake.jpg',
+            'image/jpeg',
+            null,
+            true
+        );
     }
 }
