@@ -7,16 +7,17 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use stdClass;
 
 class NewOrder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private Order $order;
+    private stdClass $order;
 
-    public function __construct(Order $order)
+    public function __construct(array $order)
     {
-        $this->order = $order;
+        $this->order = new stdClass();
     }
 
     public function build(): self

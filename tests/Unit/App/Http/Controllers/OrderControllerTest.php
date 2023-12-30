@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Address\AddressRequest;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Repositories\CartRepository;
 use Illuminate\Config\Repository as ConfigRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
@@ -22,9 +24,18 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
+
         $order = new Order();
-        $order->fill($this->getOrderAttibutes());
+        $order->fill($this->getOrderAttributes());
         $order->id = 1;
 
         // Expectations
@@ -38,7 +49,7 @@ class OrderControllerTest extends TestCase
         // Assertions
         $this->assertSame('admin.orders.home', $actual->name());
         $order = $actual->getData()['orders'][0];
-        $this->assertSame($this->getOrderAttibutes(), $order->getAttributes());
+        $this->assertSame($this->getOrderAttributes(), $order->getAttributes());
     }
 
     public function testShouldReturnAViewUserOrders(): void
@@ -49,9 +60,18 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
+
         $order = new Order();
-        $order->fill($this->getOrderAttibutes());
+        $order->fill($this->getOrderAttributes());
         $order->id = 1;
 
         // Expectations
@@ -73,7 +93,7 @@ class OrderControllerTest extends TestCase
         // Assertions
         $this->assertSame('ecommerce.user.orders.orders', $actual->name());
         $order = $actual->getData()['orders'][0];
-        $this->assertSame($this->getOrderAttibutes(), $order->getAttributes());
+        $this->assertSame($this->getOrderAttributes(), $order->getAttributes());
     }
 
     public function testShouldReturnAShoppingList(): void
@@ -83,7 +103,15 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
 
         $cart = [
             [
@@ -121,7 +149,15 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
 
         // Expectations
         $request->expects()
@@ -139,11 +175,19 @@ class OrderControllerTest extends TestCase
     {
         // Set
         $request = m::mock(AddressRequest::class);
+        $product = m::mock(Product::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $product = m::mock(Product::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
         $cart = [
             [
                 "id" => 10,
@@ -226,12 +270,21 @@ class OrderControllerTest extends TestCase
     public function testShouldResolveOrderForPostRequisition(): void
     {
         // Set
+        $product = m::mock(Product::class);
         $request = m::mock(AddressRequest::class);
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
-        $product = m::mock(Product::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
+
         $cart = [
             [
                 "id" => 10,
@@ -314,7 +367,15 @@ class OrderControllerTest extends TestCase
         $orderRepository = m::mock(OrderRepository::class);
         $productRepository = m::mock(ProductRepository::class);
         $configRepository = m::mock(ConfigRepository::class);
-        $orderController = new OrderController($orderRepository, $productRepository, $configRepository);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController
+        );
 
         // Expectations
         $request->expects()
@@ -328,7 +389,7 @@ class OrderControllerTest extends TestCase
         $this->assertSame(302, $actual->status());
     }
 
-    private function getOrderAttibutes(): array
+    private function getOrderAttributes(): array
     {
         return [
             'user_id' => 1,
