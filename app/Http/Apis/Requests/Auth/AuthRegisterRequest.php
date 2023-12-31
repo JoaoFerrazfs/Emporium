@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AuthRegisterRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
           'name' => 'required|max:255',
@@ -18,7 +18,7 @@ class AuthRegisterRequest extends FormRequest
     }
 
     /**
-     * Handle a passed validation attempt.
+     * @codeCoverageIgnore
      */
     protected function passedValidation(): void
     {
