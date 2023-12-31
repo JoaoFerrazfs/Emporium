@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\OrderController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Checkout\OrderController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth','adminUser'])->prefix('admin')->group(function () {
 

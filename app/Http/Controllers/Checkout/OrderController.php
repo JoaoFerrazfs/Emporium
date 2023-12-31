@@ -1,20 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Checkout;
 
+use App\Http\Controllers\Checkout\DataTransferObject\OrderDTO;
+use App\Http\Controllers\Checkout\DataTransferObject\OrderFactory;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Address\AddressRequest;
 use App\Mail\ClientNewOrder;
 use App\Mail\NewOrder;
-use App\Models\Order;
 use App\Models\Cart;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use Exception;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-use Illuminate\Config\Repository as ConfigRepository;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -26,6 +29,7 @@ class OrderController extends Controller
         private readonly ConfigRepository $configRepository,
         private readonly CartRepository $cartRepository,
         private readonly PaymentController $paymentController,
+        private readonly OrderFactory $orderFactory,
     ) {
     }
 
@@ -104,6 +108,9 @@ class OrderController extends Controller
         return view('ecommerce.checkout.orderConfirmation', compact('preparedOrder'));
     }
 
+    /**
+     * @throws Exception
+     */
     public function save(Request $request): RedirectResponse
     {
         $order = json_decode($request->cookie('order'), 1)[0];
@@ -196,7 +203,10 @@ class OrderController extends Controller
         );
     }
 
-    private function createOrder(array $order): Order
+    /**
+     * @throws Exception
+     */
+    private function createOrder(array $order): OrderDTO
     {
         $userId = auth()->id();
         $cart = $this->createCart($order, $userId);
@@ -214,12 +224,12 @@ class OrderController extends Controller
             ]
         );
 
-        $this->unsetCookies();
+//        $this->unsetCookies();
 
-        return $order;
+        return $this->orderFactory->make($order);
     }
 
-    private function sendEmails(Order $createdOrder, string $paymentUrl): void
+    private function sendEmails(OrderDTO $createdOrder, string $paymentUrl): void
     {
         Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
