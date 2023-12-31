@@ -21,6 +21,8 @@ O sistema permitirá o controle de estoque, clientes, produtos, vendas  e além 
 
 - **PHP 8**
 - **Laravel 10**
+- **Laravel Octane**
+- **Swoole**
 - **SQLite**
 - **Redis**
 - **Bootstrap**
