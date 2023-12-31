@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Tests\Unit\App\Http\Checkout;
 
+use App\Http\Controllers\Checkout\DataTransferObject\OrderFactory;
+use App\Http\Controllers\Checkout\OrderController;
+use App\Http\Controllers\Checkout\PaymentController;
 use App\Http\Requests\Address\AddressRequest;
-use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Repositories\CartRepository;
-use Illuminate\Config\Repository as ConfigRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Mockery as m;
@@ -26,12 +28,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         $order = new Order();
@@ -62,12 +67,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         $order = new Order();
@@ -105,12 +113,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         $cart = [
@@ -151,12 +162,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         // Expectations
@@ -181,13 +195,17 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
+
         $cart = [
             [
                 "id" => 10,
@@ -277,12 +295,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         $cart = [
@@ -369,12 +390,15 @@ class OrderControllerTest extends TestCase
         $configRepository = m::mock(ConfigRepository::class);
         $cartRepository = m::mock(CartRepository::class);
         $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
         $orderController = new OrderController(
             $orderRepository,
             $productRepository,
             $configRepository,
             $cartRepository,
-            $paymentController
+            $paymentController,
+            $orderFactory
         );
 
         // Expectations

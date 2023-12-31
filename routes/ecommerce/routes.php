@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Checkout\OrderController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
 
 Route::get('/', [HomeController::class,'showHome']) ->name('home');
 Route::get('/produtos', [ProductController::class,'index'])->name('products.list');
