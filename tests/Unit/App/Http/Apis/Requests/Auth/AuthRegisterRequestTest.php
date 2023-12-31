@@ -23,9 +23,7 @@ class AuthRegisterRequestTest extends TestCase
         // Action
         $actual = $authRegisterRequest->rules();
 
-
         // Assertions
         $this->assertSame($expected, $actual);
-
     }
 }

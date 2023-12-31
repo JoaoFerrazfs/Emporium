@@ -107,6 +107,7 @@ class OrderController extends Controller
     public function save(Request $request): RedirectResponse
     {
         $order = json_decode($request->cookie('order'), 1)[0];
+
         $createdOrder = $this->createOrder($order);
 
         $paymentUrl = $this->paymentController->makePayments($order['completeCartItems']);
@@ -220,7 +221,7 @@ class OrderController extends Controller
 
     private function sendEmails(Order $createdOrder, string $paymentUrl): void
     {
-        Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder->toArray()));
+        Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
     }
 }
