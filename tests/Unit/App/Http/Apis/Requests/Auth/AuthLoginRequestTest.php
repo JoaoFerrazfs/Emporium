@@ -22,7 +22,5 @@ class AuthLoginRequestTest extends TestCase
 
         // Assertions
         $this->assertSame($expected, $actual);
-
     }
-
 }

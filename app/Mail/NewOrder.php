@@ -13,11 +13,9 @@ class NewOrder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private stdClass $order;
-
-    public function __construct(array $order)
-    {
-        $this->order = new stdClass();
+    public function __construct(
+        private readonly Order $order
+    ) {
     }
 
     public function build(): self
