@@ -3,15 +3,15 @@
 
 ## Dados do pedido
 
-> Nome do cliente: {{$order->user->name}}
+> Nome do cliente: {{$order->user['name']}}
 
 
 ## Entrega
 
-> Cidade: {{$order->city}}
-> Bairro: {{$order->neighborhood ?? ''}}
-> Rua: {{$order->street}}
-> Numero: {{$order->number}}
+> Cidade: {{$order->address['city']}}
+> Bairro: {{$order->address['neighborhood'] ?? ''}}
+> Rua: {{$order->address['street']}}
+> Numero: {{$order->address['number']}}
 
 
 ## Observação
@@ -22,8 +22,8 @@
 
 | Código do Produto |     Nome      | Quantidade |
 | :--------------: | :-----------: | :--------: |
-@foreach(json_decode($order->cart()->get()[0]['products'], true) as $cart)
-    |   {{ $cart['id'] }}    | {{$cart['name']}} | {{$cart['quantity']}} |
+@foreach($order->cart['products'] as $cart)
+    |{{ $cart['id'] }} | {{$cart['name']}}| {{$cart['quantity']}}|
 @endforeach
 
 
