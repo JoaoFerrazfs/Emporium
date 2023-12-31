@@ -7,6 +7,7 @@ use App\Mail\ClientNewOrder;
 use App\Mail\NewOrder;
 use App\Models\Order;
 use App\Models\Cart;
+use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,9 @@ class OrderController extends Controller
     public function __construct(
         private readonly OrderRepository $orderRepository,
         private readonly ProductRepository $productRepository,
-        private readonly ConfigRepository $configRepository
+        private readonly ConfigRepository $configRepository,
+        private readonly CartRepository $cartRepository,
+        private readonly PaymentController $paymentController,
     ) {
     }
 
@@ -104,10 +107,9 @@ class OrderController extends Controller
     public function save(Request $request): RedirectResponse
     {
         $order = json_decode($request->cookie('order'), 1)[0];
-
         $createdOrder = $this->createOrder($order);
-        $payment = app(PaymentController::class);
-        $paymentUrl = $payment->makePayments($order['completeCartItems']);
+
+        $paymentUrl = $this->paymentController->makePayments($order['completeCartItems']);
         $this->sendEmails($createdOrder, $paymentUrl);
 
         return redirect($paymentUrl);
@@ -184,7 +186,7 @@ class OrderController extends Controller
 
     private function createCart(array $order, $userId): Cart
     {
-        return Cart::create(
+        return$this->cartRepository->create(
             [
             'user_id' => $userId,
             'products' => json_encode($order['completeCartItems']),
@@ -197,7 +199,7 @@ class OrderController extends Controller
     {
         $userId = auth()->id();
         $cart = $this->createCart($order, $userId);
-        $order = Order::create(
+        $order =$this->orderRepository->create(
             [
             'user_id' => $userId,
             'cart_id' => $cart->id,
@@ -218,7 +220,7 @@ class OrderController extends Controller
 
     private function sendEmails(Order $createdOrder, string $paymentUrl): void
     {
-        Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
+        Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder->toArray()));
         Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
     }
 }

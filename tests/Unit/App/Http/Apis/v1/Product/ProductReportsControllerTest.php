@@ -12,7 +12,7 @@ use Mockery as m;
 
 class ProductReportsControllerTest extends TestCase
 {
-    public function testShouldExportProductsExports(): void
+    public function testShouldExportProducts(): void
     {
         // Set
         Queue::fake();
@@ -34,7 +34,7 @@ class ProductReportsControllerTest extends TestCase
         $this->assertStringContainsString("products_report_", $actual->content());
     }
 
-    public function testShouldNotExportProductsExports(): void
+    public function testShouldNotExportProducts(): void
     {
         // Set
         $productRepository = m::mock(ProductRepository::class);
@@ -55,5 +55,26 @@ class ProductReportsControllerTest extends TestCase
 
         // Assertions
         $this->assertStringContainsString("error", $actual->content());
+    }
+
+    public function testShouldNotExportNonExistsProducts(): void
+    {
+        // Set
+        $productRepository = m::mock(ProductRepository::class);
+        $productReportsController = new ProductReportsController($productRepository);
+
+        // Expectations
+        $productRepository->expects()
+            ->findAllAvailableProducts()
+            ->andReturnNull();
+
+        Queue::shouldReceive('connection')
+            ->andThrow(new Exception('error'));
+
+        // Actions
+        $actual = $productReportsController->exportProducts();
+
+        // Assertions
+        $this->assertEmpty( $actual->getOriginalContent()['data']);
     }
 }

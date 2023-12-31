@@ -28,4 +28,9 @@ class OrderRepository
     {
         return $this->order->find($orderId);
     }
+
+    public function create(array $orderData): Order
+    {
+        return $this->order->create($orderData);
+    }
 }
