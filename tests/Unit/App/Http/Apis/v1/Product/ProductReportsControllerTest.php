@@ -75,6 +75,6 @@ class ProductReportsControllerTest extends TestCase
         $actual = $productReportsController->exportProducts();
 
         // Assertions
-        $this->assertEmpty( $actual->getOriginalContent()['data']);
+        $this->assertEmpty($actual->getOriginalContent()['data']);
     }
 }

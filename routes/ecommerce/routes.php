@@ -18,7 +18,6 @@ Route::middleware(['auth', 'hasAvailableCart'])->group(function () {
     Route::post('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
     Route::get('/cadastrarPedido', [OrderController::class,'resolveOrder'])->name('order.with.freight');
     Route::get('/processarPedido', [OrderController::class,'save'])->name('process.order');
-    Route::get('/processarPedido', [OrderController::class,'save'])->name('process.order');
 });
 
 Route::get('/pedidos', [OrderController::class,'getUserOrders'])->name('client.orders');
