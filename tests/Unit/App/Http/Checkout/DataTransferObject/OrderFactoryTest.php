@@ -6,6 +6,7 @@ use App\Http\Controllers\Checkout\DataTransferObject\OrderFactory;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use DateTime;
 use Exception;
 use Mockery as m;
@@ -19,6 +20,7 @@ class OrderFactoryTest extends TestCase
     public function testShouldBuildADTO(): void
     {
         // Set
+        Carbon::setTestNow('01/01/2024');
         $orderFactory = new OrderFactory();
         $orderData = [
             'city' => 'BH',
@@ -71,7 +73,7 @@ class OrderFactoryTest extends TestCase
         $this->assertSame($address, $actual->address);
         $this->assertSame('some observation', $actual->observation);
         $this->assertSame(true, $actual->pickUpInStore);
-        $this->assertSame('31/12/2023', $actual->createdAt->format('d/m/Y'));
+        $this->assertSame('01/01/2024', $actual->createdAt->format('d/m/Y'));
         $this->assertSame($userData, $actual->user);
         $this->assertSame($products['products'], $actual->cart['products']);
         $this->assertSame($products['total'], $actual->cart['total']);
