@@ -118,7 +118,7 @@ class OrderController extends Controller
         $createdOrder = $this->createOrder($order);
 
         $paymentUrl = $this->paymentController->makePayments($order['completeCartItems']);
-        $this->sendEmails($createdOrder, $paymentUrl);
+        $this->sendEmails($createdOrder, $paymentUrl, $request->user()->email);
 
         return redirect($paymentUrl);
     }
@@ -194,7 +194,7 @@ class OrderController extends Controller
 
     private function createCart(array $order, $userId): Cart
     {
-        return$this->cartRepository->create(
+        return $this->cartRepository->create(
             [
             'user_id' => $userId,
             'products' => json_encode($order['completeCartItems']),
@@ -224,14 +224,14 @@ class OrderController extends Controller
             ]
         );
 
-//        $this->unsetCookies();
+        $this->unsetCookies();
 
         return $this->orderFactory->make($order);
     }
 
-    private function sendEmails(OrderDTO $createdOrder, string $paymentUrl): void
+    private function sendEmails(OrderDTO $createdOrder, string $paymentUrl, string $userEmail): void
     {
         Mail::to(env('MAIL_USERNAME'))->send(new NewOrder($createdOrder));
-        Mail::to(auth()->user()->email)->send(new ClientNewOrder($createdOrder, $paymentUrl));
+        Mail::to($userEmail)->send(new ClientNewOrder($createdOrder, $paymentUrl));
     }
 }
