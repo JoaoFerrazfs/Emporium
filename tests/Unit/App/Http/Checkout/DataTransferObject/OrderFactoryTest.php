@@ -29,7 +29,6 @@ class OrderFactoryTest extends TestCase
             'neighborhood' => 'centro',
             'observation' => 'some observation',
             'pickUpInStore' => 1,
-            'created_at' => '12/12/2023',
         ];
         $address = [
             'city' => 'BH',
@@ -73,7 +72,6 @@ class OrderFactoryTest extends TestCase
         $this->assertSame($address, $actual->address);
         $this->assertSame('some observation', $actual->observation);
         $this->assertSame(true, $actual->pickUpInStore);
-        $this->assertSame('01/01/2024', $actual->createdAt->format('d/m/Y'));
         $this->assertSame($userData, $actual->user);
         $this->assertSame($products['products'], $actual->cart['products']);
         $this->assertSame($products['total'], $actual->cart['total']);
