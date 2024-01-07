@@ -67,7 +67,7 @@ class OrderController extends Controller
         $totalPrice = $this->getTotalPrice($completeCartItems);
 
         if (!empty($this->validateStock($completeCartItems))) {
-            return redirect()->back(400);
+            return redirect()->back();
         }
 
         $preparedOrder = [];
@@ -129,7 +129,7 @@ class OrderController extends Controller
 
         return auth()->user()->rule ?
             view('admin.orders.orderDetail', compact('order')) :
-            view('ecommerce.orders.orderDetail', compact('order'));
+            view('ecommerce.user.orders.orders', compact('order'));
     }
 
     private function unsetCookies(): void

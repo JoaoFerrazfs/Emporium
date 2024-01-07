@@ -34,6 +34,7 @@
             <file>./app/Providers/BroadcastServiceProvider.php</file>
             <file>./app/Providers/EventServiceProvider.php</file>
             <file>./app/Providers/RouteServiceProvider.php</file>
+            <file>./app/Http/Controllers/Controller.php</file>
             <directory>./app/View/*</directory>
         </exclude>
     </source>
