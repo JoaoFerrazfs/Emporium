@@ -115,6 +115,100 @@ class OrderControllerTest extends TestCase
         $this->assertSame(302, $actual->getStatusCode(),);
     }
 
+    public function testShouldShowOrderDetailToAdmin(): void
+    {
+        // Set
+        $orderRepository = m::mock(OrderRepository::class);
+        $productRepository = m::mock(ProductRepository::class);
+        $configRepository = m::mock(ConfigRepository::class);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class)->makePartial();
+
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController,
+            $orderFactory
+        );
+
+        $user = new User(['rule' => 1]);
+        $this->actingAs($user);
+
+        $orderData = [
+            'name' => 'userName',
+            'city' => 'BH',
+            'street' => 'amazonas',
+            'number' => 1250,
+            'neighborhood' => 'centro',
+            'observation' => 'some observation',
+            'pickUpInStore' => 1,
+            'created_at' => '12/12/2023',
+        ];
+        $order = m::mock(Order::class)->makePartial()->fill($orderData);
+        $order->id = 1;
+
+        // Expectations
+        $orderRepository->expects()
+            ->first(1)
+            ->andReturn($order);
+
+        // Actions
+        $actual = $orderController->showOrderDetail(1);
+
+        // Assertions
+        $this->assertSame('admin.orders.orderDetail', $actual->getName(),);
+    }
+
+    public function testShouldShowOrderDetailToClient(): void
+    {
+        // Set
+        $orderRepository = m::mock(OrderRepository::class);
+        $productRepository = m::mock(ProductRepository::class);
+        $configRepository = m::mock(ConfigRepository::class);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class)->makePartial();
+
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController,
+            $orderFactory
+        );
+
+        $user = new User(['rule' => 0]);
+        $this->actingAs($user);
+
+        $orderData = [
+            'name' => 'userName',
+            'city' => 'BH',
+            'street' => 'amazonas',
+            'number' => 1250,
+            'neighborhood' => 'centro',
+            'observation' => 'some observation',
+            'pickUpInStore' => 1,
+            'created_at' => '12/12/2023',
+        ];
+        $order = m::mock(Order::class)->makePartial()->fill($orderData);
+        $order->id = 1;
+
+        // Expectations
+        $orderRepository->expects()
+            ->first(1)
+            ->andReturn($order);
+
+        // Actions
+        $actual = $orderController->showOrderDetail(1);
+
+        // Assertions
+        $this->assertSame('ecommerce.user.orders.orders', $actual->getName(),);
+    }
+
     public function testShouldReturnAViewWithOrders(): void
     {
         // Set
@@ -279,6 +373,123 @@ class OrderControllerTest extends TestCase
         // Assertions
         $this->assertSame('ecommerce.checkout.emptyCart', $actual->name());
     }
+
+    public function testShouldResolveOrderWithoutStock(): void
+    {
+        // Set
+        $request = m::mock(AddressRequest::class);
+        $product = m::mock(Product::class);
+        $orderRepository = m::mock(OrderRepository::class);
+        $productRepository = m::mock(ProductRepository::class);
+        $configRepository = m::mock(ConfigRepository::class);
+        $cartRepository = m::mock(CartRepository::class);
+        $paymentController = m::mock(PaymentController::class);
+        $orderFactory = m::mock(OrderFactory::class);
+
+        $orderController = new OrderController(
+            $orderRepository,
+            $productRepository,
+            $configRepository,
+            $cartRepository,
+            $paymentController,
+            $orderFactory
+        );
+
+        $cart = [
+            [
+                "id" => 10,
+                "name" => "Pizza",
+                "description" => "Pizza promoção",
+                "ingredients" => "tudo e mais um pouco",
+                "price" => 9.99,
+                "image" => "pizza1.jpg",
+                "status" => "disponivel",
+                "stock" => 99,
+                "validate" => "2023-06-11",
+                "created_at" => "2023-06-10T20:26:06.000000Z",
+                "updated_at" => "2023-06-10T20:26:06.000000Z"
+            ],
+            [
+                "id" => 10,
+                "name" => "Pizza",
+                "description" => "Pizza promoção",
+                "ingredients" => "tudo e mais um pouco",
+                "price" => 9.99,
+                "image" => "pizza1.jpg",
+                "status" => "disponivel",
+                "stock" => 99,
+                "validate" => "2023-06-11",
+                "created_at" => "2023-06-10T20:26:06.000000Z",
+                "updated_at" => "2023-06-10T20:26:06.000000Z"
+            ],
+            [
+                "id" => 11,
+                "name" => "Pizza",
+                "description" => "Pizza promoção",
+                "ingredients" => "tudo e mais um pouco",
+                "price" => 9.99,
+                "image" => "pizza1.jpg",
+                "status" => "disponivel",
+                "stock" => 99,
+                "validate" => "2023-06-11",
+                "created_at" => "2023-06-10T20:26:06.000000Z",
+                "updated_at" => "2023-06-10T20:26:06.000000Z"
+            ],
+            [
+                "id" => 12,
+                "name" => "Pizza",
+                "description" => "Pizza promoção",
+                "ingredients" => "tudo e mais um pouco",
+                "price" => 9.99,
+                "image" => "pizza1.jpg",
+                "status" => "disponivel",
+                "stock" => 99,
+                "validate" => "2023-06-11",
+                "created_at" => "2023-06-10T20:26:06.000000Z",
+                "updated_at" => "2023-06-10T20:26:06.000000Z"
+            ]
+        ];
+
+        // Expectations
+        $request->expects()
+            ->cookie('cart')
+            ->andReturn(json_encode($cart));
+
+        $productRepository->expects()
+            ->first(0)
+            ->andReturn($product);
+
+        $productRepository->expects()
+            ->first(1)
+            ->andReturn($product);
+
+        $productRepository->expects()
+            ->first(2)
+            ->andReturnNull();
+
+        $product->expects()
+            ->hasEnoughStock(2)
+            ->andReturnTrue();
+
+        $product->expects()
+            ->hasEnoughStock(1)
+            ->andReturnFalse();
+
+        $product->expects()
+            ->getAttribute('id')
+            ->andReturn(11);
+
+        $product->expects()
+            ->getAttribute('stock')
+            ->andReturn(11);
+
+        // Action
+        $actual = $orderController->resolveOrder($request);
+
+        // Assertions
+        $this->assertEquals(302, $actual->status());
+    }
+
 
     public function testShouldResolveOrderForGetRequisition(): void
     {
@@ -451,12 +662,12 @@ class OrderControllerTest extends TestCase
             ->times(7)
             ->andReturn(
                 [
-                'city' => 'São Joaquim de Bicas',
-                'zipCode' => '32000-000',
-                'neighborhood' => 'Vila Rica',
-                'street' => 'Santa clara',
-                'number' => 160,
-                'observation' => '',
+                    'city' => 'São Joaquim de Bicas',
+                    'zipCode' => '32000-000',
+                    'neighborhood' => 'Vila Rica',
+                    'street' => 'Santa clara',
+                    'number' => 160,
+                    'observation' => '',
                 ]
             );
 
