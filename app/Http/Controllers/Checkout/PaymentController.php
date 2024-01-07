@@ -7,11 +7,9 @@ use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
-    private Client $clientMercadoPago;
-
-    public function __construct(Client $clientMercadoPago)
-    {
-        $this->clientMercadoPago = $clientMercadoPago;
+    public function __construct(
+        private readonly Client $clientMercadoPago
+    ) {
     }
 
     public function makePayments($cart): string

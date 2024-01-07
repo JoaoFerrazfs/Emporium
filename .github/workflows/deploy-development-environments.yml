@@ -53,23 +53,23 @@ jobs:
                 branch_merged=$?
 
                 if [[ "$branch_merged" == "0" ]]; then
-                  echo "error= 💢 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
+                  echo "error= 🚫 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
                   set -e
                   exit 1
                 fi
 
               else
-                echo "error= 💢 The **$branch** non exists." >> $GITHUB_ENV
+                echo "error= 🚫 The **$branch** non exists." >> $GITHUB_ENV
                 set -e
                 exit 1
               fi
             done
 
-            gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
+            gh issue comment ${{ github.event.issue.number }} -b "☑️ Branch validation success"
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
+        run: gh issue close ${{ github.event.issue.number }} -c "${{ env.error }}"
 
   recreate-branches:
     needs: validate-issues
@@ -100,7 +100,7 @@ jobs:
           if [[ -n "$error" ]]; then
            echo "$error"
            gh issue close ${{ github.event.issue.number }} -c "
-          💢 An error occurred, you can read below and also access the pipeline to read in more detail:
+          🚫 An error occurred, you can read below and also access the pipeline to read in more detail:
 
              $error"
            exit 0
@@ -110,7 +110,7 @@ jobs:
             local environment=$1
             local branches_output=$2
 
-            comment_message="⚡ Branch **$environment** updated!
+            comment_message="✅ Branch **$environment** updated!
             The new branches contents:"
 
             while IFS=, read -ra branches; do
@@ -145,4 +145,4 @@ jobs:
             fi
           done
 
-          gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
+          gh issue close ${{ github.event.issue.number }} -c "✅ Branches updated successfully!"
