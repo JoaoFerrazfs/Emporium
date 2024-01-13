@@ -5,27 +5,31 @@ on:
 
 jobs:
   exemplo-job:
+    if: contains(github.event.issue.labels.*.name, 'deploy-develop')
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
 
     steps:
-      - name: Verificar Tags da Issue
+      - uses: actions/checkout@v3
+
+      - uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/new-deploy.yml
+
+      - name: Verify-issue
         run: |
-          # Obter o caminho do arquivo de eventos
-          event_path=$GITHUB_EVENT_PATH
+          echo "NEW_BRANCH=${{ steps.issue-parser.outputs.issueparser_branch-name }}" >> $GITHUB_ENV
+          echo "ENVIRONMENT=${{ steps.issue-parser.outputs.issueparser_environment }}" >> $GITHUB_ENV
 
-          # Extrair o número da issue do arquivo de eventos JSON
-          issue_number=$(jq --raw-output .issue.number "$event_path")
+      - name: Baixar CSV do Google Drive
+        run: |
+          branches="https://drive.google.com/uc?id=1_fAzmL25HzYpMSJ2__x59Xx-O6K6sKz8"
+          wget "$branches" -O branches.csv
 
-          echo "Número da Issue: $issue_number"
+      - name: Processar CSV e Armazenar em Array
+        run: ./.github/workflows/scripts/deploys/develop-deploy.sh ${{ env.NEW_BRANCH }} ${{ env.ENVIRONMENT }}
 
-          # Extrair as tags da issue do arquivo de eventos JSON
-          tags=$(jq --raw-output '.issue.labels[].name' "$event_path")
 
-          echo "Tags da Issue: $tags"
 
-          # Verificar se a tag desejada está presente
-          if echo "$tags" | grep -q "deploy-develop"; then
-            echo "A Issue tem a tag 'deploy-develop'. Executar ações desejadas..."
-          else
-            echo "A Issue não tem a tag 'deploy-develop'. Não executar ações."
-          fi

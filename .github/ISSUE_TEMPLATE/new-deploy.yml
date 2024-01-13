@@ -1,12 +1,12 @@
 name: Deploy by issue
 description: Create a new deploy in develop environments
 labels: ["deploy-develop"]
-title: "[Deploy em ambientes]"
+title: "Deploy em ambientes"
 body:
   - type: input
     id: branch-name
     attributes:
-      label: Nome da branch
+      label: Branch
     validations:
       required: true
   - type: dropdown
@@ -14,12 +14,9 @@ body:
     validations:
       required: true
     attributes:
-      label: O Deploy deve ser feito em qual ambiente?
+      label: Ambiente
       multiple: true
       options:
         - Develop
         - Homolog
-  - type: textarea
-    id: description
-    attributes:
-      label: Descrição
+
