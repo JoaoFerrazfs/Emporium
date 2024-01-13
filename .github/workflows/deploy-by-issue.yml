@@ -1,0 +1,31 @@
+name: Deploy by issue
+on:
+  issues:
+    types: [ opened, edited, milestoned ]
+
+jobs:
+  exemplo-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verificar Tags da Issue
+        run: |
+          # Obter o caminho do arquivo de eventos
+          event_path=$GITHUB_EVENT_PATH
+
+          # Extrair o número da issue do arquivo de eventos JSON
+          issue_number=$(jq --raw-output .issue.number "$event_path")
+
+          echo "Número da Issue: $issue_number"
+
+          # Extrair as tags da issue do arquivo de eventos JSON
+          tags=$(jq --raw-output '.issue.labels[].name' "$event_path")
+
+          echo "Tags da Issue: $tags"
+
+          # Verificar se a tag desejada está presente
+          if echo "$tags" | grep -q "deploy-develop"; then
+            echo "A Issue tem a tag 'deploy-develop'. Executar ações desejadas..."
+          else
+            echo "A Issue não tem a tag 'deploy-develop'. Não executar ações."
+          fi
