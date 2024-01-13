@@ -16,6 +16,19 @@ jobs:
           # Extrair o número da issue do arquivo de eventos JSON
           issue_number=$(jq --raw-output .issue.number "$event_path")
 
+          # Extrair o corpo da issue do arquivo de eventos JSON
+           issue_body=$(jq --raw-output .issue.body "$event_path")
+
+          # Extrair o valor após "develop" usando awk
+          valor_develop=$(echo "$issue_body" | awk -F "-|\\r\\n" '/### Nome da branch/{getline; print $1}')
+
+          # Extrair o valor após "Homolog" usando awk
+          valor_homolog=$(echo "$issue_body" | awk -F "-|\\r\\n" '/### O Deploy deve ser feito em qual ambiente?/{getline; print $1}')
+
+          echo "Valor após 'develop': $valor_develop"
+          echo "Valor após 'Homolog': $valor_homolog"
+
+
           echo "Número da Issue: $issue_number"
 
           # Extrair as tags da issue do arquivo de eventos JSON
