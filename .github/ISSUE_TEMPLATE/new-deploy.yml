@@ -1,6 +1,7 @@
 name: Deploy by issue
 description: Create a new deploy in develop environments
 labels: ["deploy-develop"]
+title: "[Deploy em ambientes]"
 body:
   - type: input
     id: branch-name
