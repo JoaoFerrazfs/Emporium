@@ -17,6 +17,6 @@ body:
     attributes:
       label: Ambientes
       options:
-        1: Develop
-        2: Homolog
-        3: Staging
+        opção1: Rótulo 1
+        opção2: Rótulo 2
+        opção3: Rótulo 3
