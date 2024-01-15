@@ -1,12 +1,14 @@
 name: Deploy em Ambientes
-description: Atualiza ambientes com a branch passada
+description: Atualiza ambientes com as branches passadas
 title: '[Deployment]: '
 labels: ['environment-deploy']
 body:
   - type: input
     id: branches
     attributes:
-      label: Branch
+      label: Branches
+      description: Você pode optar em passar uma só branch ou várias separadas por virgula
+      placeholder: branch-1,branch-2
     validations:
       required: true
 
