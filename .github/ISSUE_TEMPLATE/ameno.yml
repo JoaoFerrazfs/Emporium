@@ -17,5 +17,7 @@ body:
     attributes:
       label: Ambientes
       options:
-      - label: Rótulo 1
+      - label: Develop
+      - label: Homolog
+      - label: Staging
 
