@@ -17,6 +17,6 @@ body:
     attributes:
       label: Ambientes
       options:
-        - Develop
-        - Homolog
-        - Staging
+        1: Develop
+        2: Homolog
+        3: Staging
