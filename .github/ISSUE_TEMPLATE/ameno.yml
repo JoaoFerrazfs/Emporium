@@ -17,6 +17,5 @@ body:
     attributes:
       label: Ambientes
       options:
-        - opção1: Rótulo 1
-        - opção2: Rótulo 2
-        - opção3: Rótulo 3
+      - label: Rótulo 1
+
