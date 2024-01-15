@@ -1,0 +1,22 @@
+name: Deploy em Ambientes
+description: Atualiza ambientes com a branch passada
+title: '[Deployment]: '
+labels: ['environment-deploy']
+body:
+  - type: input
+    id: branches
+    attributes:
+      label: Branch
+    validations:
+      required: true
+
+  - type: checkboxes
+      id: environments
+      validations:
+        required: true
+      attributes:
+        label: Ambientes
+        options:
+          - Develop
+          - Homolog
+          - Staging
