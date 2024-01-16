@@ -41,8 +41,7 @@ jobs:
             fi
             
             if [[ "$branch_exists" != "0" || "$branch_merged" != "0" ]]; then
-              export ERROR_MESSAGE="Branch does not exist or has been merged: '$branch'"
-              echo "error=$ERROR_MESSAGE" >> $GITHUB_OUTPUT
+              echo "Branch does not exist or has been merged: '$branch'" > error_message.txt
               set -e
               exit 1
             fi
@@ -50,6 +49,6 @@ jobs:
     
       - name: Close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "$ERROR_MESSAGE"
+        run: gh issue close ${{ github.event.issue.number }} -c "$(cat error_message.txt)"
       
       
