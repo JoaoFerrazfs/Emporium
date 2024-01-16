@@ -30,19 +30,21 @@ jobs:
           IFS=',' read -ra branch_array <<< "$branches"
 
           for branch in "${branch_array[@]}"; do
-              set +e
-              git ls-remote --exit-code --heads origin $branch &> /dev/null
-              branch_exists=$?
-              if [[ "$branch_exists" == "0" ]]; then
-                git checkout $branch &> /dev/null
-                git log --pretty=format:"%h" develop | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
-                branch_merged=$?
-              fi
-              if [[ "$branch_exists" != "0" ]]: then
-               echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
-               set -e
-               exit 1
-              fi
+            set +e
+            git ls-remote --exit-code --heads origin $branch &> /dev/null
+            branch_exists=$?
+            
+            if [[ "$branch_exists" == "0" ]]; then
+              git checkout $branch &> /dev/null
+              git log --pretty=format:"%h" master | grep $(git log --pretty=format:"%h" -1 $branch) &> /dev/null
+              branch_merged=$?
+            fi
+            
+            if [[ "$branch_exists" != "0" || "$branch_merged" != "0" ]]; then
+              echo "error=Branch does not exist or has been merged: '$branch'" >> $GITHUB_OUTPUT
+              set -e
+              exit 1
+            fi
           done
     
       - name: Close issue
