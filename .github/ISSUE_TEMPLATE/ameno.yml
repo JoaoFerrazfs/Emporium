@@ -12,13 +12,13 @@ body:
     validations:
       required: true
 
-  - type: dropdown
+  - type: checkboxes
     id: shouldDelete
     attributes:
       label: Remove
       description: You can remove a branch from the environment
       options:
-        - 'yes'
+        - label: desire remover?
 
   - type: checkboxes
     id: environments
