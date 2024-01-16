@@ -1,30 +1,38 @@
-name: Deploy to Environments
-description: Update environments with sent branches
-title: '[Deployment]: '
-labels: ['environment-deploy']
+name: Relatório de incidente
+description: Arquivo de relatório de incidente
+title: '[Incident]: '
+labels: ['incident']
 body:
-  - type: input
-    id: branches
+  - type: markdown
     attributes:
-      label: Branches
-      description: You can choose to send only one branch or more than one, in this case you need to write separating the names with a comma
-      placeholder: branch-1,branch-2
+      value: Preencha os campos abaixo para registrar o incidente de deployment!
+  - type: input
+    id: squad
+    attributes:
+      label: Nome da Squad
+      description: Qual o nome da sua squad?
+      placeholder: ex. Squad Busca
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: O quê aconteceu?
+      description: Diga de forma resumida qual foi o incidente?
+      placeholder: Insira aqui o resumo!
     validations:
       required: true
-
-  - type: checkboxes
-    id: shouldDelete
+  - type: textarea
+    id: logs
     attributes:
-      label: Remove
-      description: You can remove a branch from the environment
-      options:
-        - label: remove branch
-
-  - type: checkboxes
-    id: environments
+      label: Evidencias relevantes
+      description: Insira as evidências relevantes relacionadas ao incidente.
+      render: shell
+  - type: input
+    id: rca
     attributes:
-      label: Environments
-      options:
-        - label: Develop
-        - label: Homolog
-        - label: Staging
+      label: Causa Raíz
+      description: Se o commit que gerou o erro foi identificado informe o seu Hash?
+      placeholder: ex. cd6bd9dd5b95cbea2d2470b8c788bfd06d44c011
+    validations:
+      required: false
