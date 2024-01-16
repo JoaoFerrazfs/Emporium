@@ -54,6 +54,6 @@ jobs:
       - name: Close issue with failure
         if: failure() && !cancelled()
         run: |
-          gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}" --token ${{ secrets.GITHUB_TOKEN }}
-          gh issue close ${{ github.event.issue.number }} --token ${{ secrets.GITHUB_TOKEN }}
+          gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}"
+          gh issue close ${{ github.event.issue.number }}
           exit 1
