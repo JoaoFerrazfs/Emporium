@@ -58,7 +58,7 @@ jobs:
           repo=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
           issue_number=${{ github.event.issue.number }}
       
-          # Adicionar um comentário à issue
+          # Adicionar um comentário à issue usando curl
           curl -s -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
             -d '{"body": "Error: ${{ steps.validate-branches.outputs.error }}"}' \
             "https://api.github.com/repos/$owner/$repo/issues/$issue_number/comments"
