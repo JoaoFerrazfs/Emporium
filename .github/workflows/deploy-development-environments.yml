@@ -50,6 +50,6 @@ jobs:
     
       - name: Close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "oi" -b "$ERROR_MESSAGE"
+        run: gh issue close ${{ github.event.issue.number }} -c "$ERROR_MESSAGE"
       
       
