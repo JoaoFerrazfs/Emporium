@@ -18,23 +18,21 @@ jobs:
         with:
           template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
 
-      - name: Verify-issue
+      - name: verify-issue
         run: |
           echo "${{ steps.issue-parser.outputs.issueparser_branches }}"
           echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
           echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
           echo "${{ steps.issue-parser.outputs.jsonString }}"
 
-      - name: Validate branches
+      - name: validate-branches
         run: |
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
           IFS=',' read -ra branch_array <<< "$branches"
 
           for branch in "${branch_array[@]}"; do
-            # Montar a URL da API GitHub para a branch específica
+          
             api_url="https://api.github.com/repos/${{ github.repository }}/branches/${branch}"
-
-            # requisicao
             response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GH_TOKEN" "$api_url")
 
             if [ "$response_code" -eq 200 ]; then
@@ -47,20 +45,22 @@ jobs:
               exit 1
             fi
           done
+          
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Close issue with failure
+        uses: peter-evans/close-issue@v2
         if: failure() && !cancelled()
-        run: |
-          # Adicionar um comentário à issue usando curl
-          curl --location "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
-            --header "Accept: application/vnd.github+json" \
-            --header "X-GitHub-Api-Version: 2022-11-28" \
-            --header "Content-Type: application/json" \
-            --header "Authorization: Bearer $GH_TOKEN" \
-            --data '{"body": "Error: ${{ steps.validate-branches.outputs.error }}"}'
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            ## Automation failed :sob:
 
+            Errors occurred during automation:
+            - ${{ steps.validate-branches.outputs.error }}
+
+            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
