@@ -27,9 +27,12 @@ jobs:
           
       - name: Validate branches
         run: |
-          branches= ${{ steps.issue-parser.outputs.issueparser_branches }}
+          branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
+          IFS=',' read -ra branch_array <<< "$branches"
+          
           for branch in "${branch_array[@]}"; do
-            echo "Branch: $branch"
+          echo "Branch: $branch"
           done
+        shell: bash
 
 
