@@ -23,7 +23,6 @@ jobs:
           echo "${{ steps.issue-parser.outputs.issueparser_branches }}"
           echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
           echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
-          echo "${{ steps.issue-parser.outputs.jsonString }}"
 
       - name: validate-branches
         run: |
@@ -31,7 +30,7 @@ jobs:
           IFS=',' read -ra branch_array <<< "$branches"
 
           for branch in "${branch_array[@]}"; do
-          
+
             api_url="https://api.github.com/repos/${{ github.repository }}/branches/${branch}"
             response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GH_TOKEN" "$api_url")
 
@@ -45,7 +44,7 @@ jobs:
               exit 1
             fi
           done
-          
+
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,3 +63,12 @@ jobs:
             You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+
+      - name: build-branches
+        run: |
+          branch=${{ steps.issue-parser.outputs.issueparser_environments }}
+          
+          for branch in "${branches[@]}"; do
+            echo "Branch: $branch"
+          done
