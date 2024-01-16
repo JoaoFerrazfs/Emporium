@@ -49,7 +49,7 @@ jobs:
     
       - name: Close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "${{ env.error }}"
+        run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
   
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
