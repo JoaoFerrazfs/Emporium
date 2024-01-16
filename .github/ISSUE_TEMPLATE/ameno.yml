@@ -1,5 +1,5 @@
-name: Deploy em Ambientes
-description: Atualiza ambientes com as branches passadas
+name: Deploy to Environments
+description: Update environments with sent branches
 title: '[Deployment]: '
 labels: ['environment-deploy']
 body:
@@ -7,15 +7,22 @@ body:
     id: branches
     attributes:
       label: Branches
-      description: Você pode optar em passar uma só branch ou várias separadas por virgula
+      description: You can choose to send only one branch or more than one, in this case you need to write separating the names with a comma
       placeholder: branch-1,branch-2
     validations:
       required: true
 
+  - type: radio
+    id: shouldDelete
+    attributes:
+      label: Delete
+      options:
+        Delete: Develop
+
   - type: checkboxes
     id: environments
     attributes:
-      label: Ambientes
+      label: Environments
       options:
         - label: Develop
         - label: Homolog
