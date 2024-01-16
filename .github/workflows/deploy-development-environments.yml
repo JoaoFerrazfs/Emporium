@@ -1,74 +1,13 @@
 name: Deploy by issue
 on:
   issues:
-    types: [opened, edited]
+    types: [opened]
 
 jobs:
   deploy:
     if: contains(github.event.issue.labels.*.name, 'environment-deploy')
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: stefanbuck/github-issue-parser@v3
-        id: issue-parser
-        with:
-          template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
-
-      - name: verify-issue
-        run: |
-          echo "${{ steps.issue-parser.outputs.issueparser_branches }}"
-          echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
-          echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
-
-      - name: validate-branches
-        run: |
-          branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
-          IFS=',' read -ra branch_array <<< "$branches"
-
-          for branch in "${branch_array[@]}"; do
-
-            api_url="https://api.github.com/repos/${{ github.repository }}/branches/${branch}"
-            response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GH_TOKEN" "$api_url")
-
-            if [ "$response_code" -eq 200 ]; then
-              echo "Branch '$branch' exists in the remote repository."
-
-            else 
-              echo "Branch doesn't exist: '$branch'"
-#              echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
-#              set -e
-#              exit 1
-            fi
-          done
-
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#      - name: Close issue with failure
-#        uses: peter-evans/close-issue@v2
-#        if: failure() && !cancelled()
-#        with:
-#          issue-number: ${{ github.event.issue.number }}
-#          comment: |
-#            ## Automation failed :sob:
-#
-#            Errors occurred during automation:
-#            - ${{ steps.validate-branches.outputs.error }}
-#
-#            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-#        env:
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-
-      - name: build-branches
-        run: |
-          branch=${{ steps.issue-parser.outputs.issueparser_environments }}
-          
-          for branch in "${branches[@]}"; do
-            echo "Branch: $branch"
-          done
+      - name: Close issue
+        run: gh issue close ${{ github.event.issue.number }} -c "oi"
