@@ -16,8 +16,36 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Parse Issue
+        uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
+
+      - name: Branch Validation
+        run: |
+  
+          branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
+          IFS=',' read -ra branch_array <<< "$branches"
+
+          for branch in "${branch_array[@]}"; do
+              set +e
+              git ls-remote --exit-code --heads origin $branch &> /dev/null
+              if [[ "$branch_exists" == "0" ]]; then
+                git checkout $branch &> /dev/null
+                git log --pretty=format:"%h" develop | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
+                branch_merged=$?
+              fi
+              if [[ "$branch_exists" != "0" ]]: then
+               echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
+               set -e
+               exit 1
+              fi
+          done
     
       - name: Close issue
+        if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "oi"
       
       
