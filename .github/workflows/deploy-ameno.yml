@@ -1,0 +1,26 @@
+name: Deploy by issue
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  deploy:
+    if: contains(github.event.issue.labels.*.name, 'environment-deploy')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
+
+      - name: Verify-issue
+        run: |
+          echo "${{ steps.issue-parser.outputs.issueparser_branches }}"
+          echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
+          echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
+          echo "${{ steps.issue-parser.outputs.jsonString }}"
