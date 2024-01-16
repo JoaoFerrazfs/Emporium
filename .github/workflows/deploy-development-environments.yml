@@ -52,11 +52,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Close issue with failure
-        uses: peter-evans/close-issue@v2
         if: failure() && !cancelled()
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          comment: |
-            gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}"
-            gh issue close ${{ github.event.issue.number }}
-            exit 1
+        run: |
+          gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}"
+          gh issue close ${{ github.event.issue.number }}
+          exit 1
