@@ -40,14 +40,11 @@ jobs:
             if [ "$response_code" -eq 200 ]; then
               echo "Branch '$branch' exists in the remote repository."
 
-            elif [ "$response_code" -eq 404 ]; then
-              echo "Branch '$branch' does not exist in the remote repository."
+            else 
+              echo "Branch doesn't exist: '$branch'"
+              echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
               set -e
               exit 1
-
-            else
-              echo "Failed to validate branch '$branch'. HTTP response code: $response_code"
-
             fi
           done
         shell: bash
@@ -63,6 +60,6 @@ jobs:
             ## Automation failed :sob:
 
             Errors ocurred during automation:
-            - ${{ steps.issue-parser.outputs.issueparser_branches }}
+            - ${{ steps.validate-branches.outputs.error }}
 
             You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
