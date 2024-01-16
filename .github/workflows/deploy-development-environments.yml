@@ -54,6 +54,6 @@ jobs:
       - name: Close issue with failure
         if: failure() && !cancelled()
         run: |
-          gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}"
-          gh issue close ${{ github.event.issue.number }}
-          exit 1
+          curl -s -X POST -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
+            -d '{"body": "Error: ${{ steps.validate-branches.outputs.error }}"}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments"
