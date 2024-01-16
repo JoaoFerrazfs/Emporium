@@ -52,5 +52,5 @@ jobs:
         run: gh issue close ${{ github.event.issue.number }} -c "${{ env.error }}"
   
       - name: Validation success
-        run: gh issue comment ${{ github.event.issue.number }} -b "[:star:] Branch validation success"
+        run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
   
