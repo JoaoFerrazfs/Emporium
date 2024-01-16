@@ -1,38 +1,26 @@
-name: Relatório de incidente
-description: Arquivo de relatório de incidente
-title: '[Incident]: '
-labels: ['incident']
-body:
-  - type: markdown
-    attributes:
-      value: Preencha os campos abaixo para registrar o incidente de deployment!
-  - type: input
-    id: squad
-    attributes:
-      label: Nome da Squad
-      description: Qual o nome da sua squad?
-      placeholder: ex. Squad Busca
-    validations:
-      required: false
-  - type: textarea
-    id: what-happened
-    attributes:
-      label: O quê aconteceu?
-      description: Diga de forma resumida qual foi o incidente?
-      placeholder: Insira aqui o resumo!
-    validations:
-      required: true
-  - type: textarea
-    id: logs
-    attributes:
-      label: Evidencias relevantes
-      description: Insira as evidências relevantes relacionadas ao incidente.
-      render: shell
-  - type: input
-    id: rca
-    attributes:
-      label: Causa Raíz
-      description: Se o commit que gerou o erro foi identificado informe o seu Hash?
-      placeholder: ex. cd6bd9dd5b95cbea2d2470b8c788bfd06d44c011
-    validations:
-      required: false
+name: Deploy by issue
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  deploy:
+    if: contains(github.event.issue.labels.*.name, 'environment-deploy')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: stefanbuck/github-issue-parser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
+
+      - name: Verify-issue
+        run: |
+          echo "${{ steps.issue-parser.outputs.issueparser_branches }}"
+          echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
+          echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
+          echo "${{ steps.issue-parser.outputs.jsonString }}"
