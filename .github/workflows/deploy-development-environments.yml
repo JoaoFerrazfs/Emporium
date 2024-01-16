@@ -54,3 +54,17 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
   
+      - name: Create branch
+        run: |
+          echo "Checkout develop..."
+          git checkout master &> /dev/null
+          
+          echo "Deleting homolog_gha..."
+          git branch -D develop &> /dev/null
+
+          echo "Recreating develop..."
+          git checkout -b develop develop &> /dev/null
+
+
+
+      
