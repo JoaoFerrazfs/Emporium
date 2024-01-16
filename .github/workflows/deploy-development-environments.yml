@@ -2,12 +2,18 @@ name: Deploy by issue
 on:
   issues:
     types: [opened]
+    secrets:
+      github-token:
+        required: true
 
 jobs:
   deploy:
     if: contains(github.event.issue.labels.*.name, 'environment-deploy')
     runs-on: ubuntu-latest
-
+    env:
+      GH_TOKEN: ${{ secrets.github-token }}
+    
     steps:
       - name: Close issue
         run: gh issue close ${{ github.event.issue.number }} -c "oi"
+      
