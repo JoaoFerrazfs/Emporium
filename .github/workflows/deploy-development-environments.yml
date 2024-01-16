@@ -57,9 +57,6 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           comment: |
-            ## Automation failed :sob:
-
-            Errors ocurred during automation:
-            - ${{ steps.validate-branches.outputs.error }}
-
-            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+            gh issue comment ${{ github.event.issue.number }} -b "Error: ${{ steps.validate-branches.outputs.error }}"
+            gh issue close ${{ github.event.issue.number }}
+            exit 1
