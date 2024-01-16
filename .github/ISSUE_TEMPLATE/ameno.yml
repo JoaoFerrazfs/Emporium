@@ -20,7 +20,7 @@ body:
       options:
         - 'yes'
         - 'no'
-      default: 1
+      default: 0
 
   - type: checkboxes
     id: environments
