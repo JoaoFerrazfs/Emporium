@@ -63,6 +63,6 @@ jobs:
             ## Automation failed :sob:
 
             Errors ocurred during automation:
-            - ${{ steps.validate-branches.outputs.error }}
+            - ${{ steps.issue-parser.outputs.issueparser_branches }}
 
             You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
