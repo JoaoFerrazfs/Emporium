@@ -18,7 +18,7 @@ body:
       label: Remove
       description: You can remove a branch from the environment
       options:
-        - label: desire remover?
+        - label: remove branch
 
   - type: checkboxes
     id: environments
