@@ -12,12 +12,15 @@ body:
     validations:
       required: true
 
-  - type: radio
+  - type: dropdown
     id: shouldDelete
     attributes:
-      label: Delete
+      label: Remove
+      description: You can remove a branch from the environment
       options:
-        Delete: Develop
+        yes: yes
+        no: no
+      default: no
 
   - type: checkboxes
     id: environments
