@@ -39,9 +39,9 @@ jobs:
 
             else 
               echo "Branch doesn't exist: '$branch'"
-              echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
-              set -e
-              exit 1
+#              echo "error=Branch does not exist: '$branch'" >> $GITHUB_OUTPUT
+#              set -e
+#              exit 1
             fi
           done
 
@@ -49,20 +49,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Close issue with failure
-        uses: peter-evans/close-issue@v2
-        if: failure() && !cancelled()
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          comment: |
-            ## Automation failed :sob:
-
-            Errors occurred during automation:
-            - ${{ steps.validate-branches.outputs.error }}
-
-            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Close issue with failure
+#        uses: peter-evans/close-issue@v2
+#        if: failure() && !cancelled()
+#        with:
+#          issue-number: ${{ github.event.issue.number }}
+#          comment: |
+#            ## Automation failed :sob:
+#
+#            Errors occurred during automation:
+#            - ${{ steps.validate-branches.outputs.error }}
+#
+#            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
 
       - name: build-branches
