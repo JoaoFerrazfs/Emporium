@@ -18,8 +18,8 @@ body:
       label: Remove
       description: You can remove a branch from the environment
       options:
-        yes: yes
-        no: no
+        - yes
+        - no
       default: no
 
   - type: checkboxes
