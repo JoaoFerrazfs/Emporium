@@ -24,32 +24,45 @@ jobs:
           echo "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" 
           echo "${{ steps.issue-parser.outputs.issueparser_environments }}"
           echo "${{ steps.issue-parser.outputs.jsonString }}"
-          
+
       - name: Validate branches
         run: |
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
           IFS=',' read -ra branch_array <<< "$branches"
-      
+
           for branch in "${branch_array[@]}"; do
             # Montar a URL da API GitHub para a branch específica
             api_url="https://api.github.com/repos/${{ github.repository }}/branches/${branch}"
-      
-            # Fazer a requisição HTTP para verificar a existência da branch
+
+            # requisicao
             response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GH_TOKEN" "$api_url")
-      
+
             if [ "$response_code" -eq 200 ]; then
               echo "Branch '$branch' exists in the remote repository."
-              # Adicione aqui o código que você deseja executar para cada branch existente
+
             elif [ "$response_code" -eq 404 ]; then
               echo "Branch '$branch' does not exist in the remote repository."
-              # Adicione aqui o código que você deseja executar para cada branch inexistente
+              set -e
+              exit 1
+
             else
               echo "Failed to validate branch '$branch'. HTTP response code: $response_code"
-              # Adicione aqui o código para lidar com outros códigos de resposta, se necessário
+
             fi
           done
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Close issue with failure
+        uses: peter-evans/close-issue@v2
+        if: failure() && !cancelled()
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: |
+            ## Automation failed :sob:
 
+            Errors ocurred during automation:
+            - ${{ steps.validate-branches.outputs.error }}
+
+            You can view all logs acessing the [the action log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
