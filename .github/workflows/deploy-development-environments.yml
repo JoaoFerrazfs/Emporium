@@ -32,6 +32,7 @@ jobs:
           for branch in "${branch_array[@]}"; do
               set +e
               git ls-remote --exit-code --heads origin $branch &> /dev/null
+              branch_exists=$?
               if [[ "$branch_exists" == "0" ]]; then
                 git checkout $branch &> /dev/null
                 git log --pretty=format:"%h" develop | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
