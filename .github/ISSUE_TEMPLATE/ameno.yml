@@ -19,8 +19,6 @@ body:
       description: You can remove a branch from the environment
       options:
         - 'yes'
-        - 'no'
-      default: 0
 
   - type: checkboxes
     id: environments
