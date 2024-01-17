@@ -66,9 +66,35 @@ jobs:
           
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
 
-          for branch in "${branches[@]}"; do         
+          validatedBranches=""
+          
+          for branch in "${branches[@]}"; do
             branch=$(echo "$branch" | sed 's/^[ \t]*//;s/[ \t]*$//')
+          
+            set +e
+            git ls-remote --exit-code --heads origin "$branch" &> /dev/null
+            branch_exists=$?
+          
+            if [[ "$branch_exists" == "0" ]]; then
+              git checkout "$branch" &> /dev/null
+              git log --pretty=format:"%h" master | grep "$(git log --pretty=format:"%h" -1 "$branch")" &> /dev/null
+              branch_merged=$?
+          
+              if [[ "$branch_merged" == "0" ]]; then
+                # Se a branch existe e foi mesclada, faça o rebase com a master
+                git rebase master
+              fi
+          
+              # Adiciona a branch ao final da string validatedBranches
+              validatedBranches+="$branch,"
+            fi
+          
             echo "Nome da branch: $branch"
           done
+          
+          # Remove a vírgula extra do final da string validatedBranches
+          validatedBranches="${validatedBranches%,}"
+          
+          echo "Branches validadas: $validatedBranches"
 
       
