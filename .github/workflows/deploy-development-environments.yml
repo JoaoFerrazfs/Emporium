@@ -20,13 +20,13 @@ jobs:
       - name: Assign issue
         run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ github.event.issue.user.login }}
 
-      - name: Parse Issue
+      - name: Parse issue
         uses: stefanbuck/github-issue-parser@v3
         id: issue-parser
         with:
           template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
 
-      - name: Branch Validation
+      - name: Issue branch validation
         run: |
           validatedIssueBranches=""
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
@@ -60,76 +60,28 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
 
-      - name: List Files
-        run: ls -la ./.github/workflows/support
+      - name: Set environments to work
+        run: |
+          environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
+          IFS=, read -ra EnvironmentArray <<< "$environments"
 
-      - name: Handle Environment Branches
-        run: ./scripts/deploys/develop-deploy.sh develop
+          for environment in "${EnvironmentArray[@]}"; do
+            environment=$(echo "$environment" | xargs)
+
+            echo "${environment}=${environment}" >> $GITHUB_ENV
+          done
 
       - name : Create new develop branch
+        if: ${{ env.Develop }}
         env:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-          echo "Setting up Git user identity..."
-          git config --local user.name "$GIT_COMMITTER_NAME"
-          git config --local user.email "$GIT_COMMITTER_EMAIL"
-
-          echo "Checkout develop..."
           git checkout master &> /dev/null
-
-          echo "Deleting develop..."
-          git branch -D develop &> /dev/null
-
-          echo "Recreating develop..."
-          git checkout -b develop
-
-          allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
-
-          IFS=, read -ra BranchArray <<< "$allBranches"
-
-          error_file="error.log"
-          touch "$error_file"
-
-          for branch in "${BranchArray[@]}"; do
-
-            echo "Chekout to $branch."
-            git checkout $branch  &> /dev/null
-
-            echo "Rebasing $branch with main..."
-            git rebase master 2>> "$error_file"
-            error=$?
-            if [[ "$error" != "0" ]]; then
-                error=$(tail -n 1 "$error_file")
-                echo "An error occurred while rebasing develop into '$branch': $error"
-                exit 1
-            else
-                echo -e "Rebase successful\n"
-            fi
-
-            echo "Merge $branch into develop..."
-            git checkout develop &> /dev/null
-            git merge $branch --no-edit 2>> "$error_file"
-            error=$?
-            if [[ "$error" != "0" ]]; then
-                error=$(tail -n 1 "$error_file")
-                echo "An error occurred while merge '$branch' into develop: $error"
-                exit 1
-            else
-                echo -e "Merge successful\n"
-            fi
-          done
-
-          echo "Sending updated develop to github"
-          git push --force origin develop 2>> "$error_file"
-          error=$?
-          if [[ "$error" != "0" ]]; then
-             error=$(tail -n 1 "$error_file")
-             echo "An error occurred while merge '$branch' into develop: $error"
-             exit 1
-          else
-             echo -e "Merge successful\n"
-          fi
+          ./.github/workflows/support/handle-environments-branches.sh develop
+          
+          git checkout master &> /dev/null
+          ./.github/workflows/support/build-environments-branches.sh develop
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
