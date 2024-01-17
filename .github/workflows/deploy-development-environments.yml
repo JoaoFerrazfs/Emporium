@@ -107,7 +107,7 @@ jobs:
           echo "Checkout develop..."
           git checkout master &> /dev/null
           
-          echo "Deleting homolog_gha..."
+          echo "Deleting develop..."
           git branch -D develop &> /dev/null 
 
           echo "Recreating develop..."
@@ -130,8 +130,11 @@ jobs:
               exit 1
             fi
           
-            echo "Checkout to develop"
-            git checkout develop 
+            echo "Merge $branch into develop..."
+            if ! git checkout develop &> /dev/null; then
+              echo "Error: Failed to checkout develop." >> "$error_file"
+              exit 1
+            fi
 
             echo "Merge branch $branch into develop"
             if ! git merge "$branch" --no-edit &> /dev/null; then
@@ -143,6 +146,12 @@ jobs:
           echo "Sending updated develop to github"
           if ! git push --force origin develop &> /dev/null; then
             echo "Error: Failed to push updated develop to GitHub." &>> "$error_file"
+            exit 1
+          fi
+
+          if [ -s "$error_file" ]; then
+            comment_body=$(cat "$error_file")
+            gh issue comment ${{ github.event.issue.number }} -b "⚠️ Error during the process:\n\n$comment_body"
             exit 1
           fi
       
