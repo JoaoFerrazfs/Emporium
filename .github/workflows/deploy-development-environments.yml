@@ -120,38 +120,34 @@ jobs:
           error_file="error.log"
           touch "$error_file"
                
+          # Imprimir os elementos do array
           for branch in "${BranchArray[@]}"; do
+          
             echo "Chekout to $branch."
-            git checkout "$branch" &> /dev/null
-          
+            git checkout $branch  &> /dev/null
+            
             echo "Rebasing $branch with main..."
-            if ! git rebase master &> /dev/null; then
-              echo "Error: Failed to rebase $branch with main." &>> "$error_file"
-              exit 1
-            fi
-          
-            echo "Merge $branch into develop..."
-            if ! git checkout develop &> /dev/null; then
-              echo "Error: Failed to checkout develop." >> "$error_file"
-              exit 1
-            fi
+            git rebase master  &> /dev/null
 
-            echo "Merge branch $branch into develop"
-            if ! git merge "$branch" --no-edit &> /dev/null; then
-              echo "Error: Failed to merge $branch into develop." &>> "$error_file"
-              exit 1
-            fi
+            echo "Merge $branch into develop..."
+            git checkout develop &> /dev/null
+            git merge $branch --no-edit &> /dev/null
+            
           done
           
           echo "Sending updated develop to github"
-          if ! git push --force origin develop &> /dev/null; then
-            echo "Error: Failed to push updated develop to GitHub." &>> "$error_file"
-            exit 1
-          fi
+          git push --force origin develop
+          done
+          
+          # echo "Sending updated develop to github"
+          # if ! git push --force origin develop &> /dev/null; then
+          #   echo "Error: Failed to push updated develop to GitHub." &>> "$error_file"
+          #   exit 1
+          # fi
 
-          if [ -s "$error_file" ]; then
-            comment_body=$(cat "$error_file")
-            gh issue comment ${{ github.event.issue.number }} -b "⚠️ Error during the process:\n\n$comment_body"
-            exit 1
-          fi
+          # if [ -s "$error_file" ]; then
+          #   comment_body=$(cat "$error_file")
+          #   gh issue comment ${{ github.event.issue.number }} -b "⚠️ Error during the process:\n\n$comment_body"
+          #   exit 1
+          # fi
       
