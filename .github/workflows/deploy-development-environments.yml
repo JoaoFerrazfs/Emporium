@@ -95,7 +95,15 @@ jobs:
           echo "Branches validadas: $validatedBranches"
 
       - name : Create new develop branch
+        env:
+          GIT_COMMITTER_NAME: GitHub Actions
+          GIT_COMMITTER_EMAIL: actions@github.com
         run: |
+
+          echo "Setting up Git user identity..."
+          git config --local user.name "$GIT_COMMITTER_NAME"
+          git config --local user.email "$GIT_COMMITTER_EMAIL"
+          
           echo "Checkout develop..."
           git checkout master &> /dev/null
           
