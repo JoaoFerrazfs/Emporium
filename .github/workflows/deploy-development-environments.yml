@@ -137,7 +137,7 @@ jobs:
           
           echo "Sending updated develop to github"
           git push --force origin develop
-          done
+
           
           # echo "Sending updated develop to github"
           # if ! git push --force origin develop &> /dev/null; then
