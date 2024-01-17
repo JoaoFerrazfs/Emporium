@@ -4,7 +4,12 @@ environmentBranch=$1
 echo "Checkout $environmentBranch..."
 git checkout $environmentBranch &> /dev/null
 
-branchFile="./.github/workflows/support/$environmentBranch-branches.txt"
+supportDir="./.github/support/"
+if [ ! -d "$supportDir" ]; then
+  mkdir -p "$supportDir"
+fi
+
+branchFile="./.github/support/$environmentBranch-branches.txt"
 
 if [ ! -e "$branchFile" ]; then
   touch "$branchFile"

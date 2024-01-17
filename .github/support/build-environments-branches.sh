@@ -48,7 +48,12 @@ for branch in "${BranchArray[@]}"; do
 done
 
 echo "Creating new branches file to'$environmentBranch'"
-branchFile="./.github/workflows/support/$environmentBranch-branches.txt"
+
+supportDir="./.github/support/"
+if [ ! -d "$supportDir" ]; then
+  mkdir -p "$supportDir"
+fi
+branchFile="./.github/support/$environmentBranch-branches.txt"
 echo "$allBranches" > $branchFile
 git add .
 git commit -m "add branches file"

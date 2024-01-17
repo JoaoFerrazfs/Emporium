@@ -77,11 +77,17 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-          git checkout master &> /dev/null
-          ./.github/workflows/support/handle-environments-branches.sh develop
+          rm -rf error.log
 
-          git checkout master &> /dev/null
-          ./.github/workflows/support/build-environments-branches.sh develop
+          git checkout master
+          ./.github/support/handle-environments-branches.sh develop
+
+          git checkout master
+          ./.github/support/build-environments-branches.sh develop
+
+      - name: Send error feedback and close issue
+        if: failure() && !cancelled()
+        run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name : Create new homolog branch
         if: ${{ env.homolog }}
@@ -89,11 +95,17 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-          git checkout master &> /dev/null
-          ./.github/workflows/support/handle-environments-branches.sh homolog
+          rm -rf error.log
 
-          git checkout master &> /dev/null
-          ./.github/workflows/support/build-environments-branches.sh homolog
+          git checkout master
+          ./.github/support/handle-environments-branches.sh homolog
+
+          git checkout master
+          ./.github/support/build-environments-branches.sh homolog
+
+      - name: Send error feedback and close issue
+        if: failure() && !cancelled()
+        run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name : Create new staging branch
         if: ${{ env.staging }}
@@ -101,25 +113,27 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-          git checkout master &> /dev/null
-          ./.github/workflows/support/handle-environments-branches.sh staging
+          rm -rf error.log
 
-          git checkout master &> /dev/null
-          ./.github/workflows/support/build-environments-branches.sh staging
+          git checkout master
+          ./.github/support/handle-environments-branches.sh staging
+
+          git checkout master
+          ./.github/support/build-environments-branches.sh staging
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
-      - name: Develop branch created with success
+      - name: Branches updated with success
         run: |
           allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
 
           IFS=, read -ra BranchArray <<< "$allBranches"
 
-          comment_message="⚡ Branch develop updated successfully!
+          comment_message="⚡ Branches updated successfully!
 
-          The new develop contents:
+          The new branches contents:
           "
 
           for branch in "${BranchArray[@]}"; do
