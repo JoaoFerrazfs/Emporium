@@ -25,7 +25,8 @@ jobs:
 
       - name: Branch Validation
         run: |
-  
+          cat ./.github/workflows/support/develop-branches.txt
+
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
           IFS=',' read -ra branch_array <<< "$branches"
 
