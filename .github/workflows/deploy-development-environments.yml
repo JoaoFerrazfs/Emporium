@@ -51,8 +51,6 @@ jobs:
 
             validatedIssueBranches+="$branch,"
             echo "validatedIssueBranches= ${validatedIssueBranches%,}" >> $GITHUB_ENV
-
-            echo "Branches validadas: $validatedIssueBranches"
           done
 
       - name: Close issue
@@ -83,11 +81,9 @@ jobs:
               branch_merged=$?
 
               if [[ "$branch_merged" == "0" ]]; then
-                # Se a branch existe e foi mesclada, faça o rebase com a master
                 git rebase master
               fi
 
-              # Adiciona a branch ao final da string validatedBranches
               validatedBranches+="$branch,"
             fi
            done
@@ -102,7 +98,6 @@ jobs:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-
           echo "Setting up Git user identity..."
           git config --local user.name "$GIT_COMMITTER_NAME"
           git config --local user.email "$GIT_COMMITTER_EMAIL"
@@ -123,7 +118,6 @@ jobs:
           error_file="error.log"
           touch "$error_file"
 
-          # Imprimir os elementos do array
           for branch in "${BranchArray[@]}"; do
 
             echo "Chekout to $branch."
