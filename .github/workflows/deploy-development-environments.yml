@@ -61,8 +61,9 @@ jobs:
   
       - name: Handle Develop Branches
         run: |
-          cat ./.github/workflows/support/develop-branches.txt
-          git branch
+          echo "Checkout develop..."
+          git checkout develop &> /dev/null
+          cat ./.github/workflows/support/develop-branches.txt     
           
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
           validatedBranches=""
