@@ -117,20 +117,32 @@ jobs:
        
           IFS=, read -ra BranchArray <<< "$Allbranches"
           
-          # Imprimir os elementos do array
+          error_file="error.log"
+          touch "$error_file"
+               
           for branch in "${BranchArray[@]}"; do
-          
             echo "Chekout to $branch."
-            git checkout $branch  &> /dev/null
-            
+            git checkout "$branch" &> /dev/null
+          
             echo "Rebasing $branch with main..."
-            git rebase master  &> /dev/null
-
-            echo "Merge $branch into develop..."
+            if ! git rebase master &> /dev/null; then
+              echo "Error: Failed to rebase $branch with main." &>> "$error_file"
+              exit 1
+            fi
+          
+            echo "Checkout to develop"
             git checkout develop &> /dev/null
-            git merge $branch --no-edit &> /dev/null
+
+            echo "Merge branch $branch into develop"
+            if ! git merge "$branch" --no-edit &> /dev/null; then
+              echo "Error: Failed to merge $branch into develop." &>> "$error_file"
+              exit 1
+            fi
           done
           
           echo "Sending updated develop to github"
-          git push --force origin develop
+          if ! git push --force origin develop &> /dev/null; then
+            echo "Error: Failed to push updated develop to GitHub." &>> "$error_file"
+            exit 1
+          fi
       
