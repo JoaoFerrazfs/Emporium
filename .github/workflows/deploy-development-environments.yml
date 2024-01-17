@@ -111,6 +111,13 @@ jobs:
           
           # Imprimir os elementos do array
           for branch in "${BranchArray[@]}"; do
-            echo "Branch juntas: $branch"
+          
+            echo "Chekout to $branch."
+            git checkout $branch &> /dev/null
+            
+            echo "Rebasing $branch with main..."
+            git rebase master > /dev/null 2> /tmp/error_output
+
+            
           done
       
