@@ -3,19 +3,22 @@ permissions: write-all
 on:
   issues:
     types: [opened]
-    
+
 jobs:
   deploy:
     if: contains(github.event.issue.labels.*.name, 'environment-deploy')
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Assign issue
+        run: gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ github.event.issue.user.login }}
 
       - name: Parse Issue
         uses: stefanbuck/github-issue-parser@v3
@@ -33,65 +36,65 @@ jobs:
             set +e
             git ls-remote --exit-code --heads origin $branch &> /dev/null
             branch_exists=$?
-            
+
             if [[ "$branch_exists" == "0" ]]; then
               git checkout $branch &> /dev/null
               git log --pretty=format:"%h" master | grep $(git log --pretty=format:"%h" -1 $branch) &> /dev/null
               branch_merged=$?
             fi
-            
+
             if [[ "$branch_exists" != "0" || "$branch_merged" != "0" ]]; then
               echo "error=Branch does not exist or has been merged: '$branch'" >> $GITHUB_ENV
               set -e
               exit 1
             fi
 
-            validatedIssueBranches+="$branch,"          
+            validatedIssueBranches+="$branch,"
             echo "validatedIssueBranches= ${validatedIssueBranches%,}" >> $GITHUB_ENV
 
             echo "Branches validadas: $validatedIssueBranches"
           done
-    
+
       - name: Close issue
         if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
-  
+
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
-  
+
       - name: Handle Develop Branches
         run: |
           echo "Checkout develop..."
           git checkout develop &> /dev/null
-          
+
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
           validatedBranches=""
-          
+
           for branch in "${branches[@]}"; do
             branch=$(echo "$branch" | sed 's/^[ \t]*//;s/[ \t]*$//')
-          
+
             set +e
             git ls-remote --exit-code --heads origin "$branch" &> /dev/null
             branch_exists=$?
-          
+
             if [[ "$branch_exists" == "0" ]]; then
               git checkout "$branch" &> /dev/null
               git log --pretty=format:"%h" master | grep "$(git log --pretty=format:"%h" -1 "$branch")" &> /dev/null
               branch_merged=$?
-          
+
               if [[ "$branch_merged" == "0" ]]; then
                 # Se a branch existe e foi mesclada, faça o rebase com a master
                 git rebase master
               fi
-          
+
               # Adiciona a branch ao final da string validatedBranches
               validatedBranches+="$branch,"
             fi
            done
-          
+
           validatedBranches="${validatedBranches%,}"
           echo "validatedBranches= ${validatedBranches%,}" >> $GITHUB_ENV
-          
+
           echo "Branches validadas: $validatedBranches"
 
       - name : Create new develop branch
@@ -103,29 +106,29 @@ jobs:
           echo "Setting up Git user identity..."
           git config --local user.name "$GIT_COMMITTER_NAME"
           git config --local user.email "$GIT_COMMITTER_EMAIL"
-          
+
           echo "Checkout develop..."
           git checkout master &> /dev/null
-          
+
           echo "Deleting develop..."
-          git branch -D develop &> /dev/null 
+          git branch -D develop &> /dev/null
 
           echo "Recreating develop..."
-          git checkout -b develop 
+          git checkout -b develop
 
-          Allbranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
-       
-          IFS=, read -ra BranchArray <<< "$Allbranches"
-          
+          allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
+
+          IFS=, read -ra BranchArray <<< "$allBranches"
+
           error_file="error.log"
           touch "$error_file"
-               
+
           # Imprimir os elementos do array
           for branch in "${BranchArray[@]}"; do
-          
+
             echo "Chekout to $branch."
             git checkout $branch  &> /dev/null
-            
+
             echo "Rebasing $branch with main..."
             git rebase master 2>> "$error_file"
             error=$?
@@ -136,7 +139,7 @@ jobs:
             else
                 echo -e "Rebase successful\n"
             fi
-            
+
             echo "Merge $branch into develop..."
             git checkout develop &> /dev/null
             git merge $branch --no-edit 2>> "$error_file"
@@ -147,9 +150,9 @@ jobs:
                 exit 1
             else
                 echo -e "Merge successful\n"
-            fi            
+            fi
           done
-          
+
           echo "Sending updated develop to github"
           git push --force origin develop 2>> "$error_file"
           error=$?
@@ -159,7 +162,7 @@ jobs:
              exit 1
           else
              echo -e "Merge successful\n"
-          fi            
+          fi
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
