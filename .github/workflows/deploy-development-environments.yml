@@ -60,38 +60,11 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
 
-      - name: Handle Develop Branches
-        run: |
-          echo "Checkout develop..."
-          git checkout develop &> /dev/null
+      - name: List Files
+        run: ls -la ./.github/workflows/support
 
-          IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
-          validatedBranches=""
-
-          for branch in "${branches[@]}"; do
-            branch=$(echo "$branch" | sed 's/^[ \t]*//;s/[ \t]*$//')
-
-            set +e
-            git ls-remote --exit-code --heads origin "$branch" &> /dev/null
-            branch_exists=$?
-
-            if [[ "$branch_exists" == "0" ]]; then
-              git checkout "$branch" &> /dev/null
-              git log --pretty=format:"%h" master | grep "$(git log --pretty=format:"%h" -1 "$branch")" &> /dev/null
-              branch_merged=$?
-
-              if [[ "$branch_merged" == "0" ]]; then
-                git rebase master
-              fi
-
-              validatedBranches+="$branch,"
-            fi
-           done
-
-          validatedBranches="${validatedBranches%,}"
-          echo "validatedBranches= ${validatedBranches%,}" >> $GITHUB_ENV
-
-          echo "Branches validadas: $validatedBranches"
+      - name: Handle Environment Branches
+        run: ./scripts/deploys/develop-deploy.sh develop
 
       - name : Create new develop branch
         env:

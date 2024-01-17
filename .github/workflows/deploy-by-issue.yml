@@ -28,8 +28,11 @@ jobs:
           branches="https://drive.google.com/uc?id=1_fAzmL25HzYpMSJ2__x59Xx-O6K6sKz8"
           wget "$branches" -O branches.csv
 
+      - name: List Files
+        run: ls -R ./
+
       - name: Processar CSV e Armazenar em Array
-        run: ./.github/workflows/scripts/deploys/develop-deploy.sh ${{ env.NEW_BRANCH }} ${{ env.ENVIRONMENT }}
+        run: ./scripts/deploys/develop-deploy.sh ${{ env.NEW_BRANCH }} ${{ env.ENVIRONMENT }}
 
 
 
