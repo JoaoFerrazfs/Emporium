@@ -131,7 +131,7 @@ jobs:
             fi
           
             echo "Checkout to develop"
-            git checkout develop &> /dev/null
+            git checkout develop 
 
             echo "Merge branch $branch into develop"
             if ! git merge "$branch" --no-edit &> /dev/null; then
