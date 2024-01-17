@@ -12,6 +12,7 @@ echo "Recreating $environmentBranch..."
 git checkout -b $environmentBranch
 
 allBranches="${validatedIssueBranches},${validatedBranches}"
+allBranches=$(echo "$allBranches" | sed 's/ *, */,/g; s/,$//')
 
 IFS=, read -ra BranchArray <<< "$allBranches"
 
@@ -45,6 +46,12 @@ for branch in "${BranchArray[@]}"; do
         echo -e "Merge successful\n"
     fi
 done
+
+echo "Creating new branches file to'$environmentBranch'"
+branchFile="./.github/workflows/support/$environmentBranch-branches.txt"
+echo "$allBranches" > $branchFile
+git add .
+git commit -m "add branches file"
 
 echo "Sending updated '$environmentBranch' to github"
 

@@ -6,6 +6,10 @@ git checkout $environmentBranch &> /dev/null
 
 branchFile="./.github/workflows/support/$environmentBranch-branches.txt"
 
+if [ ! -e "$branchFile" ]; then
+  touch "$branchFile"
+fi
+
 IFS=, read -ra branches < "$branchFile"
 validatedBranches=""
 
