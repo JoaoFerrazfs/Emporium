@@ -113,10 +113,10 @@ jobs:
           for branch in "${BranchArray[@]}"; do
           
             echo "Chekout to $branch."
-            git checkout $branch &> /dev/null
+            git checkout $branch
             
             echo "Rebasing $branch with main..."
-            git rebase master > /dev/null 2> /tmp/error_output
+            git rebase master 
 
             
           done
