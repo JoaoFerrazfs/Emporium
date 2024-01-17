@@ -63,6 +63,9 @@ jobs:
         run: |
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
 
+          cat ./.github/workflows/support/develop-branches.txt
+          git branch
+          
           validatedBranches=""
           
           for branch in "${branches[@]}"; do
