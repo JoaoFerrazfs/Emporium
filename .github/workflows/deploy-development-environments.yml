@@ -25,8 +25,6 @@ jobs:
 
       - name: Branch Validation
         run: |
-          cat ./.github/workflows/support/develop-branches.txt
-
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
           IFS=',' read -ra branch_array <<< "$branches"
 
@@ -66,6 +64,11 @@ jobs:
           echo "Recreating develop..."
           git checkout -b develop 
 
+          while IFS=, read -r branch; do
+            # Remover espaços em branco no início e no final do nome da branch
+            branch=$(echo "$branch" | sed 's/^[ \t]*//;s/[ \t]*$//')
 
+            echo "$branch"
+          done < ./.github/workflows/support/develop-branches.txt
 
       
