@@ -121,11 +121,14 @@ jobs:
           for branch in "${BranchArray[@]}"; do
           
             echo "Chekout to $branch."
-            git checkout $branch
+            git checkout $branch  &> /dev/null
             
             echo "Rebasing $branch with main..."
-            git rebase master 
+            git rebase master  &> /dev/null
 
-            
+            echo "Merge $branch into develop..."
+            git checkout develop &> /dev/null
+            git merge $branch --no-edit &> /dev/null
+             
           done
       
