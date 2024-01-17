@@ -139,13 +139,27 @@ jobs:
             
             echo "Merge $branch into develop..."
             git checkout develop &> /dev/null
-            git merge $branch --no-edit &> /dev/null
-            
+            git merge $branch --no-edit 2>> "$error_file"
+            error=$?
+            if [[ "$error" != "0" ]]; then
+                error=$(tail -n 1 "$error_file")
+                echo "An error occurred while merge '$branch' into develop: $error"
+                exit 1
+            else
+                echo -e "Merge successful\n"
+            fi            
           done
           
           echo "Sending updated develop to github"
-          git push --force origin develop
-
+          git push --force origin develop 2>> "$error_file"
+          error=$?
+          if [[ "$error" != "0" ]]; then
+             error=$(tail -n 1 "$error_file")
+             echo "An error occurred while merge '$branch' into develop: $error"
+             exit 1
+          else
+             echo -e "Merge successful\n"
+          fi            
           
           # echo "Sending updated develop to github"
           # if ! git push --force origin develop &> /dev/null; then
