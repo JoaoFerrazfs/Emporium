@@ -127,8 +127,16 @@ jobs:
             git checkout $branch  &> /dev/null
             
             echo "Rebasing $branch with main..."
-            git rebase master  &> /dev/null
-
+            git rebase master 2>> "$error_file"
+            error=$?
+            if [[ "$error" != "0" ]]; then
+                error=$(tail -n 1 "$error_file")
+                echo "An error occurred while rebasing develop into '$branch': $error"
+                exit 1
+            else
+                echo -e "Rebase successful\n"
+            fi
+            
             echo "Merge $branch into develop..."
             git checkout develop &> /dev/null
             git merge $branch --no-edit &> /dev/null
