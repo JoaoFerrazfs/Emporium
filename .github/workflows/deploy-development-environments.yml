@@ -129,6 +129,8 @@ jobs:
             echo "Merge $branch into develop..."
             git checkout develop &> /dev/null
             git merge $branch --no-edit &> /dev/null
-             
           done
+          
+          echo "Sending updated develop to github"
+          git push --force origin develop
       
