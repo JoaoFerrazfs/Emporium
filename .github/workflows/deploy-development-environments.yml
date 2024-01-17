@@ -163,4 +163,21 @@ jobs:
         run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name: Develop branch created with success
-        run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch develop updated successfully"
+        run: |
+          allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
+
+          IFS=, read -ra BranchArray <<< "$allBranches"
+
+          comment_message="⚡ Branch develop updated successfully!
+
+          The new develop contents:
+          "
+
+          for branch in "${BranchArray[@]}"; do
+          comment_message+=" - $branch
+          "
+          done
+
+          gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+
+
