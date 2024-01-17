@@ -63,7 +63,6 @@ jobs:
         run: |
           echo "Checkout develop..."
           git checkout develop &> /dev/null
-          cat ./.github/workflows/support/develop-branches.txt     
           
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
           validatedBranches=""
@@ -106,6 +105,12 @@ jobs:
           echo "Recreating develop..."
           git checkout -b develop 
 
-          echo "Issue branches:  ${{ env.validatedIssueBranches }}"
-          echo "Develop branches:  ${{ env.validatedBranches }}"
+          Allbranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
+       
+          IFS=, read -ra BranchArray <<< "$Allbranches"
+          
+          # Imprimir os elementos do array
+          for branch in "${BranchArray[@]}"; do
+            echo "Branch juntas: $branch"
+          done
       
