@@ -160,16 +160,10 @@ jobs:
           else
              echo -e "Merge successful\n"
           fi            
-          
-          # echo "Sending updated develop to github"
-          # if ! git push --force origin develop &> /dev/null; then
-          #   echo "Error: Failed to push updated develop to GitHub." &>> "$error_file"
-          #   exit 1
-          # fi
 
-          # if [ -s "$error_file" ]; then
-          #   comment_body=$(cat "$error_file")
-          #   gh issue comment ${{ github.event.issue.number }} -b "⚠️ Error during the process:\n\n$comment_body"
-          #   exit 1
-          # fi
-      
+      - name: Send error feedback and close issue
+        if: failure() && !cancelled()
+        run: gh issue close ${{ github.event.issue.number }} -c "❗ cat error.log"
+
+      - name: Develop branch created with success
+        run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch develop updated successfully"
