@@ -61,11 +61,10 @@ jobs:
   
       - name: Handle Develop Branches
         run: |
-          IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
-
           cat ./.github/workflows/support/develop-branches.txt
           git branch
           
+          IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
           validatedBranches=""
           
           for branch in "${branches[@]}"; do
