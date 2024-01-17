@@ -25,6 +25,7 @@ jobs:
 
       - name: Branch Validation
         run: |
+          validatedIssueBranches=""
           branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
           IFS=',' read -ra branch_array <<< "$branches"
 
@@ -44,6 +45,11 @@ jobs:
               set -e
               exit 1
             fi
+
+            validatedIssueBranches+="$branch,"          
+            echo "validatedIssueBranches= ${validatedIssueBranches%,}" >> $GITHUB_ENV
+
+            echo "Branches validadas: $validatedIssueBranches"
           done
     
       - name: Close issue
@@ -53,17 +59,8 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
   
-      - name: Create branch
+      - name: Handle Develop Branches
         run: |
-          echo "Checkout develop..."
-          git checkout master &> /dev/null
-          
-          echo "Deleting homolog_gha..."
-          git branch -D develop &> /dev/null 
-
-          echo "Recreating develop..."
-          git checkout -b develop 
-          
           IFS=, read -ra branches < ./.github/workflows/support/develop-branches.txt
 
           validatedBranches=""
@@ -88,13 +85,24 @@ jobs:
               # Adiciona a branch ao final da string validatedBranches
               validatedBranches+="$branch,"
             fi
+           done
           
-            echo "Nome da branch: $branch"
-          done
-          
-          # Remove a vírgula extra do final da string validatedBranches
           validatedBranches="${validatedBranches%,}"
+          echo "validatedBranches= ${validatedBranches%,}" >> $GITHUB_ENV
           
           echo "Branches validadas: $validatedBranches"
 
+      - name : Create new develop branch
+        run: |
+          echo "Checkout develop..."
+          git checkout master &> /dev/null
+          
+          echo "Deleting homolog_gha..."
+          git branch -D develop &> /dev/null 
+
+          echo "Recreating develop..."
+          git checkout -b develop 
+
+          echo "Issue branches:  ${{ env.validatedIssueBranches }}"
+          echo "Develop branches:  ${{ env.validatedBranches }}"
       
