@@ -163,7 +163,7 @@ jobs:
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "❗ cat error.log"
+        run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name: Develop branch created with success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch develop updated successfully"
