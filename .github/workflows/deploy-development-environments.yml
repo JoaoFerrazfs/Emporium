@@ -72,16 +72,40 @@ jobs:
           done
 
       - name : Create new develop branch
-        if: ${{ env.Develop }}
+        if: ${{ env.develop }}
         env:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
           git checkout master &> /dev/null
           ./.github/workflows/support/handle-environments-branches.sh develop
-          
+
           git checkout master &> /dev/null
           ./.github/workflows/support/build-environments-branches.sh develop
+
+      - name : Create new homolog branch
+        if: ${{ env.homolog }}
+        env:
+          GIT_COMMITTER_NAME: GitHub Actions
+          GIT_COMMITTER_EMAIL: actions@github.com
+        run: |
+          git checkout master &> /dev/null
+          ./.github/workflows/support/handle-environments-branches.sh homolog
+
+          git checkout master &> /dev/null
+          ./.github/workflows/support/build-environments-branches.sh homolog
+
+      - name : Create new staging branch
+        if: ${{ env.staging }}
+        env:
+          GIT_COMMITTER_NAME: GitHub Actions
+          GIT_COMMITTER_EMAIL: actions@github.com
+        run: |
+          git checkout master &> /dev/null
+          ./.github/workflows/support/handle-environments-branches.sh staging
+
+          git checkout master &> /dev/null
+          ./.github/workflows/support/build-environments-branches.sh staging
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
