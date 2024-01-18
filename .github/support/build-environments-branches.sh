@@ -11,8 +11,11 @@ git branch -D $environmentBranch &> /dev/null
 echo "Recreating $environmentBranch..."
 git checkout -b $environmentBranch
 
-if [ -n "$shoulRemove" ]; then
-    allBranches="${validatedBranches}"
+echo  "Branches preexistentes: ${validatedBranches}"
+echo  "Issue existentes: ${validatedIssueBranches}"
+
+if [ -n "${shouldRemove}" ]; then
+    allBranches=$(echo "${validatedBranches}" | tr ',' '\n' | grep -v -wF "${validatedIssueBranches}" | tr '\n' ',' | sed 's/,$//')
 else
     allBranches="${validatedIssueBranches},${validatedBranches}"
 fi
@@ -26,35 +29,42 @@ IFS=, read -ra BranchArray <<< "$allBranches"
 error_file="error.log"
 touch "$error_file"
 
-for branch in "${BranchArray[@]}"; do
-    echo "Chekout to $branch."
-    git checkout $branch  &> /dev/null
+if [ "${allBranches}" ]; then
 
-    echo "Rebasing $branch with main..."
-    git rebase master 2>> "$error_file"
-    error=$?
-    if [[ "$error" != "0" ]]; then
-        error=$(tail -n 1 "$error_file")
-        echo "An error occurred while rebasing '$environmentBranch' into '$branch': $error"
-        exit 1
-    else
-        echo -e "Rebase successful\n"
-    fi
+  for branch in "${BranchArray[@]}"; do
+      echo "Chekout to $branch."
+      git checkout $branch  &> /dev/null
 
-    echo "Merge $branch into '$environmentBranch'..."
-    git checkout $environmentBranch &> /dev/null
-    git merge $branch --no-edit 2>> "$error_file"
-    error=$?
-    if [[ "$error" != "0" ]]; then
-        error=$(tail -n 1 "$error_file")
-        echo "An error occurred while merge '$branch' into '$environmentBranch': $error"
-        exit 1
-    else
-        echo -e "Merge successful\n"
-    fi
-done
+      echo "Rebasing $branch with main..."
+      git rebase master 2>> "$error_file"
+      error=$?
+      if [[ "$error" != "0" ]]; then
+          error=$(tail -n 1 "$error_file")
+          echo "An error occurred while rebasing '$environmentBranch' into '$branch': $error"
+          exit 1
+      else
+          echo -e "Rebase successful\n"
+      fi
 
-echo "Creating new branches file to'$environmentBranch'"
+      echo "Merge $branch into '$environmentBranch'..."
+
+      git checkout $environmentBranch &> /dev/null
+      git merge $branch --no-edit 2>> "$error_file"
+      error=$?
+      if [[ "$error" != "0" ]]; then
+          error=$(tail -n 1 "$error_file")
+          echo "An error occurred while merge '$branch' into '$environmentBranch': $error"
+          exit 1
+      else
+          echo -e "Merge successful\n"
+      fi
+  done
+
+  echo "Creating new branches file to'$environmentBranch'"
+
+else
+  echo "The new branch '$environmentBranch Branch' will be empty with only master as base"
+fi
 
 supportDir="./.github/support/"
 if [ ! -d "$supportDir" ]; then

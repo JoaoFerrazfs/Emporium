@@ -32,35 +32,34 @@ jobs:
 
       - name: Issue branch validation
         run: |
-          validatedIssueBranches=""
-          branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
-          IFS=',' read -ra branch_array <<< "$branches"
+            validatedIssueBranches=""
+            branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
+            IFS=',' read -ra branch_array <<< "$branches"
 
-          for branch in "${branch_array[@]}"; do
-            set +e
-            git ls-remote --exit-code --heads origin $branch &> /dev/null
-            branch_exists=$?
-            branch_merged=0
+            for branch in "${branch_array[@]}"; do
+              set +e
+              git ls-remote --exit-code --heads origin $branch &> /dev/null
+              branch_exists=$?
 
-            if [[ "$branch_exists" == "0" ]]; then
-              git fetch origin $branch &> /dev/null
-              base_commit=$(git merge-base HEAD origin/master)
-              branch_commit=$(git rev-parse origin/$branch)
+              if [[ "$branch_exists" == "0" ]]; then
+                git checkout $branch &> /dev/null
+                git log --pretty=format:"%h" develop | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
+                branch_merged=$?
 
-              if [[ "$base_commit" != "$branch_commit" ]]; then
-                branch_merged=1
+                if [[ "$branch_merged" == "0" ]]; then
+                  echo "error=A branch $branch existe, mas já foi mergeada.: '$branch'" >> $GITHUB_ENV
+                  set -e
+                  exit 1
+                else
+                  validatedIssueBranches+="$branch,"
+                  echo "validatedIssueBranches=${validatedIssueBranches%,}" >> $GITHUB_ENV
+                fi
+                else
+                  echo "error=A branch não existe.: '$branch'" >> $GITHUB_ENV
+                  set -e
+                  exit 1
               fi
-            fi
-
-            if [[ "$branch_exists" != "0" || "$branch_merged" != "0" ]]; then
-              echo "error=Branch does not exist or has been merged: '$branch'" >> $GITHUB_ENV
-              set -e
-              exit 1
-            fi
-
-            validatedIssueBranches+="$branch,"
-            echo "validatedIssueBranches=${validatedIssueBranches%,}" >> $GITHUB_ENV
-          done
+            done
 
       - name: Close issue
         if: failure() && !cancelled()
@@ -117,7 +116,10 @@ jobs:
             echo "Starting new branch staging"
             rm -rf error.log
             git checkout master
-            ./.github/support/handle-environments-branches.sh staging
+            eval "$(./.github/support/handle-environments-branches.sh staging)"
+
+            echo "oiiiii: ${{ env.validatedBranches }}"
+            echo "validatedBranches=$validatedBranches"
 
             git checkout master
             ./.github/support/build-environments-branches.sh staging

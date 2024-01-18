@@ -15,6 +15,8 @@ if [ ! -e "$branchFile" ]; then
   touch "$branchFile"
 fi
 
+cat "./.github/support/$environmentBranch-branches.txt"
+
 IFS=, read -ra branches < "$branchFile"
 validatedBranches=""
 
@@ -39,4 +41,5 @@ for branch in "${branches[@]}"; do
 done
 
 validatedBranches="${validatedBranches%,}"
-echo "validatedBranches= ${validatedBranches%,}" >> $GITHUB_ENV
+echo "validatedBranches=${validatedBranches%,}" >> $GITHUB_ENV
+export validatedBranches
