@@ -11,8 +11,15 @@ git branch -D $environmentBranch &> /dev/null
 echo "Recreating $environmentBranch..."
 git checkout -b $environmentBranch
 
-allBranches="${validatedIssueBranches},${validatedBranches}"
+if [ -n "$shoulRemove" ]; then
+    allBranches="${validatedBranches}"
+else
+    allBranches="${validatedIssueBranches},${validatedBranches}"
+fi
+
 allBranches=$(echo "$allBranches" | sed 's/ *, */,/g; s/,$//')
+
+echo "Prepared branches: $allBranches "
 
 IFS=, read -ra BranchArray <<< "$allBranches"
 

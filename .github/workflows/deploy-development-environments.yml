@@ -64,7 +64,7 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
 
-      - name: Set environments to work
+      - name: Set environments envs to work
         run: |
           environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
           IFS=, read -ra EnvironmentArray <<< "$environments"
@@ -74,6 +74,10 @@ jobs:
 
             echo "${environment}=${environment}" >> $GITHUB_ENV
           done
+
+          if [ -n "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" ]; then
+            echo "shouldRemove=true" >> $GITHUB_ENV
+          fi
 
       - name : Create new environments branches
         env:
