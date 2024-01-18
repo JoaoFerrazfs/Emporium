@@ -96,7 +96,18 @@ jobs:
 
             ./.github/support/handle-environments-branches.sh develop
 
-            gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **develop** updated"
+            comment_message="⚡ Branch **develop** updated!
+
+            The new branches contents:"
+
+              while IFS=, read -ra branches; do
+                for branch in "${branches[@]}"; do
+                  comment_message+="
+                    - $branch"
+                done
+              done < ./.github/support/develop-branches.txt
+
+            gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           fi
 
           if [ "${{ env.homolog }}" ]; then
@@ -107,7 +118,18 @@ jobs:
             git checkout master
             ./.github/support/handle-environments-branches.sh homolog
 
-            gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **homolog** updated"
+            comment_message="⚡ Branch **homolog** updated!
+
+            The new branches contents:"
+
+              while IFS=, read -ra branches; do
+                for branch in "${branches[@]}"; do
+                  comment_message+="
+                    - $branch"
+                done
+              done < ./.github/support/homolog-branches.txt
+
+             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           fi
 
           if [ "${{ env.staging }}" ]; then
@@ -118,7 +140,18 @@ jobs:
             git checkout master
             ./.github/support/handle-environments-branches.sh staging
 
-            gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **staging** updated"
+            comment_message="⚡ Branch **staging** updated!
+
+            The new branches contents:"
+
+              while IFS=, read -ra branches; do
+                for branch in "${branches[@]}"; do
+                  comment_message+="
+                    - $branch"
+                done
+              done < ./.github/support/staging-branches.txt
+
+             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           fi
 
       - name: Send error feedback and close issue
@@ -126,33 +159,5 @@ jobs:
         run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name: Branches updated with success
-        run: |
-          if [ -n "${{ env.shouldRemove }}" ]; then
-            allBranches="${{ env.validatedIssueBranches }}"
-            IFS=, read -ra BranchArray <<< "$allBranches"
-
-            comment_message="🚽 Branches removed successfully!
-
-            The following branches have been removed:"
-            for branch in "${BranchArray[@]}"; do
-            comment_message+="
-              - $branch"
-            done
-
-            gh issue close ${{ github.event.issue.number }} -c "$comment_message"
-          else
-            allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
-
-            IFS=, read -ra BranchArray <<< "$allBranches"
-
-            comment_message="⚡ Branches updated successfully!
-
-            The new branches contents:"
-            for branch in "${BranchArray[@]}"; do
-            comment_message+="
-              - $branch"
-            done
-
-            gh issue close ${{ github.event.issue.number }} -c "$comment_message"
-          fi
+        run: gh issue close ${{ github.event.issue.number }} -c "⚡ Branches updated successfully!"
 

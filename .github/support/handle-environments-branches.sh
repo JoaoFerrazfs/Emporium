@@ -75,8 +75,6 @@ fi
 # Transforma a array em uma string separada por vírgulas
 allBranches=$(IFS=','; echo "${allBranches[*]}")
 
-echo "Resultado final: ${allBranches}"
-
 echo "Prepared branches: $allBranches"
 
 IFS=, read -ra BranchArray <<< "$allBranches"
