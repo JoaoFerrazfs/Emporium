@@ -40,11 +40,16 @@ jobs:
             set +e
             git ls-remote --exit-code --heads origin $branch &> /dev/null
             branch_exists=$?
+            branch_merged=0
 
             if [[ "$branch_exists" == "0" ]]; then
-              git checkout $branch &> /dev/null
-              git log --pretty=format:"%h" master | grep $(git log --pretty=format:"%h" -1 $branch) &> /dev/null
-              branch_merged=$?
+              git fetch origin $branch &> /dev/null
+              base_commit=$(git merge-base HEAD origin/master)
+              branch_commit=$(git rev-parse origin/$branch)
+
+              if [[ "$base_commit" != "$branch_commit" ]]; then
+                branch_merged=1
+              fi
             fi
 
             if [[ "$branch_exists" != "0" || "$branch_merged" != "0" ]]; then
@@ -54,7 +59,7 @@ jobs:
             fi
 
             validatedIssueBranches+="$branch,"
-            echo "validatedIssueBranches= ${validatedIssueBranches%,}" >> $GITHUB_ENV
+            echo "validatedIssueBranches=${validatedIssueBranches%,}" >> $GITHUB_ENV
           done
 
       - name: Close issue
@@ -126,18 +131,32 @@ jobs:
 
       - name: Branches updated with success
         run: |
-          allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
+          if [ -n "${{ env.shouldRemove }}" ]; then
+            allBranches="${{ env.validatedIssueBranches }}"
+            IFS=, read -ra BranchArray <<< "$allBranches"
 
-          IFS=, read -ra BranchArray <<< "$allBranches"
+            comment_message="🚽 Branches removed successfully!
 
-          comment_message="⚡ Branches updated successfully!
+            The following branches have been removed:"
+            for branch in "${BranchArray[@]}"; do
+            comment_message+="
+              - $branch"
+            done
 
-          The new branches contents:
-          "
+            gh issue close ${{ github.event.issue.number }} -c "$comment_message"
+          else
+            allBranches="${{ env.validatedIssueBranches }},${{ env.validatedBranches }}"
 
-          for branch in "${BranchArray[@]}"; do
-          comment_message+=" - $branch
-          "
-          done
+            IFS=, read -ra BranchArray <<< "$allBranches"
 
-          gh issue close ${{ github.event.issue.number }} -c "$comment_message"
+            comment_message="⚡ Branches updated successfully!
+
+            The new branches contents:"
+            for branch in "${BranchArray[@]}"; do
+            comment_message+="
+              - $branch"
+            done
+
+            gh issue close ${{ github.event.issue.number }} -c "$comment_message"
+          fi
+
