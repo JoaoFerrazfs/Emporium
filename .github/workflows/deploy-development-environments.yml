@@ -116,13 +116,7 @@ jobs:
             echo "Starting new branch staging"
             rm -rf error.log
             git checkout master
-            eval "$(./.github/support/handle-environments-branches.sh staging)"
-
-            echo "oiiiii: ${{ env.validatedBranches }}"
-            echo "validatedBranches=$validatedBranches"
-
-            git checkout master
-            ./.github/support/build-environments-branches.sh staging
+            ./.github/support/handle-environments-branches.sh staging
 
             gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **staging** updated"
           fi
