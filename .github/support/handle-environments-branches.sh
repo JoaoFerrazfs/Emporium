@@ -56,15 +56,28 @@ git checkout -b $environmentBranch
 echo  "Branches preexistentes: ${validatedBranches}"
 echo  "Issue existentes: ${validatedIssueBranches}"
 
+IFS=',' read -ra branchesArray <<< "${validatedBranches}"
+IFS=',' read -ra issueBranchesArray <<< "${validatedIssueBranches}"
+
 if [ -n "${shouldRemove}" ]; then
-    allBranches=$(echo "${validatedBranches}" | tr ',' '\n' | grep -v -wF "${validatedIssueBranches}" | tr '\n' ',' | sed 's/,$//')
+    # Remove branches de validatedBranches usando validatedIssueBranches como regra
+    allBranches=()
+    for branch in "${branchesArray[@]}"; do
+        if [[ ! " ${issueBranchesArray[@]} " =~ " ${branch} " ]]; then
+            allBranches+=("${branch}")
+        fi
+    done
 else
-    allBranches="${validatedIssueBranches},${validatedBranches}"
+    # Concatena as duas arrays
+    allBranches=("${issueBranchesArray[@]}" "${branchesArray[@]}")
 fi
 
-allBranches=$(echo "$allBranches" | sed 's/ *, */,/g; s/,$//')
+# Transforma a array em uma string separada por vírgulas
+allBranches=$(IFS=','; echo "${allBranches[*]}")
 
-echo "Prepared branches: $allBranches "
+echo "Resultado final: ${allBranches}"
+
+echo "Prepared branches: $allBranches"
 
 IFS=, read -ra BranchArray <<< "$allBranches"
 

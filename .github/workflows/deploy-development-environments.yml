@@ -90,31 +90,31 @@ jobs:
         run: |
 
           if [ "${{ env.develop }}" ]; then
+
             echo "Starting new branch develop"
             git checkout master
-            ./.github/support/handle-environments-branches.sh develop
 
-            git checkout master
-            ./.github/support/build-environments-branches.sh develop
+            ./.github/support/handle-environments-branches.sh develop
 
             gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **develop** updated"
           fi
 
           if [ "${{ env.homolog }}" ]; then
-           echo "Starting new branch homolog"
+
+            echo "Starting new branch homolog"
             rm -rf error.log
-            git checkout master
-            ./.github/support/handle-environments-branches.sh homolog
 
             git checkout master
-            ./.github/support/build-environments-branches.sh homolog
+            ./.github/support/handle-environments-branches.sh homolog
 
             gh issue comment ${{ github.event.issue.number }} -b "👍 Branch **homolog** updated"
           fi
 
           if [ "${{ env.staging }}" ]; then
+
             echo "Starting new branch staging"
             rm -rf error.log
+
             git checkout master
             ./.github/support/handle-environments-branches.sh staging
 
