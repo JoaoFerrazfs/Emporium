@@ -89,14 +89,19 @@ jobs:
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
 
-          if [ "${{ env.develop }}" ]; then
+          environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
+          IFS=, read -ra EnvironmentArray <<< "$environments"
 
-            echo "Starting new branch develop"
+          for environment in "${EnvironmentArray[@]}"; do
+             rm -rf error.log
+            environment=$(echo "$environment" | xargs)
+
+            echo "Starting new branch $environment"
             git checkout master
 
-            ./.github/support/handle-environments-branches.sh develop
+            ./.github/support/handle-environments-branches.sh $environment
 
-            comment_message="⚡ Branch **develop** updated!
+            comment_message="⚡ Branch **$environment** updated!
 
             The new branches contents:"
 
@@ -105,54 +110,10 @@ jobs:
                   comment_message+="
                     - $branch"
                 done
-              done < ./.github/support/develop-branches.txt
+              done < ./.github/support/"$environment"-branches.txt
 
             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-          fi
-
-          if [ "${{ env.homolog }}" ]; then
-
-            echo "Starting new branch homolog"
-            rm -rf error.log
-
-            git checkout master
-            ./.github/support/handle-environments-branches.sh homolog
-
-            comment_message="⚡ Branch **homolog** updated!
-
-            The new branches contents:"
-
-              while IFS=, read -ra branches; do
-                for branch in "${branches[@]}"; do
-                  comment_message+="
-                    - $branch"
-                done
-              done < ./.github/support/homolog-branches.txt
-
-             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-          fi
-
-          if [ "${{ env.staging }}" ]; then
-
-            echo "Starting new branch staging"
-            rm -rf error.log
-
-            git checkout master
-            ./.github/support/handle-environments-branches.sh staging
-
-            comment_message="⚡ Branch **staging** updated!
-
-            The new branches contents:"
-
-              while IFS=, read -ra branches; do
-                for branch in "${branches[@]}"; do
-                  comment_message+="
-                    - $branch"
-                done
-              done < ./.github/support/staging-branches.txt
-
-             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-          fi
+          done
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
