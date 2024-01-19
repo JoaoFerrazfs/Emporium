@@ -1,7 +1,9 @@
 #!/bin/bash
 environmentBranch=$1
+shouldRemove=$2
 
-echo "Checkout $environmentBranch..."
+echo "Fluxo de remoção $shouldRemove..."
+echo "Checkout $environmentBranch"
 git checkout $environmentBranch &> /dev/null
 
 supportDir="./.github/support/"
@@ -59,8 +61,7 @@ echo  "Issue existentes: ${validatedIssueBranches}"
 IFS=',' read -ra branchesArray <<< "${validatedBranches}"
 IFS=',' read -ra issueBranchesArray <<< "${validatedIssueBranches}"
 
-if [ -n "${shouldRemove}" ]; then
-    # Remove branches de validatedBranches usando validatedIssueBranches como regra
+if [ -n "$shouldRemove" ]; then
     allBranches=()
     for branch in "${branchesArray[@]}"; do
         if [[ ! " ${issueBranchesArray[@]} " =~ " ${branch} " ]]; then
@@ -68,12 +69,11 @@ if [ -n "${shouldRemove}" ]; then
         fi
     done
 else
-    # Concatena as duas arrays
     allBranches=("${issueBranchesArray[@]}" "${branchesArray[@]}")
 fi
 
-# Transforma a array em uma string separada por vírgulas
 allBranches=$(IFS=','; echo "${allBranches[*]}")
+allBranches=$(echo "$allBranches" | awk -v RS=, -v ORS=, '!a[$1]++ {print $1}')
 
 echo "Prepared branches: $allBranches"
 

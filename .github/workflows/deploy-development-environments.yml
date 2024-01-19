@@ -47,7 +47,7 @@ jobs:
                 branch_merged=$?
 
                 if [[ "$branch_merged" == "0" ]]; then
-                  echo "error=A branch $branch existe, mas já foi mergeada.: '$branch'" >> $GITHUB_ENV
+                  echo "error= 💢 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
                   set -e
                   exit 1
                 else
@@ -55,7 +55,7 @@ jobs:
                   echo "validatedIssueBranches=${validatedIssueBranches%,}" >> $GITHUB_ENV
                 fi
                 else
-                  echo "error=A branch não existe.: '$branch'" >> $GITHUB_ENV
+                  echo "error= 💢 The **$branch** non exists." >> $GITHUB_ENV
                   set -e
                   exit 1
               fi
@@ -68,27 +68,13 @@ jobs:
       - name: Validation success
         run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
 
-      - name: Set environments envs to work
-        run: |
-          environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
-          IFS=, read -ra EnvironmentArray <<< "$environments"
-
-          for environment in "${EnvironmentArray[@]}"; do
-            environment=$(echo "$environment" | xargs)
-
-            echo "${environment}=${environment}" >> $GITHUB_ENV
-          done
-
-          if [ -n "${{ steps.issue-parser.outputs.issueparser_shouldRemove }}" ]; then
-            echo "shouldRemove=true" >> $GITHUB_ENV
-          fi
-
       - name : Create new environments branches
         env:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
 
+          shouldRemove="${{ steps.issue-parser.outputs.issueparser_shouldRemove }}"
           environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
           IFS=, read -ra EnvironmentArray <<< "$environments"
 
@@ -99,7 +85,7 @@ jobs:
             echo "Starting new branch $environment"
             git checkout master
 
-            ./.github/support/handle-environments-branches.sh $environment
+            ./.github/support/handle-environments-branches.sh $environment $shouldRemove
 
             comment_message="⚡ Branch **$environment** updated!
 
