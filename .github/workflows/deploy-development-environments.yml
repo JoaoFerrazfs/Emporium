@@ -79,10 +79,9 @@ jobs:
           IFS=, read -ra EnvironmentArray <<< "$environments"
 
           for environment in "${EnvironmentArray[@]}"; do
-             rm -rf error.log
+            rm -rf error.log
             environment=$(echo "$environment" | xargs)
 
-            echo "Starting new branch $environment"
             git checkout master
 
             ./.github/support/handle-environments-branches.sh $environment $shouldRemove

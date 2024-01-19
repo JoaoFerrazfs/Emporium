@@ -2,7 +2,8 @@
 environmentBranch=$1
 shouldRemove=$2
 
-echo "Fluxo de remoção $shouldRemove..."
+echo -e "\nStarting branches management"
+
 echo "Checkout $environmentBranch"
 git checkout $environmentBranch &> /dev/null
 
@@ -43,9 +44,13 @@ done
 validatedBranches="${validatedBranches%,}"
 echo "validatedBranches=${validatedBranches%,}" >> $GITHUB_ENV
 
+echo -e "Branches management finished\n"
+
+echo -e "Starting branches update"
 
 git checkout master
-echo "Setting up Git user identity..."
+
+echo -e "Configuring gitHub to assign changes \n"
 git config --local user.name "$GIT_COMMITTER_NAME"
 git config --local user.email "$GIT_COMMITTER_EMAIL"
 
@@ -55,8 +60,8 @@ git branch -D $environmentBranch &> /dev/null
 echo "Recreating $environmentBranch..."
 git checkout -b $environmentBranch
 
-echo  "Branches preexistentes: ${validatedBranches}"
-echo  "Issue existentes: ${validatedIssueBranches}"
+echo  "Branches pre-existing in the environment: ${validatedBranches}"
+echo  "Branches sent to be worked: ${validatedIssueBranches}"
 
 IFS=',' read -ra branchesArray <<< "${validatedBranches}"
 IFS=',' read -ra issueBranchesArray <<< "${validatedIssueBranches}"
@@ -75,12 +80,15 @@ fi
 allBranches=$(IFS=','; echo "${allBranches[*]}")
 allBranches=$(echo "$allBranches" | awk -v RS=, -v ORS=, '!a[$1]++ {print $1}')
 
-echo "Prepared branches: $allBranches"
+echo "Branched already unified and ready to be merged: $allBranches"
+echo -e "\n"
 
 IFS=, read -ra BranchArray <<< "$allBranches"
 
 error_file="error.log"
 touch "$error_file"
+
+echo "Starting merge process"
 
 if [ "${allBranches}" ]; then
 
