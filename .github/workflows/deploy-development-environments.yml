@@ -20,6 +20,7 @@ jobs:
       - name: Assign issue
         run: |
           gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ github.event.issue.user.login }}
+
           gh issue comment ${{ github.event.issue.number }} -b "
             ⌛ To follow the runner click here:
             - https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -30,7 +31,7 @@ jobs:
         with:
           template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
 
-      - name: Issue branch validation
+      - name: Validation of submitted branches
         run: |
             validatedIssueBranches=""
             branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
@@ -43,7 +44,7 @@ jobs:
 
               if [[ "$branch_exists" == "0" ]]; then
                 git checkout $branch &> /dev/null
-                git log --pretty=format:"%h" develop | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
+                git log --pretty=format:"%h" master | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
                 branch_merged=$?
 
                 if [[ "$branch_merged" == "0" ]]; then
@@ -61,19 +62,17 @@ jobs:
               fi
             done
 
-      - name: Close issue
+            gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
+
+      - name: Send error feedback and close issue
         if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
-
-      - name: Validation success
-        run: gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
 
       - name : Create new environments branches
         env:
           GIT_COMMITTER_NAME: GitHub Actions
           GIT_COMMITTER_EMAIL: actions@github.com
         run: |
-
           shouldRemove="${{ steps.issue-parser.outputs.issueparser_shouldRemove }}"
           environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
           IFS=, read -ra EnvironmentArray <<< "$environments"
@@ -105,5 +104,4 @@ jobs:
         run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
 
       - name: Branches updated with success
-        run: gh issue close ${{ github.event.issue.number }} -c "⚡ Branches updated successfully!"
-
+        run: gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
