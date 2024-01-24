@@ -107,3 +107,36 @@ jobs:
 
       - name: Branches updated with success
         run: gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
+
+  deploy-on-master-push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create new environments branches
+        env:
+          GIT_COMMITTER_NAME: GitHub Actions
+          GIT_COMMITTER_EMAIL: actions@github.com
+        run: |
+          environments="develop,homolog,staging"
+
+          for environment in $(echo $environments | tr "," "\n"); do
+            rm -rf error.log
+            environment=$(echo "$environment" | xargs)
+
+            git checkout master
+            ./.github/support/handle-environments-branches.sh $environment
+
+          done
+
+          error=$?
+          if [[ "$error" != "0" ]]; then
+            echo -e "❗$(cat error.log)"
+            exit 1
+          fi
+
+          echo -e "\nThe environment branches was updated successfully!"
