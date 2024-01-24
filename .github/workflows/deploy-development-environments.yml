@@ -10,8 +10,8 @@ jobs:
   deploy:
     if: contains(github.event.issue.labels.*.name, 'environment-deploy')
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # env:
+    #   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
