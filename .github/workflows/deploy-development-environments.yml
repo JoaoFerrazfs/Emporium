@@ -3,6 +3,9 @@ permissions: write-all
 on:
   issues:
     types: [opened]
+  push:
+    branches:
+      - 'master'
 
 jobs:
   deploy:
