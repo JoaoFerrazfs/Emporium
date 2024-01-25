@@ -1,6 +1,7 @@
 #!/bin/bash
 environmentBranch=$1
-shouldRemove=$2
+sentIssueBranches=$2
+mustRemove=$3
 
 echo -e "\nStarting branches management"
 
@@ -51,8 +52,8 @@ echo -e "Starting branches update"
 git checkout master
 
 echo -e "Configuring gitHub to assign changes \n"
-git config --local user.name "$GIT_COMMITTER_NAME"
-git config --local user.email "$GIT_COMMITTER_EMAIL"
+git config --local user.name "GitHub Actions"
+git config --local user.email "actions@github.com"
 
 echo "Deleting $environmentBranch..."
 git branch -D $environmentBranch &> /dev/null
@@ -61,12 +62,12 @@ echo "Recreating $environmentBranch..."
 git checkout -b $environmentBranch
 
 echo  "Branches pre-existing in the environment: ${validatedBranches}"
-echo  "Branches sent to be worked: ${validatedIssueBranches}"
+echo  "Branches sent to be worked: ${sentIssueBranches}"
 
 IFS=',' read -ra branchesArray <<< "${validatedBranches}"
-IFS=',' read -ra issueBranchesArray <<< "${validatedIssueBranches}"
+IFS=',' read -ra issueBranchesArray <<< "${sentIssueBranches}"
 
-if [ -n "$shouldRemove" ]; then
+if [ -n "$mustRemove" ]; then
     allBranches=()
     for branch in "${branchesArray[@]}"; do
         if [[ ! " ${issueBranchesArray[@]} " =~ " ${branch} " ]]; then
@@ -90,7 +91,7 @@ touch "$error_file"
 
 echo "Starting merge process"
 
-if [ "${allBranches}" ]; then
+if [ -n "$allBranches" ] && [ "$allBranches" != "," ]; then
 
   for branch in "${BranchArray[@]}"; do
       echo "Chekout to $branch."
@@ -125,6 +126,7 @@ if [ "${allBranches}" ]; then
 
 else
   echo "The new branch '$environmentBranch Branch' will be empty with only master as base"
+  allBranches=''
 fi
 
 supportDir="./.github/support/"

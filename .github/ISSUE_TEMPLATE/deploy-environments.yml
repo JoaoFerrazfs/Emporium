@@ -13,7 +13,7 @@ body:
       required: true
 
   - type: checkboxes
-    id: shouldRemove
+    id: mustRemove
     attributes:
       label: Remove
       description: You can remove a branch from the environment

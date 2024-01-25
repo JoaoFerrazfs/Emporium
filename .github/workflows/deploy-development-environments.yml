@@ -7,11 +7,15 @@ on:
     branches: [master]
 
 jobs:
-  deploy:
+  validate-issues:
     if: contains(github.event.issue.labels.*.name, 'environment-deploy')
     runs-on: ubuntu-latest
-    # env:
-    #   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      environments: ${{ steps.issue-parser.outputs.issueparser_environments }}
+      branches: ${{ steps.issue-parser.outputs.issueparser_branches }}
+      mustRemove: ${{ steps.issue-parser.outputs.issueparser_mustRemove }}
 
     steps:
       - name: Checkout
@@ -53,14 +57,12 @@ jobs:
                   echo "error= 💢 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
                   set -e
                   exit 1
-                else
-                  validatedIssueBranches+="$branch,"
-                  echo "validatedIssueBranches=${validatedIssueBranches%,}" >> $GITHUB_ENV
                 fi
-                else
-                  echo "error= 💢 The **$branch** non exists." >> $GITHUB_ENV
-                  set -e
-                  exit 1
+
+              else
+                echo "error= 💢 The **$branch** non exists." >> $GITHUB_ENV
+                set -e
+                exit 1
               fi
             done
 
@@ -70,73 +72,74 @@ jobs:
         if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
 
-      - name : Create new environments branches
-        env:
-          GIT_COMMITTER_NAME: GitHub Actions
-          GIT_COMMITTER_EMAIL: actions@github.com
-        run: |
-          shouldRemove="${{ steps.issue-parser.outputs.issueparser_shouldRemove }}"
-          environments="${{ steps.issue-parser.outputs.issueparser_environments }}"
-          IFS=, read -ra EnvironmentArray <<< "$environments"
+  new-environments-branches:
+    needs: validate-issues
+    uses: JoaoFerrazfs/Emporium/.github/workflows/auto-handle-environments-branches.yml@master
+    with:
+      environments: ${{ needs.validate-issues.outputs.environments }}
+      branches: ${{ needs.validate-issues.outputs.branches }}
+      mustRemove: ${{ needs.validate-issues.outputs.mustRemove }}
 
-          for environment in "${EnvironmentArray[@]}"; do
-            rm -rf error.log
-            environment=$(echo "$environment" | xargs)
-
-            git checkout master
-
-            ./.github/support/handle-environments-branches.sh $environment $shouldRemove
-
-            comment_message="⚡ Branch **$environment** updated!
-
-            The new branches contents:"
-
-              while IFS=, read -ra branches; do
-                for branch in "${branches[@]}"; do
-                  comment_message+="
-                    - $branch"
-                done
-              done < ./.github/support/"$environment"-branches.txt
-
-            gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-          done
-
-      - name: Send error feedback and close issue
-        if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "❗$(cat error.log)"
-
-      - name: Branches updated with success
-        run: gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
-
-  deploy-on-master-push:
+  send-feedbacks:
+    needs:
+      - new-environments-branches
+      - validate-issues
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Create new environments branches
-        env:
-          GIT_COMMITTER_NAME: GitHub Actions
-          GIT_COMMITTER_EMAIL: actions@github.com
+      - name: Branches updated with success
         run: |
-          environments="develop,homolog,staging"
+          IFS=',' read -ra environments <<< "${{ needs.validate-issues.outputs.environments }}"
+          for environment in "${environments[@]}"; do
 
-          for environment in $(echo $environments | tr "," "\n"); do
-            rm -rf error.log
-            environment=$(echo "$environment" | xargs)
+            if [[ "$environment" == "develop" ]]; then
+              comment_message="⚡ Branch **$environment** updated!
+              The new branches contents:"
+                while IFS=, read -ra branches; do
+                  for branch in "${branches[@]}"; do
+                    comment_message+="
+                      - $branch"
+                  done
+                done <<< "${{ needs.new-environments-branches.outputs.develop }}"
 
-            git checkout master
-            ./.github/support/handle-environments-branches.sh $environment
+               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+            fi
+
+            if [[ "$environment" == "homolog" ]]; then
+              comment_message="⚡ Branch **$environment** updated!
+              The new branches contents:"
+                while IFS=, read -ra branches; do
+                  for branch in "${branches[@]}"; do
+                    comment_message+="
+                      - $branch"
+                  done
+                done <<< "${{ needs.new-environments-branches.outputs.homolog }}"
+
+               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+            fi
+
+            if [[ "$environment" == "staging" ]]; then
+              comment_message="⚡ Branch **$environment** updated!
+              The new branches contents:"
+                while IFS=, read -ra branches; do
+                  for branch in "${branches[@]}"; do
+                    comment_message+="
+                      - $branch"
+                  done
+                done <<< "${{ needs.new-environments-branches.outputs.staging }}"
+
+               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+            fi
 
           done
 
-          error=$?
-          if [[ "$error" != "0" ]]; then
-            echo -e "❗$(cat error.log)"
-            exit 1
-          fi
+          echo "teste: ${{ needs.new-environments-branches.outputs.error }}"
 
-          echo -e "\nThe environment branches was updated successfully!"
+          gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"

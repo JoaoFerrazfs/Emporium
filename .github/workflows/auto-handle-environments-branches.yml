@@ -1,0 +1,155 @@
+name: Ameno - Handle Branches
+permissions: write-all
+
+on:
+  workflow_call:
+    inputs:
+      #      github-runner-tags:
+      #        description: |
+      #          Tags defining wanted runners to execute the workflow.
+      #          available values: standard / service / xl
+      #        default: standard
+      #        required: false
+      #        type: string
+      #
+      #      vault-jwt-role-name:
+      #        description: |
+      #          The pipeline's role name.
+      #        required: false
+      #        type: string
+      #        default: actions-role
+      #
+      #      vault-namespace:
+      #        description: |
+      #          if you don't have a vault namespace, you can create one with this spootnik form:
+      #          https://spootnik.adeo.cloud/all/new-namespace
+      #        required: false
+      #        type: string
+      #        default: brlm/devops/boitata
+      #
+      #      vault-secrets:
+      #        description: |
+      #          add all your secrets to import from Vault here
+      #          You have to precise the path in vault of :
+      #            * your artifactory (Docker) svc writer token (DOCKER_WRITER_USER_TOKEN)
+      #          Optionally, you can specify:
+      #            * your artifactory (Docker) svc writer name (DOCKER_WRITER_USER_NAME)
+      #            * your jfrog docker registry (DOCKER_IMAGE_REPOSITORY)
+      #            * your artifactory (Maven) svc write name (MAVEN_USER_NAME)
+      #            * your artifactory (Maven) svc writer token (MAVEN_USER_TOKEN)
+      #          example:
+      #            vault-secrets: |
+      #              secret/data/ci-cd jfrog_svc_name | DOCKER_WRITER_USER_NAME ;
+      #              secret/data/ci-cd jfrog_svc_token | DOCKER_WRITER_USER_TOKEN ;
+      #        required: true
+      #        type: string
+
+      environments:
+        type: string
+        required: false
+        description: |
+          Submit a comma-separated list of branches "develop,homolog,staging" for updates.
+        default: ''
+
+      branches:
+        type: string
+        required: false
+        description: |
+          Selected branches to be merge on environments.
+        default: ''
+
+      mustRemove:
+        type: string
+        required: false
+        description: |
+          Toggle to remove branch for each selected environment.
+        default: false
+    outputs:
+      develop:
+        value: ${{ jobs.deploy-by-issue.outputs.developContent }}
+      homolog:
+        value: ${{ jobs.deploy-by-issue.outputs.homologContent }}
+      staging:
+        value: ${{ jobs.deploy-by-issue.outputs.stagingContent }}
+      error:
+        value: ${{ jobs.deploy-by-issue.outputs.error }}
+jobs:
+  deploy-by-issue:
+    outputs:
+      developContent: ${{ steps.handleBranches.outputs.develop }}
+      homologContent: ${{ steps.handleBranches.outputs.homolog }}
+      stagingContent: ${{ steps.handleBranches.outputs.staging }}
+      error: ${{ steps.handleBranches.outputs.error }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      #      - name: Import secrets from Vault (JWT)
+      #        id: secrets-jwt
+      #        if: ${{ ( env.VAULT_SECRET_ID == '' || env.VAULT_ROLE_ID == '') }}
+      #        uses: hashicorp/vault-action@v2.4.2
+      #        with:
+      #          url: https://vault.factory.adeo.cloud
+      #          method: jwt
+      #          namespace: ${{ inputs.vault-namespace }}
+      #          path: github-actions
+      #          role: ${{ inputs.vault-jwt-role-name }}
+      #          secrets: ${{ inputs.vault-secrets }}
+      #
+      #      - name: Import secrets from Vault (Approle)
+      #        if: ${{ ( env.VAULT_SECRET_ID != '' && env.VAULT_ROLE_ID != '') }}
+      #        id: secrets-approle
+      #        uses: hashicorp/vault-action@v2.4.2
+      #        with:
+      #          url: https://vault.factory.adeo.cloud
+      #          method: approle
+      #          namespace: ${{ inputs.vault-namespace }}
+      #          roleId: ${{ env.VAULT_ROLE_ID }}
+      #          secretId: ${{ env.VAULT_SECRET_ID }}
+      #          secrets: ${{ inputs.vault-secrets }}
+      #
+      #      - uses: actions/checkout@v4
+      #        with:
+      #          repository: adeo/lmbr-reusable-workflows-boitata
+      #          ref: chore/add-auto-deploy-dev
+      #          token: ${{ secrets.LEROY_TOKEN }}
+      #      - name: Get python file
+      #        run: |
+      #          cp .github/support/handle-environments-branches.sh /tmp/handle-environments-branches.sh
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Handle environments branches
+        id: handleBranches
+        run: |
+          environments="${{ inputs.environments }}"
+          mustRemove="${{ inputs.mustRemove }}"
+          branches="${{ inputs.branches }}"
+
+          for environment in $(echo $environments | tr "," "\n"); do
+            rm -rf error.log
+            environment=$(echo "$environment" | xargs)
+            git checkout master
+            .github/support/handle-environments-branches.sh $environment $branches $mustRemove
+
+            allBranches=$(cat ./.github/support/"$environment"-branches.txt)
+
+            echo "Definindo output com todas as branches"
+            echo "todas: $allBranches"
+
+            echo "$environment=$allBranches"  >> "$GITHUB_OUTPUT"
+
+          done
+
+          error=$?
+          if [[ "$error" != "0" ]]; then
+            echo "Definindo erro"
+            echo "error=$(cat error.log)"  >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          echo -e "\nThe environment branches was updated successfully!"
