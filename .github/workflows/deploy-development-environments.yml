@@ -96,50 +96,31 @@ jobs:
 
       - name: Branches updated with success
         run: |
-          IFS=',' read -ra environments <<< "${{ needs.validate-issues.outputs.environments }}"
-          for environment in "${environments[@]}"; do
+          error="${{ needs.new-environments-branches.outputs.error }}";
+          if [[ -n "$error" ]]; then
+           gh issue close ${{ github.event.issue.number }} -c "💢 $error"
+           exit 1
+          fi
 
-            if [[ "$environment" == "develop" ]]; then
-              comment_message="⚡ Branch **$environment** updated!
-              The new branches contents:"
-                while IFS=, read -ra branches; do
-                  for branch in "${branches[@]}"; do
-                    comment_message+="
-                      - $branch"
-                  done
-                done <<< "${{ needs.new-environments-branches.outputs.develop }}"
+          add_comment_for_environment() {
+          local environment=$1
+          local branches_output=$2
 
-               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-            fi
+          comment_message="⚡ Branch **$environment** updated!
+          The new branches contents:"
 
-            if [[ "$environment" == "homolog" ]]; then
-              comment_message="⚡ Branch **$environment** updated!
-              The new branches contents:"
-                while IFS=, read -ra branches; do
-                  for branch in "${branches[@]}"; do
-                    comment_message+="
-                      - $branch"
-                  done
-                done <<< "${{ needs.new-environments-branches.outputs.homolog }}"
-
-               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-            fi
-
-            if [[ "$environment" == "staging" ]]; then
-              comment_message="⚡ Branch **$environment** updated!
-              The new branches contents:"
-                while IFS=, read -ra branches; do
-                  for branch in "${branches[@]}"; do
-                    comment_message+="
-                      - $branch"
-                  done
-                done <<< "${{ needs.new-environments-branches.outputs.staging }}"
-
-               gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
-            fi
-
+          while IFS=, read -ra branches; do
+          for branch in "${branches[@]}"; do
+             comment_message+="
+               - $branch"
           done
+          done <<< "$branches_output"
 
-          echo "teste: ${{ needs.new-environments-branches.outputs.error }}"
+          gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+          }
+
+          add_comment_for_environment "develop" "${{ needs.new-environments-branches.outputs.develop }}"
+          add_comment_for_environment "homolog" "${{ needs.new-environments-branches.outputs.homolog }}"
+          add_comment_for_environment "staging" "${{ needs.new-environments-branches.outputs.staging }}"
 
           gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"

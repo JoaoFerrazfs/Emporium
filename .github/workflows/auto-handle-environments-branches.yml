@@ -145,11 +145,11 @@ jobs:
 
           done
 
-          error=$?
-          if [[ "$error" != "0" ]]; then
-            echo "Definindo erro"
-            echo "error=$(cat error.log)"  >> "$GITHUB_OUTPUT"
-            exit 1
-          fi
-
           echo -e "\nThe environment branches was updated successfully!"
+
+      - name: Handle errors
+        if: failure() && !cancelled()
+        run: |
+          error_message="teste simples"
+          echo "error=$error_message" >> "$GITHUB_OUTPUT"
+
