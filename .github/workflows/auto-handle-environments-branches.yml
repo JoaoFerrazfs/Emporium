@@ -136,6 +136,12 @@ jobs:
             git checkout master
             .github/support/handle-environments-branches.sh $environment $branches $mustRemove
 
+            error=$(cat error.log)
+            if [[ -n "$error" ]]; then
+             echo "error= $error" >> "$GITHUB_OUTPUT"
+             exit 0
+            fi
+
             allBranches=$(cat ./.github/support/"$environment"-branches.txt)
 
             echo "Definindo output com todas as branches"
@@ -146,10 +152,3 @@ jobs:
           done
 
           echo -e "\nThe environment branches was updated successfully!"
-
-      - name: Handle errors
-        if: failure() && !cancelled()
-        run: |
-          error_message="teste simples"
-          echo "error=$error_message" >> "$GITHUB_OUTPUT"
-

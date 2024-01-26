@@ -98,12 +98,11 @@ if [ -n "$allBranches" ] && [ "$allBranches" != "," ]; then
       git checkout $branch  &> /dev/null
 
       echo "Rebasing $branch with main..."
-      git rebase master 2>> "$error_file"
+      git rebase master &> /dev/null
       error=$?
       if [[ "$error" != "0" ]]; then
-          error=$(tail -n 1 "$error_file")
-          echo "An error occurred while rebasing '$environmentBranch' into '$branch': $error"
-          exit 1
+          echo -e "An error occurred while rebasing '$branch' into '$environmentBranch'" >> "$error_file"
+          exit 0
       else
           echo -e "Rebase successful\n"
       fi
@@ -111,12 +110,11 @@ if [ -n "$allBranches" ] && [ "$allBranches" != "," ]; then
       echo "Merge $branch into '$environmentBranch'..."
 
       git checkout $environmentBranch &> /dev/null
-      git merge $branch --no-edit 2>> "$error_file"
+      git merge $branch &> /dev/null
       error=$?
       if [[ "$error" != "0" ]]; then
-          error=$(tail -n 1 "$error_file")
-          echo "An error occurred while merge '$branch' into '$environmentBranch': $error"
-          exit 1
+          echo -e "An error occurred while merge '$branch' into '$environmentBranch'" >> "$error_file"
+          exit 0
       else
           echo -e "Merge successful\n"
       fi
@@ -140,12 +138,11 @@ git commit -m "add branches file"
 
 echo "Sending updated '$environmentBranch' to github"
 
-git push --force origin $environmentBranch 2>> "$error_file"
+git push --force origin $environmentBranch &> /dev/null
 error=$?
 if [[ "$error" != "0" ]]; then
- error=$(tail -n 1 "$error_file")
- echo "An error occurred while merge '$branch' into '$environmentBranch': $error"
- exit 1
+ echo -e "An error occurred while merge '$branch' into '$environmentBranch'" >> "$error_file"
+ exit 0
 else
  echo -e "Merge successful\n"
 fi

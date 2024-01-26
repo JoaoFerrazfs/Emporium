@@ -96,31 +96,50 @@ jobs:
 
       - name: Branches updated with success
         run: |
-          error="${{ needs.new-environments-branches.outputs.error }}";
+          error="${{ needs.new-environments-branches.outputs.error }}"
+
           if [[ -n "$error" ]]; then
-           gh issue close ${{ github.event.issue.number }} -c "💢 $error"
-           exit 1
+           echo "$error"
+           gh issue close ${{ github.event.issue.number }} -c "
+          💢 An error occurred, you can read below and also access the pipeline to read in more detail:
+
+             $error"
+           exit 0
           fi
 
           add_comment_for_environment() {
-          local environment=$1
-          local branches_output=$2
+            local environment=$1
+            local branches_output=$2
 
-          comment_message="⚡ Branch **$environment** updated!
-          The new branches contents:"
+            comment_message="⚡ Branch **$environment** updated!
+            The new branches contents:"
 
-          while IFS=, read -ra branches; do
-          for branch in "${branches[@]}"; do
-             comment_message+="
-               - $branch"
-          done
-          done <<< "$branches_output"
+            while IFS=, read -ra branches; do
+            for branch in "${branches[@]}"; do
+               comment_message+="
+                 - $branch"
+            done
+            done <<< "$branches_output"
 
-          gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
+            gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           }
 
-          add_comment_for_environment "develop" "${{ needs.new-environments-branches.outputs.develop }}"
-          add_comment_for_environment "homolog" "${{ needs.new-environments-branches.outputs.homolog }}"
-          add_comment_for_environment "staging" "${{ needs.new-environments-branches.outputs.staging }}"
+          IFS=, read -ra branches <<< "${{ needs.validate-issues.outputs.environments }}"
+          echo "$branches"
+          echo "Todas as posições: ${branches[@]}"
+
+          for branch in "${branches[@]}"; do
+            if [[ "$branch" == "develop" ]]; then
+             add_comment_for_environment "develop" "${{ needs.new-environments-branches.outputs.develop }}"
+            fi
+
+            if [[ "$branch" == "homolog" ]]; then
+              add_comment_for_environment "homolog" "${{ needs.new-environments-branches.outputs.homolog }}"
+            fi
+
+             if [[ "$branch" == "staging" ]]; then
+              add_comment_for_environment "staging" "${{ needs.new-environments-branches.outputs.staging }}"
+            fi
+          done
 
           gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
