@@ -3,8 +3,7 @@ permissions: write-all
 on:
   issues:
     types: [opened]
-  push:
-    branches: [master]
+
 
 jobs:
   validate-issues:
@@ -72,7 +71,7 @@ jobs:
         if: failure() && !cancelled()
         run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
 
-  new-environments-branches:
+  recreate-branches:
     needs: validate-issues
     uses: JoaoFerrazfs/Emporium/.github/workflows/auto-handle-environments-branches.yml@master
     with:
@@ -82,7 +81,7 @@ jobs:
 
   send-feedbacks:
     needs:
-      - new-environments-branches
+      - recreate-branches
       - validate-issues
     runs-on: ubuntu-latest
     env:
@@ -96,7 +95,7 @@ jobs:
 
       - name: Branches updated with success
         run: |
-          error="${{ needs.new-environments-branches.outputs.error }}"
+          error="${{ needs.recreate-branches.outputs.error }}"
 
           if [[ -n "$error" ]]; then
            echo "$error"
@@ -115,30 +114,34 @@ jobs:
             The new branches contents:"
 
             while IFS=, read -ra branches; do
-            for branch in "${branches[@]}"; do
-               comment_message+="
-                 - $branch"
-            done
+              for branch in "${branches[@]}"; do
+                comment_message+="
+                🔹 $branch"
+              done
+
+              if ! [[ -n "$branches" ]]; then
+                comment_message+="
+                    Only contains the contents of the main branch"
+              fi
+
             done <<< "$branches_output"
 
             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           }
 
           IFS=, read -ra branches <<< "${{ needs.validate-issues.outputs.environments }}"
-          echo "$branches"
-          echo "Todas as posições: ${branches[@]}"
 
           for branch in "${branches[@]}"; do
             if [[ "$branch" == "develop" ]]; then
-             add_comment_for_environment "develop" "${{ needs.new-environments-branches.outputs.develop }}"
+             add_comment_for_environment "develop" "${{ needs.recreate-branches.outputs.develop }}"
             fi
 
             if [[ "$branch" == "homolog" ]]; then
-              add_comment_for_environment "homolog" "${{ needs.new-environments-branches.outputs.homolog }}"
+              add_comment_for_environment "homolog" "${{ needs.recreate-branches.outputs.homolog }}"
             fi
 
              if [[ "$branch" == "staging" ]]; then
-              add_comment_for_environment "staging" "${{ needs.new-environments-branches.outputs.staging }}"
+              add_comment_for_environment "staging" "${{ needs.recreate-branches.outputs.staging }}"
             fi
           done
 
