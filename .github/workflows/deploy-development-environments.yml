@@ -3,8 +3,7 @@ permissions: write-all
 on:
   issues:
     types: [opened]
-  push:
-    branches: [master]
+
 
 jobs:
   validate-issues:
@@ -39,40 +38,40 @@ jobs:
 
       - name: Validation of submitted branches
         run: |
-            validatedIssueBranches=""
-            branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
-            IFS=',' read -ra branch_array <<< "$branches"
+          validatedIssueBranches=""
+          branches="${{ steps.issue-parser.outputs.issueparser_branches }}"
+          IFS=',' read -ra branch_array <<< "$branches"
 
-            for branch in "${branch_array[@]}"; do
-              set +e
-              git ls-remote --exit-code --heads origin $branch &> /dev/null
-              branch_exists=$?
+          for branch in "${branch_array[@]}"; do
+            set +e
+            git ls-remote --exit-code --heads origin $branch &> /dev/null
+            branch_exists=$?
 
-              if [[ "$branch_exists" == "0" ]]; then
-                git checkout $branch &> /dev/null
-                git log --pretty=format:"%h" master | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
-                branch_merged=$?
+            if [[ "$branch_exists" == "0" ]]; then
+              git checkout $branch &> /dev/null
+              git log --pretty=format:"%h" master | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
+              branch_merged=$?
 
-                if [[ "$branch_merged" == "0" ]]; then
-                  echo "error= 💢 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
-                  set -e
-                  exit 1
-                fi
-
-              else
-                echo "error= 💢 The **$branch** non exists." >> $GITHUB_ENV
+              if [[ "$branch_merged" == "0" ]]; then
+                echo "error= 🚫 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
                 set -e
                 exit 1
               fi
-            done
 
-            gh issue comment ${{ github.event.issue.number }} -b "⭐ Branch validation success"
+            else
+              echo "error= 🚫 The **$branch** non exists." >> $GITHUB_ENV
+              set -e
+              exit 1
+            fi
+          done
+
+          gh issue comment ${{ github.event.issue.number }} -b "☑️ Branch validation success"
 
       - name: Send error feedback and close issue
         if: failure() && !cancelled()
-        run: gh issue close ${{ github.event.issue.number }} -c "❗ ${{ env.error }}"
+        run: gh issue close ${{ github.event.issue.number }} -c "${{ env.error }}"
 
-  new-environments-branches:
+  recreate-branches:
     needs: validate-issues
     uses: JoaoFerrazfs/Emporium/.github/workflows/auto-handle-environments-branches.yml@master
     with:
@@ -82,7 +81,7 @@ jobs:
 
   send-feedbacks:
     needs:
-      - new-environments-branches
+      - recreate-branches
       - validate-issues
     runs-on: ubuntu-latest
     env:
@@ -96,12 +95,12 @@ jobs:
 
       - name: Branches updated with success
         run: |
-          error="${{ needs.new-environments-branches.outputs.error }}"
+          error="${{ needs.recreate-branches.outputs.error }}"
 
           if [[ -n "$error" ]]; then
            echo "$error"
            gh issue close ${{ github.event.issue.number }} -c "
-          💢 An error occurred, you can read below and also access the pipeline to read in more detail:
+          🚫 An error occurred, you can read below and also access the pipeline to read in more detail:
 
              $error"
            exit 0
@@ -111,35 +110,38 @@ jobs:
             local environment=$1
             local branches_output=$2
 
-            comment_message="⚡ Branch **$environment** updated!
+            comment_message="☑️ Branch **$environment** updated!
             The new branches contents:"
 
             while IFS=, read -ra branches; do
-            for branch in "${branches[@]}"; do
-               comment_message+="
-                 - $branch"
-            done
+              for branch in "${branches[@]}"; do
+                comment_message+="
+                🔹 $branch"
+              done
+
+              if ! [[ -n "$branches" ]]; then
+                comment_message+="
+                    Only contains the contents of the main branch"
+              fi
+
             done <<< "$branches_output"
 
             gh issue comment ${{ github.event.issue.number }} -b "$comment_message"
           }
 
           IFS=, read -ra branches <<< "${{ needs.validate-issues.outputs.environments }}"
-          echo "$branches"
-          echo "Todas as posições: ${branches[@]}"
-
           for branch in "${branches[@]}"; do
             if [[ "$branch" == "develop" ]]; then
-             add_comment_for_environment "develop" "${{ needs.new-environments-branches.outputs.develop }}"
+             add_comment_for_environment "develop" "${{ needs.recreate-branches.outputs.develop }}"
             fi
 
             if [[ "$branch" == "homolog" ]]; then
-              add_comment_for_environment "homolog" "${{ needs.new-environments-branches.outputs.homolog }}"
+              add_comment_for_environment "homolog" "${{ needs.recreate-branches.outputs.homolog }}"
             fi
 
              if [[ "$branch" == "staging" ]]; then
-              add_comment_for_environment "staging" "${{ needs.new-environments-branches.outputs.staging }}"
+              add_comment_for_environment "staging" "${{ needs.recreate-branches.outputs.staging }}"
             fi
           done
 
-          gh issue close ${{ github.event.issue.number }} -c "🌟 Branches updated successfully!"
+          gh issue close ${{ github.event.issue.number }} -c "✅ Branches updated successfully!"

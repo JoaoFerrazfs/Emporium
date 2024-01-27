@@ -46,40 +46,36 @@ on:
 
       environments:
         type: string
-        required: false
         description: |
           Submit a comma-separated list of branches "develop,homolog,staging" for updates.
         default: ''
 
       branches:
         type: string
-        required: false
         description: |
           Selected branches to be merge on environments.
-        default: ''
 
       mustRemove:
         type: string
-        required: false
         description: |
           Toggle to remove branch for each selected environment.
-        default: false
+
     outputs:
       develop:
-        value: ${{ jobs.deploy-by-issue.outputs.developContent }}
+        value: ${{ jobs.manage-branches.outputs.developContent }}
       homolog:
-        value: ${{ jobs.deploy-by-issue.outputs.homologContent }}
+        value: ${{ jobs.manage-branches.outputs.homologContent }}
       staging:
-        value: ${{ jobs.deploy-by-issue.outputs.stagingContent }}
+        value: ${{ jobs.manage-branches.outputs.stagingContent }}
       error:
-        value: ${{ jobs.deploy-by-issue.outputs.error }}
+        value: ${{ jobs.manage-branches.outputs.error }}
 jobs:
-  deploy-by-issue:
+  manage-branches:
     outputs:
-      developContent: ${{ steps.handleBranches.outputs.develop }}
-      homologContent: ${{ steps.handleBranches.outputs.homolog }}
-      stagingContent: ${{ steps.handleBranches.outputs.staging }}
-      error: ${{ steps.handleBranches.outputs.error }}
+      developContent: ${{ steps.recreateBranches.outputs.develop }}
+      homologContent: ${{ steps.recreateBranches.outputs.homolog }}
+      stagingContent: ${{ steps.recreateBranches.outputs.staging }}
+      error: ${{ steps.recreateBranches.outputs.error }}
 
     runs-on: ubuntu-latest
 
@@ -123,8 +119,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Handle environments branches
-        id: handleBranches
+      - name: Recreate branches
+        id: recreateBranches
         run: |
           environments="${{ inputs.environments }}"
           mustRemove="${{ inputs.mustRemove }}"
@@ -143,9 +139,6 @@ jobs:
             fi
 
             allBranches=$(cat ./.github/support/"$environment"-branches.txt)
-
-            echo "Definindo output com todas as branches"
-            echo "todas: $allBranches"
 
             echo "$environment=$allBranches"  >> "$GITHUB_OUTPUT"
 

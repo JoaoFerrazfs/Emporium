@@ -22,9 +22,12 @@ body:
 
   - type: checkboxes
     id: environments
+    validations:
+      required: true
     attributes:
       label: Environments
       options:
         - label: develop
         - label: homolog
         - label: staging
+

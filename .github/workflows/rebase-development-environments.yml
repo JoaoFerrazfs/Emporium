@@ -1,0 +1,11 @@
+name: Rebase development environments
+permissions: write-all
+on:
+  push:
+    branches: [master]
+
+jobs:
+  recreate-branches:
+    uses: JoaoFerrazfs/Emporium/.github/workflows/auto-handle-environments-branches.yml@master
+    with:
+      environments: develop,homolog,staging
