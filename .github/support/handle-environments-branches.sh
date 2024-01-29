@@ -30,16 +30,21 @@ for branch in "${branches[@]}"; do
     branch_exists=$?
 
     if [[ "$branch_exists" == "0" ]]; then
-      git checkout "$branch" &> /dev/null
-      git log --pretty=format:"%h" master | grep "$(git log --pretty=format:"%h" -1 "$branch")" &> /dev/null
+      git checkout $branch &> /dev/null
+      git log --pretty=format:"%h" master | grep `git log --pretty=format:"%h" -1 $branch` &> /dev/null
       branch_merged=$?
 
       if [[ "$branch_merged" == "0" ]]; then
-        git rebase master
+        echo "error= 🚫 The **$branch** exists, but has already been merged." >> $GITHUB_ENV
+        continue
       fi
 
-      validatedBranches+="$branch,"
+    else
+      echo "error= 🚫 The **$branch** non exists." >> $GITHUB_ENV
+      continue
     fi
+
+     validatedBranches+="$branch,"
 done
 
 validatedBranches="${validatedBranches%,}"
@@ -98,11 +103,11 @@ if [ -n "$allBranches" ] && [ "$allBranches" != "," ]; then
       git checkout $branch  &> /dev/null
 
       echo "Rebasing $branch with main..."
-      git rebase master &> /dev/null
+      git rebase master
       error=$?
       if [[ "$error" != "0" ]]; then
           echo -e "An error occurred while rebasing '$branch' into '$environmentBranch'" >> "$error_file"
-          exit 0
+          exit 1
       else
           echo -e "Rebase successful\n"
       fi
@@ -110,11 +115,11 @@ if [ -n "$allBranches" ] && [ "$allBranches" != "," ]; then
       echo "Merge $branch into '$environmentBranch'..."
 
       git checkout $environmentBranch &> /dev/null
-      git merge $branch &> /dev/null
+      git merge $branch
       error=$?
       if [[ "$error" != "0" ]]; then
           echo -e "An error occurred while merge '$branch' into '$environmentBranch'" >> "$error_file"
-          exit 0
+          exit 1
       else
           echo -e "Merge successful\n"
       fi
@@ -142,7 +147,7 @@ git push --force origin $environmentBranch &> /dev/null
 error=$?
 if [[ "$error" != "0" ]]; then
  echo -e "An error occurred while merge '$branch' into '$environmentBranch'" >> "$error_file"
- exit 0
+ exit 1
 else
  echo -e "Merge successful\n"
 fi
