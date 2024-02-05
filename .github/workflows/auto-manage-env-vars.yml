@@ -1,0 +1,52 @@
+name: Manage environments vars
+permissions: write-all
+on:
+  workflow_call:
+
+jobs:
+  check-issue-value:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assign issue
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --add-assignee ${{ github.event.issue.user.login }}
+
+          gh issue comment ${{ github.event.issue.number }} -b "
+            ⌛ To follow the runner click here:
+            - https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+      - name: Parse issue
+        uses: stefanbuck/github-issue-parser@v3.1.0
+
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/manage_env-vars.yml
+
+      - name : Verify if is a blacklist env
+        run: |
+
+          verifyBlackList() {
+            if grep -qw "$1" .github/support/env_manager/env-blacklist.txt; then
+              gh issue close ${{ github.event.issue.number }} -c "🚫 Branch: $1 cannot be updated because it contains blacklisted secrets!"
+              exit 1
+            fi
+          }
+
+          varValues=${{ steps.issue-parser.outputs.issueparser_var-values }}
+
+          IFS=',' read -ra varValues <<< "$varValues"
+          for varValue in "${varValues[@]}"; do
+            trimmedVarValue=$(echo "$varValue" | tr -d '[:space:]')
+            IFS="=" read -r key _ <<< "$trimmedVarValue"
+            verifyBlackList "$key"
+          done
+
+          gh issue comment ${{ github.event.issue.number }} -b "☑️ Envs validation success!"
+
+  vault:
+    uses: JoaoFerrazfs/Emporium/.github/workflows/vault-manage-secrets.yml@master

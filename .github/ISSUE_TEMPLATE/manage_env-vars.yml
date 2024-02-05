@@ -4,20 +4,14 @@ title: '[Manage env vars]: '
 labels: ['mange-env-vars']
 body:
   - type: input
-    id: var-name
-    attributes:
-      label: Env name
-      description: You need to send the env name to be updated or deleted.
-      placeholder: gitHubUser
-    validations:
-      required: true
-
-  - type: input
-    id: var-value
+    id: var-values
     attributes:
       label: Env value
-      description: To create or update an env var send this value is required.
-      placeholder: octoCat
+      description: |
+        To create or update an env var send this value is required. To avoid doubts about the processing of sending values without blanks
+
+        ⚠️ Attention, pattern for sending envs:  gitHubUser=octoCat,appName=myApp
+      placeholder: gitHubUser=octoCat,gitHubUserEmail=octoCat@github.com
 
   - type: checkboxes
     id: var-environments
@@ -28,6 +22,7 @@ body:
         - label: dev-environment
         - label: qa-environment
         - label: uat1-environment
+        - label: prod-environment
 
   - type: checkboxes
     id: var-delete

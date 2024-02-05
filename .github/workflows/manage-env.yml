@@ -1,0 +1,10 @@
+name: Manage environments vars
+permissions: write-all
+on:
+  issues:
+    types: [ opened, edited ]
+
+jobs:
+  manage-env-vars:
+    if: contains(github.event.issue.labels.*.name, 'mange-env-vars')
+    uses: JoaoFerrazfs/Emporium/.github/workflows/auto-manage-env-vars.yml@master
