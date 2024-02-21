@@ -1,0 +1,28 @@
+name: Production rollback
+description: Reapply some older version of the production environment
+title: '[Rollback]: '
+labels: ['rollback-production']
+body:
+  - type: input
+    id: production-version
+    attributes:
+      label: Production version
+      description: You can submit any version needed to reapply in the production environment here.
+      placeholder: 0.43.7
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: previous-version
+    attributes:
+      label: Rollback to previous version
+      description: If you need the previous version version of a software build.
+      options:
+        - label: Apply previous version
+
+  - type: textarea
+    attributes:
+      label: More info
+      description: This field is not required, use it if you want to save more information about de performed rollback.
+    validations:
+      required: false
