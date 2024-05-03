@@ -92,7 +92,7 @@ jobs:
           done
 
       - name: Parse issue
-        uses: stefanbuck/github-issue-parser@v3.1.0
+        uses: stefanbuck/github-issue-parser@v3.1.1
 
         id: issue-parser
         with:

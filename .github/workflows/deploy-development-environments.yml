@@ -31,7 +31,7 @@ jobs:
             - https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       - name: Parse issue
-        uses: stefanbuck/github-issue-parser@v3
+        uses: stefanbuck/github-issue-parser@v3.1.1
         id: issue-parser
         with:
           template-path: .github/ISSUE_TEMPLATE/deploy-environments.yml
